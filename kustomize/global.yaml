@@ -1,0 +1,70 @@
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterSecretStore
+metadata:
+  name: vault-secret-store
+spec:
+  provider:
+    vault:
+      server: "https://vault.vault.svc:8200"
+      path: "kv"
+      version: "v2"
+      auth:
+        tokenSecretRef:
+          namespace: vault
+          name: vault-global-token
+          key: token
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterExternalSecret
+metadata:
+  name: cloudflare-cert
+spec:
+  externalSecretName: cloudflare-cert
+  namespaceSelectors:
+    - matchLabels:
+        cert-secret: cloudflare
+
+  refreshTime: "15s"
+
+  externalSecretSpec:
+    target:
+      name: cloudflare-cert
+    refreshInterval: "15s"
+    secretStoreRef:
+      name: vault-secret-store
+      kind: ClusterSecretStore
+    data:
+      - secretKey: tls.crt
+        remoteRef:
+          key: certs/cloudflare
+          property: tls.crt
+      - secretKey: tls.key
+        remoteRef:
+          key: certs/cloudflare
+          property: tls.key
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterExternalSecret
+metadata:
+  name: cloudflare-ca-cert
+spec:
+  externalSecretName: cloudflare-ca-cert
+  namespaceSelectors:
+    - matchLabels:
+        cert-secret: cloudflare
+
+  refreshTime: "15s"
+
+  externalSecretSpec:
+    target:
+      name: cloudflare-ca-cert
+    refreshInterval: "15s"
+    secretStoreRef:
+      name: vault-secret-store
+      kind: ClusterSecretStore
+    data:
+      - secretKey: ca.crt
+        remoteRef:
+          key: certs/cloudflare
+          property: ca.crt

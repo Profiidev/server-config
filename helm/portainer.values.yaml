@@ -1,0 +1,22 @@
+enterpriseEdition:
+  enabled: true
+
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: true
+  ingressClassName: ingress-nginx
+  annotations:
+    nginx.ingress.kubernetes.io/auth-tls-secret: portainer/cloudflare-ca-cert
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+  hosts:
+    - host: portainer.profidev.io
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: cloudflare-cert
+      hosts:
+        - "*.profidev.io"
+        - profidev.io
