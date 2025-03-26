@@ -27,7 +27,7 @@ spec:
   externalSecretName: cloudflare-cert
   namespaceSelectors:
     - matchLabels:
-        cert-secret: cloudflare
+        cloudflare_cert_secret: "true"
 
   refreshTime: "15s"
 

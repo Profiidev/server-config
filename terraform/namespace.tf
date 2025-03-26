@@ -73,5 +73,8 @@ variable "portainer-ns" {
 resource "kubernetes_namespace" "portainer-ns" {
   metadata {
     name = var.portainer-ns
+    labels = {
+      "${var.cloudflare-cert-label.key}" = var.cloudflare-cert-label.value
+    }
   }
 }
