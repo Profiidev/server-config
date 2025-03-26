@@ -1,10 +1,10 @@
 controller:
   ingressClassResource:
-    name: ingress-nginx
+    name: ${ingress_class}
     enabled: true
     default: true
     controllerValue: "k8s.io/ingress-nginx"
     parameters: {}
 
-  ingressClass: ingress-nginx
+  ingressClass: ${ingress_class}
   watchIngressWithoutClass: false

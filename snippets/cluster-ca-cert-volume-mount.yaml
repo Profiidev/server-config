@@ -1,0 +1,4 @@
+- name: cluster-ca-cert
+  mountPath: /etc/ssl/certs/ca.crt
+  subPath: ca.crt
+  readOnly: true

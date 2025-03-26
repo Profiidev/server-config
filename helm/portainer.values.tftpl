@@ -6,9 +6,9 @@ service:
 
 ingress:
   enabled: true
-  ingressClassName: ingress-nginx
+  ingressClassName: ${ingress_class}
   annotations:
-    nginx.ingress.kubernetes.io/auth-tls-secret: portainer/cloudflare-ca-cert
+    nginx.ingress.kubernetes.io/auth-tls-secret: ${namespace}/${cloudflare_ca_cert_var}
     nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
   hosts:
     - host: portainer.profidev.io
@@ -16,7 +16,7 @@ ingress:
         - path: /
           pathType: ImplementationSpecific
   tls:
-    - secretName: cloudflare-cert
+    - secretName: ${cloudflare_cert_var}
       hosts:
         - "*.profidev.io"
         - profidev.io

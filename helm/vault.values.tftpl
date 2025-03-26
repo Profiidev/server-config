@@ -8,20 +8,20 @@ injector:
 
 server:
   extraEnvironmentVars:
-    VAULT_CACERT: /vault/userconfig/vault-server-tls/vault.ca
+    VAULT_CACERT: /vault/userconfig/${cert_var}/${cert_prop}.ca
 
   extraVolumes:
     - type: secret
-      name: vault-server-tls
+      name: ${cert_var}
 
   dataStorage:
     enabled: true
     size: 10Gi
-    storageClass: longhorn
+    storageClass: ${storage_class}
 
   auditStorage:
     size: 10Gi
-    storageClass: longhorn
+    storageClass: ${storage_class}
 
   standalone:
     enabled: true
@@ -31,9 +31,9 @@ server:
       listener "tcp" {
         address = "[::]:8200"
         cluster_address = "[::]:8201"
-        tls_cert_file = "/vault/userconfig/vault-server-tls/vault.crt"
-        tls_key_file  = "/vault/userconfig/vault-server-tls/vault.key"
-        tls_client_ca_file = "/vault/userconfig/vault-server-tls/vault.ca"
+        tls_cert_file = "/vault/userconfig/${cert_var}/${cert_prop}.crt"
+        tls_key_file  = "/vault/userconfig/${cert_var}/${cert_prop}.key"
+        tls_client_ca_file = "/vault/userconfig/${cert_var}/${cert_prop}.ca"
       }
       storage "file" {
         path = "/vault/data"
