@@ -13,16 +13,6 @@ variable "cloudflare-cert-var" {
   default = "cloudflare_cert"
 }
 
-variable "vault-cert-var" {
-  type    = string
-  default = "vault-server-tls"
-}
-
-variable "vault-cert-prop" {
-  type    = string
-  default = "vault"
-}
-
 variable "cloudflare-cert-label" {
   type = object({
     key   = string
@@ -53,6 +43,15 @@ variable "cert-issuer-staging" {
 variable "cert-issuer-prod" {
   type    = string
   default = "letsencrypt-prod"
+}
+
+data "external" "cluster_ca_cert" {
+  program = ["bash", "-c", <<EOT
+    kubectl config view --raw --minify --flatten \
+     -o jsonpath='{.clusters[].cluster.certificate-authority-data}' | base64 -d |\
+     jq -R -s '{ca: .}'
+  EOT
+  ]
 }
 
 resource "kubernetes_manifest" "cert-issuer" {

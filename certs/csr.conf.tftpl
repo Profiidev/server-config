@@ -8,8 +8,8 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 extendedKeyUsage = serverAuth
 subjectAltName = @alt_names
 [alt_names]
-DNS.1 = vault
-DNS.2 = vault.${namespace}
-DNS.3 = vault.${namespace}.svc
-DNS.4 = vault.${namespace}.svc.cluster.local
+DNS.1 = ${svc}
+DNS.2 = ${svc}.${namespace}
+DNS.3 = ${svc}.${namespace}.svc
+DNS.4 = ${svc}.${namespace}.svc.cluster.local
 IP.1 = 127.0.0.1

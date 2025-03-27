@@ -1,9 +1,3 @@
-variable "secrets-ns" {
-  description = "Secrets Namespace"
-  type        = string
-  default     = "vault"
-}
-
 variable "vault_svc" {
   type    = string
   default = "vault"
@@ -11,7 +5,7 @@ variable "vault_svc" {
 
 variable "vault_cert_var" {
   type    = string
-  default = "vault-server-tlss"
+  default = "vault-server-tls"
 }
 
 variable "vault_cert_prop" {
@@ -25,7 +19,10 @@ variable "vault_csr" {
 }
 
 locals {
-  csr_conf_content = templatefile("${path.module}/../certs/csr.conf.tftpl", { namespace = var.secrets-ns })
+  csr_conf_content = templatefile("${path.module}/../certs/csr.conf.tftpl", {
+    namespace = var.secrets-ns
+    svc       = var.vault_svc
+  })
 }
 
 resource "local_file" "vault_csr_conf" {
@@ -84,9 +81,14 @@ resource "kubernetes_secret_v1" "vault_tls_secret" {
   }
   type = "generic"
   binary_data = {
-    "${var.vault-cert-prop}.crt" = base64encode(kubernetes_certificate_signing_request_v1.vault_csr.certificate)
-    "${var.vault-cert-prop}.key" = data.local_file.vault_key.content_base64
+    "${var.vault_cert_prop}.crt" = base64encode(kubernetes_certificate_signing_request_v1.vault_csr.certificate)
+    "${var.vault_cert_prop}.key" = data.local_file.vault_key.content_base64
+    "${var.vault_cert_prop}.ca"  = base64encode(data.external.cluster_ca_cert.result["ca"])
   }
 
-  depends_on = [kubernetes_certificate_signing_request_v1.vault_csr, data.local_file.vault_key]
+  depends_on = [
+    kubernetes_certificate_signing_request_v1.vault_csr,
+    data.local_file.vault_key,
+    data.external.cluster_ca_cert
+  ]
 }
