@@ -18,7 +18,7 @@ resource "kubernetes_manifest" "lb_ip_pool" {
     }
   }
 
-  depends_on = [ helm_release.metallb ]
+  depends_on = [helm_release.metallb]
 }
 
 resource "kubernetes_manifest" "lb_l2_advertisement" {
@@ -36,5 +36,5 @@ resource "kubernetes_manifest" "lb_l2_advertisement" {
     }
   }
 
-  depends_on = [ helm_release.metallb ]
+  depends_on = [helm_release.metallb]
 }

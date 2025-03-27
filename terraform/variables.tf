@@ -9,6 +9,6 @@ variable "storage_class" {
 }
 
 variable "email" {
-  type = string
+  type    = string
   default = "mail@profidev.io"
 }
