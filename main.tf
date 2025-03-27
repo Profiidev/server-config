@@ -24,6 +24,10 @@ terraform {
       source  = "hashicorp/external"
       version = "~> 2.0"
     }
+    http = {
+      source  = "hashicorp/http"
+      version = "~> 3.0"
+    }
   }
 }
 
@@ -37,19 +41,12 @@ provider "helm" {
   }
 }
 
-variable "main" {
-  type    = bool
-  default = false
-}
-
 module "config" {
   source = "./terraform"
-  count  = var.main ? 1 : 0
 }
 
 module "crds" {
   source = "./crds"
-  count  = var.main ? 0 : 1
 }
 
 output "all_module_outputs" {
