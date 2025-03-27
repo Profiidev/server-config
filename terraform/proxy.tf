@@ -1,3 +1,8 @@
+variable "ingress_class" {
+  type    = string
+  default = "ingress-nginx"
+}
+
 variable "proxy_ns" {
   description = "Proxy Namespace"
   type        = string
