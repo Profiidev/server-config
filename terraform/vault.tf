@@ -33,7 +33,8 @@ resource "helm_release" "vault" {
 
   depends_on = [
     kubernetes_namespace.secrets_ns,
-    kubernetes_secret_v1.vault_tls_secret
+    kubernetes_secret_v1.vault_tls_secret,
+    helm_release.longhorn
   ]
 }
 
@@ -104,30 +105,47 @@ resource "kubernetes_secret_v1" "vault_tls_secret" {
   }
 }
 
-data "external" "vault_init" {
-  program = ["bash", "-c", <<EOT
-    kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault operator init | \
-    awk -F ': ' '
-      /Unseal Key 1:/ {print "key-1="$2}
-      /Unseal Key 2:/ {print "key-2="$2}
-      /Unseal Key 3:/ {print "key-3="$2}
-      /Unseal Key 4:/ {print "key-4="$2}
-      /Unseal Key 5:/ {print "key-5="$2}
-      /Initial Root Token:/ {print "token="$2}
-    ' | jq -R -s '
-      split("\\n") | map(select(. != "")) |
-      map(split("=") | { (.[0]): .[1] }) | add
-    '
-  EOT
-  ]
+resource "null_resource" "vault_init" {
+  triggers = {
+    config_hash = sha256(jsonencode(var.secrets_ns))
+  }
+
+  provisioner "local-exec" {
+    command = <<EOT
+      while true; do
+        output=$(kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault operator init -format=json | \
+                 jq '{root_token} + ( .unseal_keys_b64 | to_entries | map({("key-\(.key+1)"): .value}) | add )' 2>&1)
+
+        # Check if the output is empty
+        if [ -z "$output" ]; then
+          echo "Output is empty, retrying..."
+        # Check if the output is valid JSON
+        elif echo "$output" | jq empty > /dev/null 2>&1; then
+          echo "$output" > ${path.module}/../certs/keys.json
+          echo "Vault operator init succeeded, keys saved to keys.json!"
+          break
+        else
+          echo "Invalid JSON output, retrying..."
+        fi
+
+        sleep 5
+      done
+    EOT
+  }
 
   depends_on = [helm_release.vault]
+}
+
+data "external" "vault_init_out" {
+  program = ["bash", "-c", "cat ${path.module}/../certs/keys.json"]
+
+  depends_on = [null_resource.vault_init]
 }
 
 resource "kubernetes_secret_v1" "vault_unseal_key" {
   for_each = {
     for key in ["key-1", "key-2", "key-3", "key-4", "key-5"] :
-    key => data.external.vault_init.result[key]
+    key => data.external.vault_init_out.result[key]
   }
 
   metadata {
@@ -145,10 +163,10 @@ resource "kubernetes_secret_v1" "vault_unseal_key" {
 resource "null_resource" "vault_initial_unseal" {
   provisioner "local-exec" {
     command = <<-EOT
-      kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault operator unseal "${data.external.vault_init.result["key-1"]}"
-      kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault operator unseal "${data.external.vault_init.result["key-2"]}"
-      kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault operator unseal "${data.external.vault_init.result["key-3"]}"
-      kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault login "${data.external.vault_init.result["token"]}"
+      kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault operator unseal "${data.external.vault_init_out.result["key-1"]}"
+      kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault operator unseal "${data.external.vault_init_out.result["key-2"]}"
+      kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault operator unseal "${data.external.vault_init_out.result["key-3"]}"
+      kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault login "${data.external.vault_init_out.result["root_token"]}"
     EOT
   }
 }
@@ -158,5 +176,5 @@ output "vault_unseal_key" {
 }
 
 output "vault_token" {
-  value = data.external.vault_init.result["token"]
+  value = data.external.vault_init_out.result["root_token"]
 }

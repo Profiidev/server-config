@@ -100,5 +100,5 @@ resource "kubernetes_secret_v1" "vault_global_token" {
     "${var.vault_global_token_prop}" = data.external.vault_global_token.result["token"]
   }
 
-  type       = "Opaque"
+  type = "Opaque"
 }
