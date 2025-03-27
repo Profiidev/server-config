@@ -5,6 +5,8 @@ resource "helm_release" "metallb" {
   chart      = "metallb"
   version    = "0.14.9"
   namespace  = var.lb-ns
+
+  depends_on = [ kubernetes_namespace.lb-ns ]
 }
 
 // Storage
@@ -14,6 +16,8 @@ resource "helm_release" "longhorn" {
   chart      = "longhorn"
   version    = "1.8.1"
   namespace  = var.storage-ns
+
+  depends_on = [ kubernetes_namespace.storage-ns ]
 }
 
 // Proxy
@@ -27,6 +31,8 @@ resource "helm_release" "ingress-nginx" {
   values = [templatefile("${path.module}/../helm/ingress-nginx.values.tftpl", {
     ingress_class = var.ingress-class
   })]
+
+  depends_on = [ kubernetes_namespace.proxy-ns ]
 }
 
 // Secrets
@@ -42,6 +48,8 @@ resource "helm_release" "vault" {
     cert_prop     = var.vault-cert-prop
     storage_class = var.storage-class
   })]
+
+  depends_on = [ kubernetes_namespace.secrets-ns ]
 }
 
 resource "helm_release" "external-secrets" {
@@ -55,6 +63,8 @@ resource "helm_release" "external-secrets" {
     volume       = data.template_file.cluster-ca-cert-volume.rendered
     volume_mount = data.template_file.cluster-ca-cert-volume-mount.rendered
   })]
+
+  depends_on = [ kubernetes_namespace.secrets-ns ]
 }
 
 // Certificate Manager
@@ -66,6 +76,8 @@ resource "helm_release" "cert-manager" {
   namespace  = var.cert-ns
 
   values = [templatefile("${path.module}/../helm/cert-manager.values.tftpl", {})]
+
+  depends_on = [ kubernetes_namespace.cert-ns ]
 }
 
 // Portainer
@@ -82,4 +94,6 @@ resource "helm_release" "portainer" {
     cloudflare_cert_var    = var.cloudflare-cert-var
     ingress_class          = var.ingress-class
   })]
+
+  depends_on = [ kubernetes_namespace.portainer-ns ]
 }
