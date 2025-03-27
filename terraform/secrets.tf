@@ -101,5 +101,4 @@ resource "kubernetes_secret_v1" "vault_global_token" {
   }
 
   type       = "Opaque"
-  depends_on = [data.external.vault_global_token]
 }

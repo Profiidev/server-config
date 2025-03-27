@@ -89,8 +89,6 @@ resource "kubernetes_certificate_signing_request_v1" "vault_csr" {
       "server auth"
     ]
   }
-
-  depends_on = [data.local_file.vault_csr]
 }
 
 resource "kubernetes_secret_v1" "vault_tls_secret" {
@@ -104,12 +102,6 @@ resource "kubernetes_secret_v1" "vault_tls_secret" {
     "${var.vault_cert_prop}.key" = data.local_file.vault_key.content_base64
     "${var.vault_cert_prop}.ca"  = base64encode(data.external.cluster_ca_cert.result["ca"])
   }
-
-  depends_on = [
-    kubernetes_certificate_signing_request_v1.vault_csr,
-    data.local_file.vault_key,
-    data.external.cluster_ca_cert
-  ]
 }
 
 data "external" "vault_init" {
@@ -147,8 +139,7 @@ resource "kubernetes_secret_v1" "vault_unseal_key" {
     key = each.value
   }
 
-  type       = "Opaque"
-  depends_on = [data.external.vault_init]
+  type = "Opaque"
 }
 
 resource "null_resource" "vault_initial_unseal" {
@@ -160,8 +151,6 @@ resource "null_resource" "vault_initial_unseal" {
       kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault login "${data.external.vault_init.result["token"]}"
     EOT
   }
-
-  depends_on = [data.external.vault_init]
 }
 
 output "vault_unseal_key" {
