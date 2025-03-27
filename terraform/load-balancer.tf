@@ -1,6 +1,6 @@
 variable "lb_address_pool" {
   type    = string
-  default = "lb_pool"
+  default = "lb-pool"
 }
 
 variable "lb_ns" {

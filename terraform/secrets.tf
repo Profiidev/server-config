@@ -19,7 +19,7 @@ variable "secret_store_label" {
     value = string
   })
   default = {
-    key   = "secret_store"
+    key   = "secret-store"
     value = "true"
   }
 }

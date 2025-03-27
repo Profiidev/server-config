@@ -5,12 +5,12 @@ variable "cluster_ca_cert_var" {
 
 variable "cloudflare_ca_cert_var" {
   type    = string
-  default = "cloudflare_ca_cert"
+  default = "cloudflare-ca-cert"
 }
 
 variable "cloudflare_cert_var" {
   type    = string
-  default = "cloudflare_cert"
+  default = "cloudflare-cert"
 }
 
 variable "cloudflare_cert_label" {
@@ -19,7 +19,7 @@ variable "cloudflare_cert_label" {
     value = string
   })
   default = {
-    key   = "cloudflare_cert_secret"
+    key   = "cloudflare-cert-secret"
     value = "true"
   }
 }
@@ -30,7 +30,7 @@ variable "cluster_ca_cert_label" {
     value = string
   })
   default = {
-    key   = "cluster_ca_cert"
+    key   = "cluster-ca-cert"
     value = "true"
   }
 }
