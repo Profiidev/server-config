@@ -45,7 +45,6 @@ resource "helm_release" "external_secrets" {
   chart      = "external-secrets"
   version    = "0.15.0"
   namespace  = var.secrets_ns
-  skip_crds  = true
 
   values = [templatefile("${path.module}/../helm/external-secrets.values.tftpl", {
     volume       = data.template_file.cluster_ca_cert_volume.rendered
@@ -55,40 +54,28 @@ resource "helm_release" "external_secrets" {
   depends_on = [kubernetes_namespace.secrets_ns]
 }
 
-resource "kubernetes_manifest" "cluster_secret_store" {
-  manifest = {
-    apiVersion = "external-secrets.io/v1beta1"
-    kind       = "ClusterSecretStore"
-    metadata = {
-      name = var.cluster_secret_store
-    }
-    spec = {
-      provider = {
-        vault = {
-          server  = "https://vault.vault.svc:8200"
-          path    = "kv"
-          version = "v2"
-          auth = {
-            tokenSecretRef = {
-              namespace = var.secrets_ns
-              name      = var.vault_global_token
-              key       = var.vault_global_token_prop
-            }
-          }
-        }
-      }
-
-      conditions = [
-        {
-          namespaceSelector = {
-            matchLabels = {
-              "${var.secret_store_label.key}" = var.secret_store_label.value
-            }
-          }
-        }
-      ]
-    }
-  }
+resource "kubectl_manifest" "cluster_secret_store" {
+  yaml_body = <<YAML
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterSecretStore
+metadata:
+  name: ${var.cluster_secret_store}
+spec:
+  provider:
+    vault:
+      server: https://vault.${var.secrets_ns}.svc:8200
+      path: kv
+      version: v2
+      auth:
+        tokenSecretRef:
+          namespace: ${var.secrets_ns}
+          name: ${var.vault_global_token}
+          key: ${var.vault_global_token_prop}
+  conditions:
+    - namespaceSelector:
+        matchLabels:
+          ${var.secret_store_label.key}: ${var.secret_store_label.value}
+  YAML
 
   depends_on = [helm_release.external_secrets]
 }

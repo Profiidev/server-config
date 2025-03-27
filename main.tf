@@ -45,10 +45,6 @@ module "config" {
   source = "./terraform"
 }
 
-module "crds" {
-  source = "./crds"
-}
-
 output "all_module_outputs" {
   value = {
     for k, v in module.config : k => v
