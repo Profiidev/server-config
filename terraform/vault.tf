@@ -1,3 +1,29 @@
+variable "secrets-ns" {
+  description = "Secrets Namespace"
+  type        = string
+  default     = "vault"
+}
+
+variable "vault_svc" {
+  type    = string
+  default = "vault"
+}
+
+variable "vault_cert_var" {
+  type    = string
+  default = "vault-server-tlss"
+}
+
+variable "vault_cert_prop" {
+  type    = string
+  default = "vault"
+}
+
+variable "vault_csr" {
+  type    = string
+  default = "vault-csr"
+}
+
 locals {
   csr_conf_content = templatefile("${path.module}/../certs/csr.conf.tftpl", { namespace = var.secrets-ns })
 }
@@ -13,36 +39,33 @@ resource "null_resource" "vault_generate_csr" {
   provisioner "local-exec" {
     command = <<EOT
       openssl genrsa -out ${path.module}/../certs/vault.key 2048
-      openssl req -new -key ${path.module}/../certs/vault.key -subj "/CN=system:node:vault-server-tls.${var.secrets-ns}.svc/O=system:nodes" -out ${path.module}/../certs/vault.csr -config ${path.module}/../certs/csr.conf
+      openssl req -new -key ${path.module}/../certs/vault.key \
+       -subj "/CN=system:node:${var.vault_svc}.${var.secrets-ns}.svc/O=system:nodes" \
+       -out ${path.module}/../certs/vault.csr -config ${path.module}/../certs/csr.conf
     EOT
   }
 }
 
-resource "null_resource" "vault_read_csr_base64" {
+data "local_file" "vault_key" {
   depends_on = [null_resource.vault_generate_csr]
-
-  provisioner "local-exec" {
-    command = "cat ${path.module}/../certs/vault.csr | base64 | tr -d '\n' > ${path.module}/../certs/vault.b64.csr"
-  }
+  filename   = "${path.module}/../certs/vault.key"
 }
 
-data "local_file" "vault_csr_base64" {
-  depends_on = [null_resource.vault_read_csr_base64]
-  filename   = "${path.module}/../certs/vault.b64.csr"
+
+data "local_file" "vault_csr" {
+  depends_on = [null_resource.vault_generate_csr]
+  filename   = "${path.module}/../certs/vault.csr"
 }
 
-variable "vault_csr" {
-  type    = string
-  default = "vault-csr"
-}
+resource "kubernetes_certificate_signing_request_v1" "vault_csr" {
+  auto_approve = true
 
-resource "kubernetes_certificate_signing_request" "vault_csr" {
   metadata {
     name = var.vault_csr
   }
 
   spec {
-    request     = data.local_file.vault_csr_base64
+    request     = data.local_file.vault_csr.content
     signer_name = "kubernetes.io/kubelet-serving"
     usages = [
       "digital signature",
@@ -51,34 +74,19 @@ resource "kubernetes_certificate_signing_request" "vault_csr" {
     ]
   }
 
-  depends_on = [data.local_file.vault_csr_base64]
+  depends_on = [data.local_file.vault_csr]
 }
 
-resource "null_resource" "vault_approve_csr" {
-  depends_on = [kubernetes_certificate_signing_request.vault_csr]
-
-  provisioner "local-exec" {
-    command = "kubectl certificate approve ${var.vault_csr}"
+resource "kubernetes_secret_v1" "vault_tls_secret" {
+  metadata {
+    name      = var.vault_cert_var
+    namespace = var.secrets-ns
   }
-}
+  type = "generic"
+  binary_data = {
+    "${var.vault-cert-prop}.crt" = base64encode(kubernetes_certificate_signing_request_v1.vault_csr.certificate)
+    "${var.vault-cert-prop}.key" = data.local_file.vault_key.content_base64
+  }
 
-data "external" "vault_read_signed_cert" {
-  depends_on = [null_resource.vault_approve_csr]
-
-  program = ["bash", "-c", <<EOT
-    for i in {1..10}; do
-      cert=$(kubectl get csr ${var.vault_csr} -o jsonpath='{.status.certificate}')
-      if [ ! -z "$cert" ]; then echo "{\"certificate\": \"$cert\"}"; exit 0; fi
-      sleep 2
-    done
-    echo "{\"certificate\": \"\"}"
-  EOT
-  ]
-}
-
-resource "local_file" "vault_cert" {
-  depends_on = [data.external.vault_read_signed_cert]
-
-  content  = base64decode(data.external.read_signed_cert.result["certificate"])
-  filename = "${path.module}/../certs/vault.crt"
+  depends_on = [kubernetes_certificate_signing_request_v1.vault_csr, data.local_file.vault_key]
 }
