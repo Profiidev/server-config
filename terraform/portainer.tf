@@ -9,6 +9,7 @@ resource "kubernetes_namespace" "portainer_ns" {
     name = var.portainer_ns
     labels = {
       "${var.cloudflare_cert_label.key}" = var.cloudflare_cert_label.value
+      "${var.secret_store_label.key}"    = var.secret_store_label.value
     }
   }
 }
