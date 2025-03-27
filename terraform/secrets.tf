@@ -53,7 +53,7 @@ resource "helm_release" "external_secrets" {
 
   depends_on = [
     kubernetes_namespace.secrets_ns,
-    null_resource.vault_cluster_ca_cert
+    kubernetes_secret_v1.cluster_ca_cert_secret
   ]
 }
 
@@ -77,7 +77,7 @@ spec:
   conditions:
     - namespaceSelector:
         matchLabels:
-          ${var.secret_store_label.key}: ${var.secret_store_label.value}
+          ${var.secret_store_label.key}: "${var.secret_store_label.value}"
   YAML
 
   depends_on = [helm_release.external_secrets]

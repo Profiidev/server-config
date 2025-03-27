@@ -119,7 +119,7 @@ spec:
   externalSecretName: ${each.key}
   namespaceSelectors:
     - matchLabels:
-        ${var.cloudflare_cert_label.key}: ${var.cloudflare_cert_label.value}
+        ${var.cloudflare_cert_label.key}: "${var.cloudflare_cert_label.value}"
   refreshTime: 15s
 
   externalSecretSpec:
@@ -151,7 +151,7 @@ spec:
   externalSecretName: ${var.cluster_ca_cert_var}
   namespaceSelectors:
     - matchLabels:
-        ${var.cluster_ca_cert_label.key}: ${var.cluster_ca_cert_label.value}
+        ${var.cluster_ca_cert_label.key}: "${var.cluster_ca_cert_label.value}"
   refreshTime: 15s
 
   externalSecretSpec:
@@ -179,4 +179,15 @@ resource "null_resource" "vault_cluster_ca_cert" {
   }
 
   depends_on = [null_resource.vault_init_kv]
+}
+
+resource "kubernetes_secret_v1" "cluster_ca_cert_secret" {
+  metadata {
+    name      = var.cluster_ca_cert_var
+    namespace = var.secrets_ns
+  }
+  type = "Opaque"
+  binary_data = {
+    "ca.crt" = base64encode(data.external.cluster_ca_cert.result["ca"])
+  }
 }
