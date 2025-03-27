@@ -21,6 +21,7 @@ resource "helm_release" "metallb" {
   chart      = "metallb"
   version    = "0.14.9"
   namespace  = var.lb_ns
+  skip_crds  = true
 
   depends_on = [kubernetes_namespace.lb_ns]
 }

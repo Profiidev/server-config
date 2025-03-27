@@ -45,6 +45,7 @@ resource "helm_release" "external_secrets" {
   chart      = "external-secrets"
   version    = "0.15.0"
   namespace  = var.secrets_ns
+  skip_crds  = true
 
   values = [templatefile("${path.module}/../helm/external-secrets.values.tftpl", {
     volume       = data.template_file.cluster_ca_cert_volume.rendered

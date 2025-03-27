@@ -63,6 +63,7 @@ resource "helm_release" "cert_manager" {
   chart      = "cert-manager"
   version    = "1.17.0"
   namespace  = var.cert_ns
+  skip_crds  = true
 
   values = [templatefile("${path.module}/../helm/cert-manager.values.tftpl", {})]
 
