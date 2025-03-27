@@ -1,3 +1,8 @@
+variable "cluster-ca-cert-var" {
+  type    = string
+  default = "cluster-ca-cert"
+}
+
 variable "cloudflare-ca-cert-var" {
   type    = string
   default = "cloudflare_ca_cert"
@@ -25,6 +30,17 @@ variable "cloudflare-cert-label" {
   })
   default = {
     key   = "cloudflare_cert_secret"
+    value = "true"
+  }
+}
+
+variable "cluster-ca-cert-label" {
+  type = object({
+    key   = string
+    value = string
+  })
+  default = {
+    key   = "cluster_ca_cert"
     value = "true"
   }
 }
@@ -74,7 +90,7 @@ resource "kubernetes_manifest" "cert-issuer" {
   depends_on = [helm_release.cert-manager]
 }
 
-resource "kubernetes_manifest" "cloudflare-cert-secret" {
+resource "kubernetes_manifest" "cloudflare-cert" {
   for_each = tomap({
     "${var.cloudflare-cert-var}"    = ["tls.crt", "tls.key"]
     "${var.cloudflare-ca-cert-var}" = ["ca.crt"]
@@ -112,6 +128,49 @@ resource "kubernetes_manifest" "cloudflare-cert-secret" {
             remoteRef = {
               key      = "certs/cloudflare"
               property = value
+            }
+          }
+        ]
+      }
+    }
+  }
+
+  depends_on = [helm_release.external-secrets]
+}
+
+resource "kubernetes_manifest" "cluster-ca-cert" {
+  manifest = {
+    apiVersion = "external-secrets.io/v1beta1"
+    kind       = "ClusterExternalSecret"
+    metadata = {
+      name = var.cluster-ca-cert-var
+    }
+    spec = {
+      externalSecretName = var.cluster-ca-cert-var
+      namespaceSelectors = [
+        {
+          matchLabels = {
+            "${var.cluster-ca-cert-label.key}" = var.cluster-ca-cert-label.value
+          }
+        }
+      ]
+      refreshTime = "15s"
+
+      externalSecretSpec = {
+        target = {
+          name = var.cluster-ca-cert-var
+        }
+        refreshInterval = "15s"
+        secretStoreRef = {
+          name = var.cluster-secret-store
+          kind = "ClusterSecretStore"
+        }
+        data = [
+          {
+            secretKey = "ca.crt"
+            remoteRef = {
+              key      = "certs/cluster"
+              property = "ca.crt"
             }
           }
         ]
