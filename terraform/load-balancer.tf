@@ -3,6 +3,28 @@ variable "lb_address_pool" {
   default = "lb_pool"
 }
 
+variable "lb_ns" {
+  description = "Load Balancer Namespace"
+  type        = string
+  default     = "metallb-system"
+}
+
+resource "kubernetes_namespace" "lb_ns" {
+  metadata {
+    name = var.lb_ns
+  }
+}
+
+resource "helm_release" "metallb" {
+  name       = "metallb"
+  repository = "https://metallb.github.io/metallb"
+  chart      = "metallb"
+  version    = "0.14.9"
+  namespace  = var.lb_ns
+
+  depends_on = [kubernetes_namespace.lb_ns]
+}
+
 resource "kubernetes_manifest" "lb_ip_pool" {
   manifest = {
     apiVersion = "metallb.io/v1beta1"

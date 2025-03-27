@@ -24,6 +24,36 @@ variable "secret_store_label" {
   }
 }
 
+variable "secrets_ns" {
+  description = "Secrets Namespace"
+  type        = string
+  default     = "secrets-system"
+}
+
+resource "kubernetes_namespace" "secrets_ns" {
+  metadata {
+    name = var.secrets_ns
+    labels = {
+      "${var.secret_store_label.key}" = var.secret_store_label.value
+    }
+  }
+}
+
+resource "helm_release" "external_secrets" {
+  name       = "external-secrets"
+  repository = "https://charts.external-secrets.io"
+  chart      = "external-secrets"
+  version    = "0.15.0"
+  namespace  = var.secrets_ns
+
+  values = [templatefile("${path.module}/../helm/external-secrets.values.tftpl", {
+    volume       = data.template_file.cluster_ca_cert_volume.rendered
+    volume_mount = data.template_file.cluster_ca_cert_volume_mount.rendered
+  })]
+
+  depends_on = [kubernetes_namespace.secrets_ns]
+}
+
 resource "kubernetes_manifest" "cluster_secret_store" {
   manifest = {
     apiVersion = "external-secrets.io/v1beta1"

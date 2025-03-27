@@ -45,6 +45,30 @@ variable "cert_issuer_prod" {
   default = "letsencrypt-prod"
 }
 
+variable "cert_ns" {
+  description = "Certificate Manager Namespace"
+  type        = string
+  default     = "cert-system"
+}
+
+resource "kubernetes_namespace" "cert_ns" {
+  metadata {
+    name = var.cert_ns
+  }
+}
+
+resource "helm_release" "cert_manager" {
+  name       = "cert-manager"
+  repository = "https://charts.jetstack.io"
+  chart      = "cert-manager"
+  version    = "1.17.0"
+  namespace  = var.cert_ns
+
+  values = [templatefile("${path.module}/../helm/cert-manager.values.tftpl", {})]
+
+  depends_on = [kubernetes_namespace.cert_ns]
+}
+
 data "external" "cluster_ca_cert" {
   program = ["bash", "-c", <<EOT
     kubectl config view --raw --minify --flatten \

@@ -18,6 +18,25 @@ variable "vault_csr" {
   default = "vault-csr"
 }
 
+resource "helm_release" "vault" {
+  name       = "vault"
+  repository = "https://helm.releases.hashicorp.com"
+  chart      = "vault"
+  version    = "0.29.1"
+  namespace  = var.secrets_ns
+
+  values = [templatefile("${path.module}/../helm/vault.values.tftpl", {
+    cert_var      = var.vault_cert_var
+    cert_prop     = var.vault_cert_prop
+    storage_class = var.storage_class
+  })]
+
+  depends_on = [
+    kubernetes_namespace.secrets_ns,
+    kubernetes_secret_v1.vault_tls_secret
+  ]
+}
+
 locals {
   csr_conf_content = templatefile("${path.module}/../certs/csr.conf.tftpl", {
     namespace = var.secrets_ns
