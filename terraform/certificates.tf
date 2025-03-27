@@ -178,5 +178,5 @@ resource "null_resource" "vault_cluster_ca_cert" {
     EOT
   }
 
-  depends_on = [null_resource.vault_initial_unseal]
+  depends_on = [null_resource.vault_init_kv]
 }

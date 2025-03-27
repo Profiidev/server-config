@@ -171,6 +171,16 @@ resource "null_resource" "vault_initial_unseal" {
   }
 }
 
+resource "null_resource" "vault_init_kv" {
+  provisioner "local-exec" {
+    command = <<-EOT
+      kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault secrets enable -path "kv" kv-v2
+    EOT
+  }
+
+  depends_on = [null_resource.vault_initial_unseal]
+}
+
 output "vault_unseal_key" {
   value = [for s in kubernetes_secret_v1.vault_unseal_key : s.metadata[0].name]
 }
