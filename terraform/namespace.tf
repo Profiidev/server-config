@@ -47,6 +47,9 @@ variable "secrets-ns" {
 resource "kubernetes_namespace" "secrets-ns" {
   metadata {
     name = var.secrets-ns
+    labels = {
+      "${var.secret-store-label.key}" = var.secret-store-label.value
+    }
   }
 }
 

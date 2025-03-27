@@ -1,2 +1,4 @@
 cert/
 .terraform/
+*.tfstate
+*.lock.info

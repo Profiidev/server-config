@@ -18,17 +18,6 @@ variable "vault-cert-prop" {
   default = "vault"
 }
 
-variable "secret-store-label" {
-  type = object({
-    key   = string
-    value = string
-  })
-  default = {
-    key   = "secret_store"
-    value = "true"
-  }
-}
-
 variable "cloudflare-cert-label" {
   type = object({
     key   = string
@@ -50,7 +39,7 @@ variable "cert-issuer-prod" {
   default = "letsencrypt-prod"
 }
 
-resource "kubernetes_manifest" "cert-issuer-staging" {
+resource "kubernetes_manifest" "cert-issuer" {
   for_each = tomap({
     staging = "https://acme-staging-v02.api.letsencrypt.org/directory"
     prod    = "https://acme-v02.api.letsencrypt.org/directory"
@@ -82,5 +71,53 @@ resource "kubernetes_manifest" "cert-issuer-staging" {
     }
   }
 
-  depends_on = [ helm_release.cert-manager ]
+  depends_on = [helm_release.cert-manager]
+}
+
+resource "kubernetes_manifest" "cloudflare-cert-secret" {
+  for_each = tomap({
+    "${var.cloudflare-cert-var}"    = ["tls.crt", "tls.key"]
+    "${var.cloudflare-ca-cert-var}" = ["ca.crt"]
+  })
+
+  manifest = {
+    apiVersion = "external-secrets.io/v1beta1"
+    kind       = "ClusterExternalSecret"
+    metadata = {
+      name = each.key
+    }
+    spec = {
+      externalSecretName = each.key
+      namespaceSelectors = [
+        {
+          matchLabels = {
+            "${var.cloudflare-cert-label.key}" = var.cloudflare-cert-label.value
+          }
+        }
+      ]
+      refreshTime = "15s"
+
+      externalSecretSpec = {
+        target = {
+          name = each.key
+        }
+        refreshInterval = "15s"
+        secretStoreRef = {
+          name = var.cluster-secret-store
+          kind = "ClusterSecretStore"
+        }
+        data = [
+          for value in each.value : {
+            secretKey = value
+            remoteRef = {
+              key      = "certs/cloudflare"
+              property = value
+            }
+          }
+        ]
+      }
+    }
+  }
+
+  depends_on = [helm_release.external-secrets]
 }
