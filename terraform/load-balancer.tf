@@ -1,4 +1,4 @@
-variable "lb-address-pool" {
+variable "lb_address_pool" {
   type    = string
   default = "lb_pool"
 }
@@ -8,8 +8,8 @@ resource "kubernetes_manifest" "lb_ip_pool" {
     apiVersion = "metallb.io/v1beta1"
     kind       = "IPAddressPool"
     metadata = {
-      name      = var.lb-address-pool
-      namespace = var.lb-ns
+      name      = var.lb_address_pool
+      namespace = var.lb_ns
     }
     spec = {
       addresses = [
@@ -26,12 +26,12 @@ resource "kubernetes_manifest" "lb_l2_advertisement" {
     apiVersion = "metallb.io/v1beta1"
     kind       = "L2Advertisement"
     metadata = {
-      name      = var.lb-address-pool
-      namespace = var.lb-ns
+      name      = var.lb_address_pool
+      namespace = var.lb_ns
     }
     spec = {
       ipAddressPools = [
-        var.lb-address-pool
+        var.lb_address_pool
       ]
     }
   }

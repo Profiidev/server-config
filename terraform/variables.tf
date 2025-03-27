@@ -1,9 +1,9 @@
-variable "ingress-class" {
+variable "ingress_class" {
   type    = string
   default = "ingress-nginx"
 }
 
-variable "storage-class" {
+variable "storage_class" {
   type    = string
   default = "longhorn"
 }

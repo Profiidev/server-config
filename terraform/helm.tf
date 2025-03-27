@@ -4,9 +4,9 @@ resource "helm_release" "metallb" {
   repository = "https://metallb.github.io/metallb"
   chart      = "metallb"
   version    = "0.14.9"
-  namespace  = var.lb-ns
+  namespace  = var.lb_ns
 
-  depends_on = [kubernetes_namespace.lb-ns]
+  depends_on = [kubernetes_namespace.lb_ns]
 }
 
 // Storage
@@ -15,24 +15,24 @@ resource "helm_release" "longhorn" {
   repository = "https://charts.longhorn.io"
   chart      = "longhorn"
   version    = "1.8.1"
-  namespace  = var.storage-ns
+  namespace  = var.storage_ns
 
-  depends_on = [kubernetes_namespace.storage-ns]
+  depends_on = [kubernetes_namespace.storage_ns]
 }
 
 // Proxy
-resource "helm_release" "ingress-nginx" {
+resource "helm_release" "ingress_nginx" {
   name       = "ingress-nginx"
   repository = "https://kubernetes.github.io/ingress-nginx"
   chart      = "ingress-nginx"
   version    = "4.12.1"
-  namespace  = var.proxy-ns
+  namespace  = var.proxy_ns
 
   values = [templatefile("${path.module}/../helm/ingress-nginx.values.tftpl", {
-    ingress_class = var.ingress-class
+    ingress_class = var.ingress_class
   })]
 
-  depends_on = [kubernetes_namespace.proxy-ns]
+  depends_on = [kubernetes_namespace.proxy_ns]
 }
 
 // Secrets
@@ -41,43 +41,46 @@ resource "helm_release" "vault" {
   repository = "https://helm.releases.hashicorp.com"
   chart      = "vault"
   version    = "0.29.1"
-  namespace  = var.secrets-ns
+  namespace  = var.secrets_ns
 
   values = [templatefile("${path.module}/../helm/vault.values.tftpl", {
     cert_var      = var.vault_cert_var
     cert_prop     = var.vault_cert_prop
-    storage_class = var.storage-class
+    storage_class = var.storage_class
   })]
 
-  depends_on = [kubernetes_namespace.secrets-ns]
+  depends_on = [
+    kubernetes_namespace.secrets_ns,
+    kubernetes_secret_v1.vault_tls_secret
+  ]
 }
 
-resource "helm_release" "external-secrets" {
+resource "helm_release" "external_secrets" {
   name       = "external-secrets"
   repository = "https://charts.external-secrets.io"
   chart      = "external-secrets"
   version    = "0.15.0"
-  namespace  = var.secrets-ns
+  namespace  = var.secrets_ns
 
   values = [templatefile("${path.module}/../helm/external-secrets.values.tftpl", {
-    volume       = data.template_file.cluster-ca-cert-volume.rendered
-    volume_mount = data.template_file.cluster-ca-cert-volume-mount.rendered
+    volume       = data.template_file.cluster_ca_cert_volume.rendered
+    volume_mount = data.template_file.cluster_ca_cert_volume_mount.rendered
   })]
 
-  depends_on = [kubernetes_namespace.secrets-ns]
+  depends_on = [kubernetes_namespace.secrets_ns]
 }
 
 // Certificate Manager
-resource "helm_release" "cert-manager" {
+resource "helm_release" "cert_manager" {
   name       = "cert-manager"
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
   version    = "1.17.0"
-  namespace  = var.cert-ns
+  namespace  = var.cert_ns
 
   values = [templatefile("${path.module}/../helm/cert-manager.values.tftpl", {})]
 
-  depends_on = [kubernetes_namespace.cert-ns]
+  depends_on = [kubernetes_namespace.cert_ns]
 }
 
 // Portainer
@@ -86,14 +89,14 @@ resource "helm_release" "portainer" {
   repository = "https://portainer.github.io/k8s"
   chart      = "portainer"
   version    = "1.0.63"
-  namespace  = var.portainer-ns
+  namespace  = var.portainer_ns
 
   values = [templatefile("${path.module}/../helm/portainer.values.tftpl", {
-    namespace              = var.portainer-ns
-    cloudflare_ca_cert_var = var.cloudflare-ca-cert-var
-    cloudflare_cert_var    = var.cloudflare-cert-var
-    ingress_class          = var.ingress-class
+    namespace              = var.portainer_ns
+    cloudflare_ca_cert_var = var.cloudflare_ca_cert_var
+    cloudflare_cert_var    = var.cloudflare_cert_var
+    ingress_class          = var.ingress_class
   })]
 
-  depends_on = [kubernetes_namespace.portainer-ns]
+  depends_on = [kubernetes_namespace.portainer_ns]
 }

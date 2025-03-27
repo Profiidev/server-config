@@ -20,7 +20,7 @@ variable "vault_csr" {
 
 locals {
   csr_conf_content = templatefile("${path.module}/../certs/csr.conf.tftpl", {
-    namespace = var.secrets-ns
+    namespace = var.secrets_ns
     svc       = var.vault_svc
   })
 }
@@ -37,7 +37,7 @@ resource "null_resource" "vault_generate_csr" {
     command = <<EOT
       openssl genrsa -out ${path.module}/../certs/vault.key 2048
       openssl req -new -key ${path.module}/../certs/vault.key \
-       -subj "/CN=system:node:${var.vault_svc}.${var.secrets-ns}.svc/O=system:nodes" \
+       -subj "/CN=system:node:${var.vault_svc}.${var.secrets_ns}.svc/O=system:nodes" \
        -out ${path.module}/../certs/vault.csr -config ${path.module}/../certs/csr.conf
     EOT
   }
@@ -77,7 +77,7 @@ resource "kubernetes_certificate_signing_request_v1" "vault_csr" {
 resource "kubernetes_secret_v1" "vault_tls_secret" {
   metadata {
     name      = var.vault_cert_var
-    namespace = var.secrets-ns
+    namespace = var.secrets_ns
   }
   type = "generic"
   binary_data = {

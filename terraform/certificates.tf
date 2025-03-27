@@ -1,19 +1,19 @@
-variable "cluster-ca-cert-var" {
+variable "cluster_ca_cert_var" {
   type    = string
   default = "cluster-ca-cert"
 }
 
-variable "cloudflare-ca-cert-var" {
+variable "cloudflare_ca_cert_var" {
   type    = string
   default = "cloudflare_ca_cert"
 }
 
-variable "cloudflare-cert-var" {
+variable "cloudflare_cert_var" {
   type    = string
   default = "cloudflare_cert"
 }
 
-variable "cloudflare-cert-label" {
+variable "cloudflare_cert_label" {
   type = object({
     key   = string
     value = string
@@ -24,7 +24,7 @@ variable "cloudflare-cert-label" {
   }
 }
 
-variable "cluster-ca-cert-label" {
+variable "cluster_ca_cert_label" {
   type = object({
     key   = string
     value = string
@@ -35,12 +35,12 @@ variable "cluster-ca-cert-label" {
   }
 }
 
-variable "cert-issuer-staging" {
+variable "cert_issuer_staging" {
   type    = string
   default = "letsencrypt-staging"
 }
 
-variable "cert-issuer-prod" {
+variable "cert_issuer_prod" {
   type    = string
   default = "letsencrypt-prod"
 }
@@ -54,7 +54,7 @@ data "external" "cluster_ca_cert" {
   ]
 }
 
-resource "kubernetes_manifest" "cert-issuer" {
+resource "kubernetes_manifest" "cert_issuer" {
   for_each = tomap({
     staging = "https://acme-staging-v02.api.letsencrypt.org/directory"
     prod    = "https://acme-v02.api.letsencrypt.org/directory"
@@ -64,7 +64,7 @@ resource "kubernetes_manifest" "cert-issuer" {
     apiVersion = "cert-manager.io/v1"
     kind       = "ClusterIssuer"
     metadata = {
-      name = each.key == "prod" ? var.cert-issuer-prod : var.cert-issuer-staging
+      name = each.key == "prod" ? var.cert_issuer_prod : var.cert_issuer_staging
     }
     spec = {
       acme = {
@@ -77,7 +77,7 @@ resource "kubernetes_manifest" "cert-issuer" {
           {
             http01 = {
               ingress = {
-                ingressClassName = var.ingress-class
+                ingressClassName = var.ingress_class
               }
             }
           }
@@ -86,13 +86,13 @@ resource "kubernetes_manifest" "cert-issuer" {
     }
   }
 
-  depends_on = [helm_release.cert-manager]
+  depends_on = [helm_release.cert_manager]
 }
 
-resource "kubernetes_manifest" "cloudflare-cert" {
+resource "kubernetes_manifest" "cloudflare_cert" {
   for_each = tomap({
-    "${var.cloudflare-cert-var}"    = ["tls.crt", "tls.key"]
-    "${var.cloudflare-ca-cert-var}" = ["ca.crt"]
+    "${var.cloudflare_cert_var}"    = ["tls.crt", "tls.key"]
+    "${var.cloudflare_ca_cert_var}" = ["ca.crt"]
   })
 
   manifest = {
@@ -106,7 +106,7 @@ resource "kubernetes_manifest" "cloudflare-cert" {
       namespaceSelectors = [
         {
           matchLabels = {
-            "${var.cloudflare-cert-label.key}" = var.cloudflare-cert-label.value
+            "${var.cloudflare_cert_label.key}" = var.cloudflare_cert_label.value
           }
         }
       ]
@@ -118,7 +118,7 @@ resource "kubernetes_manifest" "cloudflare-cert" {
         }
         refreshInterval = "15s"
         secretStoreRef = {
-          name = var.cluster-secret-store
+          name = var.cluster_secret_store
           kind = "ClusterSecretStore"
         }
         data = [
@@ -134,22 +134,22 @@ resource "kubernetes_manifest" "cloudflare-cert" {
     }
   }
 
-  depends_on = [helm_release.external-secrets]
+  depends_on = [helm_release.external_secrets]
 }
 
-resource "kubernetes_manifest" "cluster-ca-cert" {
+resource "kubernetes_manifest" "cluster_ca_cert" {
   manifest = {
     apiVersion = "external-secrets.io/v1beta1"
     kind       = "ClusterExternalSecret"
     metadata = {
-      name = var.cluster-ca-cert-var
+      name = var.cluster_ca_cert_var
     }
     spec = {
-      externalSecretName = var.cluster-ca-cert-var
+      externalSecretName = var.cluster_ca_cert_var
       namespaceSelectors = [
         {
           matchLabels = {
-            "${var.cluster-ca-cert-label.key}" = var.cluster-ca-cert-label.value
+            "${var.cluster_ca_cert_label.key}" = var.cluster_ca_cert_label.value
           }
         }
       ]
@@ -157,11 +157,11 @@ resource "kubernetes_manifest" "cluster-ca-cert" {
 
       externalSecretSpec = {
         target = {
-          name = var.cluster-ca-cert-var
+          name = var.cluster_ca_cert_var
         }
         refreshInterval = "15s"
         secretStoreRef = {
-          name = var.cluster-secret-store
+          name = var.cluster_secret_store
           kind = "ClusterSecretStore"
         }
         data = [
@@ -177,5 +177,5 @@ resource "kubernetes_manifest" "cluster-ca-cert" {
     }
   }
 
-  depends_on = [helm_release.external-secrets]
+  depends_on = [helm_release.external_secrets]
 }

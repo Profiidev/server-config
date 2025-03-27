@@ -1,19 +1,19 @@
-variable "cluster-secret-store" {
+variable "cluster_secret_store" {
   type    = string
   default = "cluster-secret-store"
 }
 
-variable "vault-global-token" {
+variable "vault_global_token" {
   type    = string
   default = "vault-global-token"
 }
 
-variable "vault-global-token-prop" {
+variable "vault_global_token_prop" {
   type    = string
   default = "token"
 }
 
-variable "secret-store-label" {
+variable "secret_store_label" {
   type = object({
     key   = string
     value = string
@@ -24,12 +24,12 @@ variable "secret-store-label" {
   }
 }
 
-resource "kubernetes_manifest" "cluster-secret-store" {
+resource "kubernetes_manifest" "cluster_secret_store" {
   manifest = {
     apiVersion = "external-secrets.io/v1beta1"
     kind       = "ClusterSecretStore"
     metadata = {
-      name = var.cluster-secret-store
+      name = var.cluster_secret_store
     }
     spec = {
       provider = {
@@ -39,9 +39,9 @@ resource "kubernetes_manifest" "cluster-secret-store" {
           version = "v2"
           auth = {
             tokenSecretRef = {
-              namespace = var.secrets-ns
-              name      = var.vault-global-token
-              key       = var.vault-global-token-prop
+              namespace = var.secrets_ns
+              name      = var.vault_global_token
+              key       = var.vault_global_token_prop
             }
           }
         }
@@ -51,7 +51,7 @@ resource "kubernetes_manifest" "cluster-secret-store" {
         {
           namespaceSelector = {
             matchLabels = {
-              "${var.secret-store-label.key}" = var.secret-store-label.value
+              "${var.secret_store_label.key}" = var.secret_store_label.value
             }
           }
         }
@@ -59,5 +59,5 @@ resource "kubernetes_manifest" "cluster-secret-store" {
     }
   }
 
-  depends_on = [helm_release.external-secrets]
+  depends_on = [helm_release.external_secrets]
 }
