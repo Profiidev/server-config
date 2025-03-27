@@ -8,6 +8,18 @@ terraform {
       source  = "hashicorp/helm"
       version = "3.0.0-pre2"
     }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.0"
+    }
+    template = {
+      source  = "hashicorp/template"
+      version = "~> 2.0"
+    }
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.0"
+    }
   }
 }
 

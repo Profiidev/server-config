@@ -1,4 +1,5 @@
-cert/
+cert_old/
 .terraform/
 *.tfstate
+*.tfstate.backup
 *.lock.info
