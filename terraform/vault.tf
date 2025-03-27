@@ -92,3 +92,63 @@ resource "kubernetes_secret_v1" "vault_tls_secret" {
     data.external.cluster_ca_cert
   ]
 }
+
+data "external" "vault_init" {
+  program = ["bash", "-c", <<EOT
+    kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault operator init | \
+    awk -F ': ' '
+      /Unseal Key 1:/ {print "key-1="$2}
+      /Unseal Key 2:/ {print "key-2="$2}
+      /Unseal Key 3:/ {print "key-3="$2}
+      /Unseal Key 4:/ {print "key-4="$2}
+      /Unseal Key 5:/ {print "key-5="$2}
+      /Initial Root Token:/ {print "token="$2}
+    ' | jq -R -s '
+      split("\\n") | map(select(. != "")) |
+      map(split("=") | { (.[0]): .[1] }) | add
+    '
+  EOT
+  ]
+
+  depends_on = [helm_release.vault]
+}
+
+resource "kubernetes_secret_v1" "vault_unseal_key" {
+  for_each = {
+    for key in ["key-1", "key-2", "key-3", "key-4", "key-5"] :
+    key => data.external.vault_init.result[key]
+  }
+
+  metadata {
+    name      = "vault-unseal-${each.key}"
+    namespace = var.secrets_ns
+  }
+
+  data = {
+    key = each.value
+  }
+
+  type       = "Opaque"
+  depends_on = [data.external.vault_init]
+}
+
+resource "null_resource" "vault_initial_unseal" {
+  provisioner "local-exec" {
+    command = <<-EOT
+      kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault operator unseal "${data.external.vault_init.result["key-1"]}"
+      kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault operator unseal "${data.external.vault_init.result["key-2"]}"
+      kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault operator unseal "${data.external.vault_init.result["key-3"]}"
+      kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault login "${data.external.vault_init.result["token"]}"
+    EOT
+  }
+
+  depends_on = [data.external.vault_init]
+}
+
+output "vault_unseal_key" {
+  value = [for s in kubernetes_secret_v1.vault_unseal_key : s.metadata[0].name]
+}
+
+output "vault_token" {
+  value = data.external.vault_init.result["token"]
+}

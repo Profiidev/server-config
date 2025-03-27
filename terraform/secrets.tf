@@ -61,3 +61,27 @@ resource "kubernetes_manifest" "cluster_secret_store" {
 
   depends_on = [helm_release.external_secrets]
 }
+
+data "external" "vault_global_token" {
+  program = ["bash", "-c", <<EOT
+    kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault token create -format=json | \
+     jq -r '.auth.client_token | {token: .}'
+  EOT
+  ]
+
+  depends_on = [null_resource.vault_initial_unseal]
+}
+
+resource "kubernetes_secret_v1" "vault_global_token" {
+  metadata {
+    name      = var.vault_global_token
+    namespace = var.secrets_ns
+  }
+
+  data = {
+    "${var.vault_global_token_prop}" = data.external.vault_global_token.result["token"]
+  }
+
+  type       = "Opaque"
+  depends_on = [data.external.vault_global_token]
+}

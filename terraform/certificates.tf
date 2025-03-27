@@ -179,3 +179,13 @@ resource "kubernetes_manifest" "cluster_ca_cert" {
 
   depends_on = [helm_release.external_secrets]
 }
+
+resource "null_resource" "vault_cluster_ca_cert" {
+  provisioner "local-exec" {
+    command = <<-EOT
+      kubectl exec -it --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault kv put -mount="kv" "certs/cluster" ca.crt="${data.external.cluster_ca_cert.result["ca"]}"
+    EOT
+  }
+
+  depends_on = [null_resource.vault_initial_unseal]
+}

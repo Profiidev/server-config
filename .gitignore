@@ -1,4 +1,3 @@
-cert_old/
 .terraform/
 *.tfstate
 *.tfstate.backup
