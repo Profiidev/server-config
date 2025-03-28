@@ -38,6 +38,28 @@ resource "helm_release" "vault" {
   ]
 }
 
+resource "helm_release" "vault_auto_unseal" {
+  name       = "vault_auto_unseal"
+  repository = "https://profiidev.github.io/server-config/index.yaml"
+  chart      = "vault-auto-unseal"
+  version    = "0.1.1"
+  namespace  = var.secrets_ns
+
+  values = [templatefile("${path.module}/../helm/vault-auto-unseal.values.tftpl", {
+    key_1_var   = "vault-unseal-key-1"
+    key_2_var   = "vault-unseal-key-2"
+    key_3_var   = "vault-unseal-key-3"
+    ca_cert_var = var.cluster_ca_cert_var
+    secrets_ns  = var.secrets_ns
+  })]
+
+  depends_on = [
+    kubernetes_namespace.secrets_ns,
+    kubernetes_secret_v1.cluster_ca_cert_secret,
+    kubernetes_secret_v1.vault_unseal_key
+  ]
+}
+
 locals {
   csr_conf_content = templatefile("${path.module}/../certs/csr.conf.tftpl", {
     namespace = var.secrets_ns
