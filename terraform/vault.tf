@@ -39,8 +39,8 @@ resource "helm_release" "vault" {
 }
 
 resource "helm_release" "vault_auto_unseal" {
-  name       = "vault_auto_unseal"
-  repository = "https://profiidev.github.io/server-config/index.yaml"
+  name       = "vault-auto-unseal"
+  repository = "https://profiidev.github.io/server-config"
   chart      = "vault-auto-unseal"
   version    = "0.1.1"
   namespace  = var.secrets_ns
@@ -204,7 +204,7 @@ resource "null_resource" "vault_init_kv" {
 }
 
 output "vault_unseal_key" {
-  value = [for s in kubernetes_secret_v1.vault_unseal_key : s.metadata[0].name]
+  value = [for s in kubernetes_secret_v1.vault_unseal_key : s.data.key]
 }
 
 output "vault_token" {
