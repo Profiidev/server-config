@@ -42,7 +42,7 @@ resource "helm_release" "vault_auto_unseal" {
   name       = "vault-auto-unseal"
   repository = "https://profiidev.github.io/server-config"
   chart      = "vault-auto-unseal"
-  version    = "0.1.3"
+  version    = "0.1.4"
   namespace  = var.secrets_ns
 
   values = [templatefile("${path.module}/../helm/vault-auto-unseal.values.tftpl", {
