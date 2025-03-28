@@ -1,7 +1,6 @@
-ARG TARGET=x86_64-unknown-linux-musl
 ARG BIN=vault-auto-unseal
 
-FROM profidev/rust-musl-builder:latest AS chef
+FROM messense/rust-musl-cross:x86_64-musl AS chef
 RUN rustup update
 
 RUN cargo install cargo-chef 
@@ -20,19 +19,17 @@ RUN cargo chef prepare --recipe-path recipe.json --bin $BIN
 FROM chef AS builder
 
 ARG BIN
-ARG TARGET
 ENV BIN=$BIN
-ENV TARGET=$TARGET
 
 COPY --from=planner /app/recipe.json .
 
-RUN cargo chef cook --release --target $TARGET
+RUN cargo chef cook --release
 
 COPY vault-auto-unseal/app/src ./src
 COPY vault-auto-unseal/app/Cargo.toml ./Cargo.lock ./
 
-RUN cargo build --release --target $TARGET --bin $BIN
-RUN mv ./target/$TARGET/release/$BIN ./app
+RUN cargo build --release --bin $BIN
+RUN mv ./target/x86_64-unknown-linux-musl/release/$BIN ./app
 
 FROM alpine
 
