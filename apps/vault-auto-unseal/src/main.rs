@@ -38,7 +38,10 @@ fn unseal() -> Result<()> {
   let tls = TlsConfig::builder()
     .root_certs(RootCerts::new_with_certs(&[cert]))
     .build();
-  let config = Agent::config_builder().tls_config(tls).build();
+  let config = Agent::config_builder()
+    .tls_config(tls)
+    .http_status_as_error(false)
+    .build();
   let agent = Agent::new_with_config(config);
 
   let vault_url = std::env::var("VAULT_URL")?;
