@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: vault_auto_unseal
+  IMAGE_NAME: ${{ github.repository }}/vault_auto_unseal
 
 jobs:
   build:
