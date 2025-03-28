@@ -12,8 +12,6 @@ use ureq::{
   tls::{Certificate, RootCerts, TlsConfig},
 };
 
-const CA_CERT: &str = "/etc/ssl/certs/vault.ca";
-
 fn main() {
   let _ = if let Ok(mut s) = Signals::new(TERM_SIGNALS) {
     spawn(move || {
@@ -35,8 +33,8 @@ fn main() {
 }
 
 fn unseal() -> Result<()> {
-  let cert = std::fs::read(CA_CERT)?;
-  let cert = Certificate::from_pem(&cert)?;
+  let cert = std::env::var("CA_CERT")?;
+  let cert = Certificate::from_pem(cert.as_bytes())?;
   let tls = TlsConfig::builder()
     .root_certs(RootCerts::new_with_certs(&[cert]))
     .build();

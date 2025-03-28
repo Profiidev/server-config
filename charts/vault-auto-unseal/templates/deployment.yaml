@@ -35,14 +35,3 @@ spec:
         {{- end }}
           - name: VAULT_URL
             value: "{{ .Values.vault_url }}"
-        volumeMounts:
-          - name: ca-cert
-            mountPath: /etc/ssl/certs/vault.ca
-            subPath: {{ .Values.secrets.ca_crt.key }}
-            readOnly: true
-      
-      volumes:
-        - name: ca-cert
-          secret:
-            secretName: {{ .Values.secrets.ca_crt.name }}
-            

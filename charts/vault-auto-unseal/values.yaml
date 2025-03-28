@@ -1,9 +1,9 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/profiidev/server-config/vault-auto-unseal
+  repository: ghcr.io/profiidev/server-config/vault_auto_unseal
   pullPolicy: IfNotPresent
-  tag: "latest"
+  tag: "master"
 
 # This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
 serviceAccount:
