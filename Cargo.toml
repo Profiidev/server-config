@@ -1,3 +1,0 @@
-[workspace]
-members = ["vault-auto-unseal/app"]
-resolver = "3"

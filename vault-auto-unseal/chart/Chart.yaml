@@ -1,9 +1,0 @@
-apiVersion: v2
-name: vault-auto-unseal
-description: Auto Unseal for HashiCorp Vault
-type: application
-version: 0.1.0
-appVersion: "1.16.0"
-maintainers:
-  - email: mail@profidev.io
-    name: ProfiDev
