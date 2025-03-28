@@ -31,7 +31,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{  $value.name }}
-                key: {{  $value.name }}
+                key: {{  $value.key }}
         {{- end }}
           - name: VAULT_URL
             value: "{{ .Values.vault_url }}"

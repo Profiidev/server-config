@@ -29,6 +29,6 @@ secrets:
     key: key
   ca_crt:
     name: ca_crt_secret
-    key: key
+    key: ca.crt
 
 vault_url: "https://vault.vault.svc:8200"
