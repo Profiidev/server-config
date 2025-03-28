@@ -18,6 +18,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          token: ${{ secrets.PERSONAL_TOKEN }}
 
       - name: Configure Git user
         run: |
@@ -26,4 +27,4 @@ jobs:
       - name: Run chart-releaser job
         uses: helm/chart-releaser-action@v1
         env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CR_TOKEN: "${{ secrets.PERSONAL_TOKEN }}"
