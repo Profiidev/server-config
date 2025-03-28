@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - "vault-auto-unseal-*"
 
 env:
   REGISTRY: ghcr.io
