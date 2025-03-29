@@ -33,9 +33,16 @@ RUN mv ./target/x86_64-unknown-linux-musl/release/$BIN ./app
 
 FROM alpine
 
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+RUN addgroup -S user
+RUN adduser -G user -S user
 
 WORKDIR /app
+RUN chown -R user:user /app
+
+USER user
+
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
 COPY --from=builder /app/app /usr/local/bin/
 
 CMD ["app"]
