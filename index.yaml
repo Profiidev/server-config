@@ -3,6 +3,19 @@ entries:
   vault-auto-unseal:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2025-03-30T18:42:11.902497077Z"
+    description: Automatic unseal for HashiCorp Vault
+    digest: d205f63a0f78228cd29453141cad48c7907e3b83ea4e2a399ddb0ad279163b7c
+    maintainers:
+    - email: mail@profidev.io
+      name: ProfiDev
+    name: vault-auto-unseal
+    type: application
+    urls:
+    - https://github.com/Profiidev/server-config/releases/download/vault-auto-unseal-0.1.5/vault-auto-unseal-0.1.5.tgz
+    version: 0.1.5
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2025-03-28T20:27:54.924954227Z"
     description: Automatic unseal for HashiCorp Vault
     digest: b1a3e5922cda912f47dd58bd31854f8c38082e7a8f6b16ea82469a61f1449191
@@ -66,4 +79,4 @@ entries:
     urls:
     - https://github.com/Profiidev/server-config/releases/download/vault-auto-unseal-0.1.0/vault-auto-unseal-0.1.0.tgz
     version: 0.1.0
-generated: "2025-03-28T20:27:54.924978172Z"
+generated: "2025-03-30T18:42:11.902519399Z"
