@@ -70,6 +70,6 @@ jobs:
           fail-build: ${{ github.event_name == 'pull_request' }}
           image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
 
-      - uses: github/codeql-action/upload-sarif@v1
+      - uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
