@@ -3,7 +3,7 @@ resource "null_resource" "user_generate_csr" {
     command = <<EOT
       openssl genrsa -out ${path.module}/certs/${var.user_name}.key 2048
       openssl req -new -key ${path.module}/certs/${var.user_name}.key \
-       -subj "/CN=${var.user_name}/O=${var.admin_group}" \
+       -subj "/CN=${var.user_name}" \
        -out ${path.module}/certs/${var.user_name}.csr
     EOT
   }
@@ -23,9 +23,11 @@ resource "kubernetes_certificate_signing_request_v1" "user_csr" {
 
   spec {
     request     = data.local_file.user_csr.content
-    signer_name = "kubernetes.io/kubelet-serving"
+    signer_name = "kubernetes.io/kube-apiserver-client"
     usages = [
-      "client auth"
+      "client auth",
+      "digital signature",
+      "key encipherment"
     ]
   }
 }
@@ -42,28 +44,18 @@ resource "null_resource" "kubectl_user" {
        --client-certificate=${path.module}/certs/${var.user_name}.crt --embed-certs=true
     EOT
   }
+
+  depends_on = [local_file.user_cert]
 }
 
-resource "kubernetes_cluster_role_v1" "admin" {
-  metadata {
-    name = var.admin_group
-  }
-
-  rule {
-    api_groups = [""]
-    resources  = ["*"]
-    verbs      = ["*"]
-  }
-}
-
-resource "kubernetes_cluster_role_binding_v1" "admin_user" {
+resource "kubernetes_cluster_role_binding_v1" "admin_user_binding" {
   metadata {
     name = "${var.admin_group}-${var.user_name}"
   }
 
   role_ref {
     api_group = "rbac.authorization.k8s.io"
-    kind      = "Role"
+    kind      = "ClusterRole"
     name      = var.admin_group
   }
 
@@ -74,7 +66,6 @@ resource "kubernetes_cluster_role_binding_v1" "admin_user" {
   }
 
   depends_on = [
-    kubernetes_cluster_role_v1.admin,
     kubernetes_certificate_signing_request_v1.user_csr
   ]
 }
