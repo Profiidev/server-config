@@ -1,0 +1,15 @@
+persistence:
+  defaultClassReplicaCount: ${count}
+
+csi:
+  attacherReplicaCount: "${count}"
+  provisionerReplicaCount: "${count}"
+  resizerReplicaCount: "${count}"
+  snapshotterReplicaCount: "${count}"
+
+defaultSettings:
+  # temp
+  replicaSoftAntiAffinity: true
+  defaultReplicaCount: ${count}
+  # temp
+  replicaZoneSoftAntiAffinity: true

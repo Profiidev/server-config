@@ -7,6 +7,10 @@ resource "null_resource" "user_generate_csr" {
        -out ${path.module}/certs/${var.user_name}.csr
     EOT
   }
+
+  triggers = {
+    config_hash = sha256(jsonencode(var.user_name))
+  }
 }
 
 data "local_file" "user_csr" {
@@ -46,6 +50,9 @@ resource "null_resource" "kubectl_user" {
   }
 
   depends_on = [local_file.user_cert]
+  triggers = {
+    config_hash = sha256(jsonencode(var.user_name))
+  }
 }
 
 resource "kubernetes_cluster_role_binding_v1" "admin_user_binding" {
