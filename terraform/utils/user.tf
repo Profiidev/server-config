@@ -1,13 +1,3 @@
-variable "user_name" {
-  type    = string
-  default = "profidev"
-}
-
-variable "admin_group" {
-  type    = string
-  default = "admin"
-}
-
 resource "null_resource" "user_generate_csr" {
   provisioner "local-exec" {
     command = <<EOT

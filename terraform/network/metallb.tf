@@ -1,14 +1,3 @@
-variable "lb_address_pool" {
-  type    = string
-  default = "lb-pool"
-}
-
-variable "lb_ns" {
-  description = "Load Balancer Namespace"
-  type        = string
-  default     = "metallb-system"
-}
-
 resource "kubernetes_namespace" "lb_ns" {
   metadata {
     name = var.lb_ns

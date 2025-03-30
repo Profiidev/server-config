@@ -1,23 +1,3 @@
-variable "vault_svc" {
-  type    = string
-  default = "vault"
-}
-
-variable "vault_cert_var" {
-  type    = string
-  default = "vault-server-tls"
-}
-
-variable "vault_cert_prop" {
-  type    = string
-  default = "vault"
-}
-
-variable "vault_csr" {
-  type    = string
-  default = "vault-csr"
-}
-
 resource "helm_release" "vault" {
   name       = "vault"
   repository = "https://helm.releases.hashicorp.com"
@@ -25,7 +5,7 @@ resource "helm_release" "vault" {
   version    = "0.29.1"
   namespace  = var.secrets_ns
 
-  values = [templatefile("${path.module}/../helm/vault.values.tftpl", {
+  values = [templatefile("${path.module}/templates/vault.values.tftpl", {
     cert_var      = var.vault_cert_var
     cert_prop     = var.vault_cert_prop
     storage_class = var.storage_class
@@ -34,7 +14,6 @@ resource "helm_release" "vault" {
   depends_on = [
     kubernetes_namespace.secrets_ns,
     kubernetes_secret_v1.vault_tls_secret,
-    helm_release.longhorn
   ]
 }
 
@@ -45,7 +24,7 @@ resource "helm_release" "vault_auto_unseal" {
   version    = "0.1.4"
   namespace  = var.secrets_ns
 
-  values = [templatefile("${path.module}/../helm/vault-auto-unseal.values.tftpl", {
+  values = [templatefile("${path.module}/templates/vault-auto-unseal.values.tftpl", {
     key_1_var   = "vault-unseal-key-1"
     key_2_var   = "vault-unseal-key-2"
     key_3_var   = "vault-unseal-key-3"
@@ -60,72 +39,6 @@ resource "helm_release" "vault_auto_unseal" {
   ]
 }
 
-locals {
-  csr_conf_content = templatefile("${path.module}/../certs/csr.conf.tftpl", {
-    namespace = var.secrets_ns
-    svc       = var.vault_svc
-  })
-}
-
-resource "local_file" "vault_csr_conf" {
-  content  = local.csr_conf_content
-  filename = "${path.module}/../certs/csr.conf"
-}
-
-resource "null_resource" "vault_generate_csr" {
-  depends_on = [local_file.vault_csr_conf]
-
-  provisioner "local-exec" {
-    command = <<EOT
-      openssl genrsa -out ${path.module}/../certs/vault.key 2048
-      openssl req -new -key ${path.module}/../certs/vault.key \
-       -subj "/CN=system:node:${var.vault_svc}.${var.secrets_ns}.svc/O=system:nodes" \
-       -out ${path.module}/../certs/vault.csr -config ${path.module}/../certs/csr.conf
-    EOT
-  }
-}
-
-data "local_file" "vault_key" {
-  depends_on = [null_resource.vault_generate_csr]
-  filename   = "${path.module}/../certs/vault.key"
-}
-
-
-data "local_file" "vault_csr" {
-  depends_on = [null_resource.vault_generate_csr]
-  filename   = "${path.module}/../certs/vault.csr"
-}
-
-resource "kubernetes_certificate_signing_request_v1" "vault_csr" {
-  auto_approve = true
-
-  metadata {
-    name = var.vault_csr
-  }
-
-  spec {
-    request     = data.local_file.vault_csr.content
-    signer_name = "kubernetes.io/kubelet-serving"
-    usages = [
-      "digital signature",
-      "key encipherment",
-      "server auth"
-    ]
-  }
-}
-
-resource "kubernetes_secret_v1" "vault_tls_secret" {
-  metadata {
-    name      = var.vault_cert_var
-    namespace = var.secrets_ns
-  }
-  type = "generic"
-  binary_data = {
-    "${var.vault_cert_prop}.crt" = base64encode(kubernetes_certificate_signing_request_v1.vault_csr.certificate)
-    "${var.vault_cert_prop}.key" = data.local_file.vault_key.content_base64
-    "${var.vault_cert_prop}.ca"  = base64encode(data.external.cluster_ca_cert.result["ca"])
-  }
-}
 
 resource "null_resource" "vault_init" {
   triggers = {
@@ -201,12 +114,4 @@ resource "null_resource" "vault_init_kv" {
   }
 
   depends_on = [null_resource.vault_initial_unseal]
-}
-
-output "vault_unseal_key" {
-  value = [for s in kubernetes_secret_v1.vault_unseal_key : s.data.key]
-}
-
-output "vault_token" {
-  value = data.external.vault_init_out.result["root_token"]
 }

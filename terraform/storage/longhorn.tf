@@ -1,14 +1,3 @@
-variable "storage_class" {
-  type    = string
-  default = "longhorn"
-}
-
-variable "storage_ns" {
-  description = "Storage Namespace"
-  type        = string
-  default     = "longhorn-system"
-}
-
 resource "kubernetes_namespace" "storage_ns" {
   metadata {
     name = var.storage_ns
