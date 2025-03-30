@@ -1,17 +1,17 @@
 resource "null_resource" "user_generate_csr" {
   provisioner "local-exec" {
     command = <<EOT
-      openssl genrsa -out ${path.module}/../certs/${var.user_name}.key 2048
-      openssl req -new -key ${path.module}/../certs/${var.user_name}.key \
+      openssl genrsa -out ${path.module}/certs/${var.user_name}.key 2048
+      openssl req -new -key ${path.module}/certs/${var.user_name}.key \
        -subj "/CN=${var.user_name}/O=${var.admin_group}" \
-       -out ${path.module}/../certs/${var.user_name}.csr
+       -out ${path.module}/certs/${var.user_name}.csr
     EOT
   }
 }
 
 data "local_file" "user_csr" {
   depends_on = [null_resource.user_generate_csr]
-  filename   = "${path.module}/../certs/${var.user_name}.csr"
+  filename   = "${path.module}/certs/${var.user_name}.csr"
 }
 
 resource "kubernetes_certificate_signing_request_v1" "user_csr" {
@@ -32,14 +32,14 @@ resource "kubernetes_certificate_signing_request_v1" "user_csr" {
 
 resource "local_file" "user_cert" {
   content  = kubernetes_certificate_signing_request_v1.user_csr.certificate
-  filename = "${path.module}/../certs/${var.user_name}.crt"
+  filename = "${path.module}/certs/${var.user_name}.crt"
 }
 
 resource "null_resource" "kubectl_user" {
   provisioner "local-exec" {
     command = <<EOT
-      kubectl config set-credentials ${var.user_name} --client-key=${path.module}/../certs/${var.user_name}.key \
-       --client-certificate=${path.module}/../certs/${var.user_name}.crt --embed-certs=true
+      kubectl config set-credentials ${var.user_name} --client-key=${path.module}/certs/${var.user_name}.key \
+       --client-certificate=${path.module}/certs/${var.user_name}.crt --embed-certs=true
     EOT
   }
 }

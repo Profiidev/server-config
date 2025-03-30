@@ -6,7 +6,7 @@ resource "null_resource" "vault_global_token" {
   provisioner "local-exec" {
     command = <<-EOT
       kubectl exec --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault token create -format=json | \
-       jq -r '.auth.client_token | {token: .}' > ${path.module}/../certs/global_token.json
+       jq -r '.auth.client_token | {token: .}' > ${path.module}/certs/global_token.json
     EOT
   }
 
@@ -14,7 +14,7 @@ resource "null_resource" "vault_global_token" {
 }
 
 data "external" "vault_global_token_out" {
-  program = ["bash", "-c", "cat ${path.module}/../certs/global_token.json"]
+  program = ["bash", "-c", "cat ${path.module}/certs/global_token.json"]
 
   depends_on = [null_resource.vault_global_token]
 }

@@ -1,9 +1,3 @@
-variable "portainer_ns" {
-  description = "Portainer Namespace"
-  type        = string
-  default     = "portainer"
-}
-
 resource "kubernetes_namespace" "portainer_ns" {
   metadata {
     name = var.portainer_ns
@@ -21,7 +15,7 @@ resource "helm_release" "portainer" {
   version    = "1.0.63"
   namespace  = var.portainer_ns
 
-  values = [templatefile("${path.module}/../helm/portainer.values.tftpl", {
+  values = [templatefile("${path.module}/templates/portainer.values.tftpl", {
     namespace              = var.portainer_ns
     cloudflare_ca_cert_var = var.cloudflare_ca_cert_var
     cloudflare_cert_var    = var.cloudflare_cert_var

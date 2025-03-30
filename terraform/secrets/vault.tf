@@ -56,7 +56,7 @@ resource "null_resource" "vault_init" {
           echo "Output is empty, retrying..."
         # Check if the output is valid JSON
         elif echo "$output" | jq empty > /dev/null 2>&1; then
-          echo "$output" > ${path.module}/../certs/keys.json
+          echo "$output" > ${path.module}/certs/keys.json
           echo "Vault operator init succeeded, keys saved to keys.json!"
           break
         else
@@ -72,7 +72,7 @@ resource "null_resource" "vault_init" {
 }
 
 data "external" "vault_init_out" {
-  program = ["bash", "-c", "cat ${path.module}/../certs/keys.json"]
+  program = ["bash", "-c", "cat ${path.module}/certs/keys.json"]
 
   depends_on = [null_resource.vault_init]
 }

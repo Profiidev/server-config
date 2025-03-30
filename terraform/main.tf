@@ -66,3 +66,14 @@ module "utils" {
 
   depends_on = [module.secrets]
 }
+
+module "tools" {
+  source = "./tools"
+
+  cloudflare_ca_cert_var = var.cloudflare_ca_cert_var
+  cloudflare_cert_label = var.cloudflare_cert_label
+  cloudflare_cert_var = var.cloudflare_cert_var
+  cluster_secret_store = var.cluster_secret_store
+  ingress_class = var.ingress_class
+  secret_store_label = var.secret_store_label
+}
