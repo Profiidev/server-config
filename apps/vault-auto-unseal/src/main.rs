@@ -62,6 +62,8 @@ fn unseal() -> Result<()> {
       .send_json(&UnsealReq { key })?;
   }
 
+  println!("Unlock successful");
+
   Ok(())
 }
 
