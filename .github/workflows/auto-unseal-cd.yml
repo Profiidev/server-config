@@ -50,7 +50,7 @@ jobs:
         with:
           context: ./
           file: apps/vault-auto-unseal/Dockerfile
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -58,7 +58,18 @@ jobs:
 
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v2
+        if: github.event_name != 'pull_request'
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
+
+      - uses: anchore/scan-action@v6
+        id: scan
+        with:
+          fail-build: ${{ github.event_name == 'pull_request' }}
+          image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+
+      - uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
