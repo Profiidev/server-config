@@ -22,7 +22,7 @@ spec:
           exec:
             command:
               - pgrep
-              - {{ .Chart.Name }}
+              - app
             initialDelaySeconds: 10
             periodSeconds: 60
         env:
