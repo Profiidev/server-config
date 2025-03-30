@@ -1,3 +1,8 @@
+variable "calico" {
+  default = "tigera-operator"
+  type    = string
+}
+
 variable "lb_address_pool" {
   type    = string
   default = "lb-pool"
