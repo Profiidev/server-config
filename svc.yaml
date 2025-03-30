@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: ingress-nginx
+    meta.helm.sh/release-namespace: nginx-system
+    metallb.io/ip-allocated-from-pool: lb-pool
+  creationTimestamp: "2025-03-30T18:46:52Z"
+  finalizers:
+  - service.kubernetes.io/load-balancer-cleanup
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.12.1
+    helm.sh/chart: ingress-nginx-4.12.1
+  name: ingress-nginx-controller
+  namespace: nginx-system
+  resourceVersion: "33638"
+  uid: 3b339797-e42e-4238-ae03-3c17ea724c1f
+spec:
+  allocateLoadBalancerNodePorts: true
+  clusterIP: 10.43.138.246
+  clusterIPs:
+  - 10.43.138.246
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - appProtocol: http
+    name: http
+    nodePort: 31650
+    port: 80
+    protocol: TCP
+    targetPort: http
+  - appProtocol: https
+    name: https
+    nodePort: 31145
+    port: 443
+    protocol: TCP
+    targetPort: https
+  selector:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/name: ingress-nginx
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - ip: 94.164.200.60
+      ipMode: VIP

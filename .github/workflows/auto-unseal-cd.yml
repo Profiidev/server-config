@@ -53,6 +53,7 @@ jobs:
           context: ./
           file: apps/vault-auto-unseal/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
+          load: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -66,12 +67,14 @@ jobs:
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
 
-      - uses: anchore/scan-action@v6
-        id: scan
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.28.0
         with:
-          fail-build: ${{ github.event_name == 'pull_request' }}
-          image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+          image-ref: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+          format: "sarif"
+          output: "trivy-results.sarif"
 
-      - uses: github/codeql-action/upload-sarif@v3
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
+          sarif_file: "trivy-results.sarif"
