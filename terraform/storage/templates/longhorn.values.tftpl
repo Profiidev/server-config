@@ -13,3 +13,7 @@ defaultSettings:
   defaultReplicaCount: ${count}
   # temp
   replicaZoneSoftAntiAffinity: true
+
+networkPolicies:
+  enabled: true
+  type: "rke2"
