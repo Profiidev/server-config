@@ -8,3 +8,8 @@ variable "storage_ns" {
   type        = string
   default     = "longhorn-system"
 }
+
+variable "ingress_class" {
+  type    = string
+  default = "ingress-nginx"
+}

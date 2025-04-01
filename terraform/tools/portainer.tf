@@ -24,3 +24,27 @@ resource "helm_release" "portainer" {
 
   depends_on = [kubernetes_namespace.portainer_ns]
 }
+
+resource "kubectl_manifest" "portainer_ingress" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: portainer-ingress
+  namespace: ${var.portainer_ns}
+spec:
+  order: 10
+  selector: app.kubernetes.io/instance == 'portainer'
+  types:
+    - Ingress
+  ingress:
+    - action: Allow
+      protocol: TCP
+      source:
+        namespaceSelector: kubernetes.io/metadata.name == 'kube-system'
+        selector: app.kubernetes.io/name == 'rke2-ingress-nginx'
+      destination:
+        ports:
+          - 9000
+  YAML
+}

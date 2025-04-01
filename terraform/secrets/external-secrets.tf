@@ -46,7 +46,7 @@ metadata:
 spec:
   provider:
     vault:
-      server: https://vault.${var.secrets_ns}.svc:8200
+      server: https://${var.vault_svc}.${var.secrets_ns}.svc:8200
       path: kv
       version: v2
       auth:
@@ -61,4 +61,34 @@ spec:
   YAML
 
   depends_on = [helm_release.external_secrets]
+}
+
+resource "kubectl_manifest" "external_secrets_policy" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: external-secrets-vault
+  namespace: ${var.secrets_ns}
+spec:
+  order: 10
+  selector: app.kubernetes.io/name == 'external-secrets'
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        namespaceSelector: kubernetes.io/metadata.name == '${var.secrets_ns}'
+        selector: app.kubernetes.io/name == 'vault'
+        ports:
+          - 8200
+    - action: Allow
+      protocol: TCP
+      destination:
+        nets:
+          - 194.164.200.60/32
+        ports:
+          - 6443
+  YAML
 }

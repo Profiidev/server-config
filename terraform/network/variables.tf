@@ -1,8 +1,3 @@
-variable "calico" {
-  default = "tigera-operator"
-  type    = string
-}
-
 variable "lb_address_pool" {
   type    = string
   default = "lb-pool"
@@ -17,12 +12,6 @@ variable "lb_ns" {
 variable "ingress_class" {
   type    = string
   default = "ingress-nginx"
-}
-
-variable "proxy_ns" {
-  description = "Proxy Namespace"
-  type        = string
-  default     = "nginx-system"
 }
 
 variable "cert_ns" {

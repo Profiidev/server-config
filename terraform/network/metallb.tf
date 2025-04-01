@@ -23,7 +23,7 @@ metadata:
   namespace: ${var.lb_ns}
 spec:
   addresses:
-    - "94.164.200.60/32"
+    - "194.164.200.60/32"
   YAML
 
   depends_on = [helm_release.metallb]
