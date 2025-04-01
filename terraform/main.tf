@@ -36,8 +36,13 @@ terraform {
 module "storage" {
   source = "./storage"
 
-  storage_class = var.storage_class
-  ingress_class = var.ingress_class
+  storage_class          = var.storage_class
+  ingress_class          = var.ingress_class
+  cloudflare_ca_cert_var = var.cloudflare_ca_cert_var
+  cloudflare_cert_label  = var.cloudflare_cert_label
+  cloudflare_cert_var    = var.cloudflare_cert_var
+  secret_store_label     = var.secret_store_label
+  cluster_secret_store   = var.cluster_secret_store
 }
 
 module "network" {
@@ -74,7 +79,6 @@ module "tools" {
   cloudflare_ca_cert_var = var.cloudflare_ca_cert_var
   cloudflare_cert_label  = var.cloudflare_cert_label
   cloudflare_cert_var    = var.cloudflare_cert_var
-  cluster_secret_store   = var.cluster_secret_store
   ingress_class          = var.ingress_class
   secret_store_label     = var.secret_store_label
 }

@@ -25,11 +25,6 @@ variable "cloudflare_cert_var" {
   default = "cloudflare-cert"
 }
 
-variable "cluster_secret_store" {
-  type    = string
-  default = "cluster-secret-store"
-}
-
 variable "secret_store_label" {
   type = object({
     key   = string
