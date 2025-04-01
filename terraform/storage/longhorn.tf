@@ -20,7 +20,7 @@ resource "helm_release" "longhorn" {
   depends_on = [kubernetes_namespace.storage_ns]
 }
 
-resource "kubectl_manifest" "k8s_api_egress" {
+resource "kubectl_manifest" "longhorn_k8s_api_egress" {
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1
 kind: NetworkPolicy
@@ -43,16 +43,16 @@ spec:
   YAML
 }
 
-resource "kubectl_manifest" "ui_frontend_backend" {
+resource "kubectl_manifest" "longhorn_ns" {
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1
 kind: NetworkPolicy
 metadata:
-  name: iu-frontend-backend
+  name: longhorn-namespace
   namespace: ${var.storage_ns}
 spec:
   order: 10
-  selector: app == 'longhorn-ui'
+  namespaceSelector: kubernetes.io/metadata.name == '${var.storage_ns}'
   types:
     - Egress
   egress:
@@ -60,8 +60,5 @@ spec:
       protocol: TCP
       destination:
         namespaceSelector: kubernetes.io/metadata.name == '${var.storage_ns}'
-        selector: app == 'longhorn-manager'
-        ports:
-          - 9500
   YAML
 }
