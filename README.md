@@ -3,6 +3,7 @@
 ## Setup
 
 - create rke2 config `/etc/rancher/rke2/config.yaml`
+
   ```
   cni: calico
   profile: cis
@@ -10,21 +11,22 @@
   ```
 
 - create admission config `/etc/rancher/rke2/rke2-pss-custom.yaml`
-  ```
-apiVersion: apiserver.config.k8s.io/v1
-kind: AdmissionConfiguration
-plugins:
-- name: PodSecurity
-  configuration:
-    apiVersion: pod-security.admission.config.k8s.io/v1beta1
-    kind: PodSecurityConfiguration
-    defaults:
-      enforce: "privileged"
-      enforce-version: "latest"
-    exemptions:
-      usernames: []
-      runtimeClasses: []
-      namespaces: []
+
+  ```yaml
+  apiVersion: apiserver.config.k8s.io/v1
+  kind: AdmissionConfiguration
+  plugins:
+    - name: PodSecurity
+      configuration:
+        apiVersion: pod-security.admission.config.k8s.io/v1beta1
+        kind: PodSecurityConfiguration
+        defaults:
+          enforce: "privileged"
+          enforce-version: "latest"
+        exemptions:
+          usernames: []
+          runtimeClasses: []
+          namespaces: []
   ```
 
 - install rke2
@@ -36,6 +38,7 @@ plugins:
   ```
 
 - add kernel params
+
   ```
   cp -f /usr/local/share/rke2/rke2-cis-sysctl.conf /etc/sysctl.d/60-rke2-cis.conf
   systemctl restart systemd-sysctl

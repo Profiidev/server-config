@@ -7,7 +7,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ $fullname }}
+      app: {{ .Chart.Name }}
   replicas: {{ default 1 .Values.replicaCount | int }}
   template:
     metadata:
