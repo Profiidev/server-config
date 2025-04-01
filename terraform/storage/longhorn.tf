@@ -49,7 +49,7 @@ apiVersion: crd.projectcalico.org/v1
 kind: NetworkPolicy
 metadata:
   name: iu-frontend-backend
-  namespace: longhorn-system
+  namespace: ${var.storage_ns}
 spec:
   order: 10
   selector: app == 'longhorn-ui'
@@ -59,7 +59,7 @@ spec:
     - action: Allow
       protocol: TCP
       destination:
-        namespaceSelector: kubernetes.io/metadata.name == 'longhorn-system'
+        namespaceSelector: kubernetes.io/metadata.name == '${var.storage_ns}'
         selector: app == 'longhorn-manager'
         ports:
           - 9500
