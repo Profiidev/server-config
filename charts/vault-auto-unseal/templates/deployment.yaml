@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ $fullname }}
+        app: {{ .Chart.Name }}
     spec:
       containers: {{ $default_tag := replace " " "" (cat "vault-auto-unseal-" .Chart.Version) }}
       - name: {{ .Chart.Name }}
