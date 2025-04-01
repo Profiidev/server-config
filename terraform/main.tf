@@ -37,6 +37,7 @@ module "storage" {
   source = "./storage"
 
   storage_class = var.storage_class
+  ingress_class = var.ingress_class
 }
 
 module "network" {
@@ -49,9 +50,9 @@ module "network" {
 module "secrets" {
   source = "./secrets"
 
-  storage_class = var.storage_class
+  storage_class        = var.storage_class
   cluster_secret_store = var.cluster_secret_store
-  secret_store_label = var.secret_store_label
+  secret_store_label   = var.secret_store_label
 
   depends_on = [module.storage]
 }
@@ -71,9 +72,9 @@ module "tools" {
   source = "./tools"
 
   cloudflare_ca_cert_var = var.cloudflare_ca_cert_var
-  cloudflare_cert_label = var.cloudflare_cert_label
-  cloudflare_cert_var = var.cloudflare_cert_var
-  cluster_secret_store = var.cluster_secret_store
-  ingress_class = var.ingress_class
-  secret_store_label = var.secret_store_label
+  cloudflare_cert_label  = var.cloudflare_cert_label
+  cloudflare_cert_var    = var.cloudflare_cert_var
+  cluster_secret_store   = var.cluster_secret_store
+  ingress_class          = var.ingress_class
+  secret_store_label     = var.secret_store_label
 }
