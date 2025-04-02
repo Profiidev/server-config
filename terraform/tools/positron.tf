@@ -25,23 +25,9 @@ spec:
     kind: ClusterSecretStore
   target:
     name: positron-backend
-  data:
-    - secretKey: SMTP_PASSWORD
-      remoteRef:
-        key: apps/positron
-        property: SMTP_PASSWORD
-    - secretKey: DB_URL
-      remoteRef:
-        key: apps/positron
-        property: DB_URL
-    - secretKey: S3_ACCESS_KEY
-      remoteRef:
-        key: apps/positron
-        property: S3_ACCESS_KEY
-    - secretKey: APOD_API_KEY
-      remoteRef:
-        key: apps/positron
-        property: APOD_API_KEY
+  dataFrom:
+  - extract:
+      key: apps/positron
   YAML
 
   depends_on = [kubernetes_namespace.positron_ns]
@@ -157,6 +143,7 @@ metadata:
   name: positron-egress
 spec:
   namespaceSelector: kubernetes.io/metadata.name == '${var.positron_ns}'
+  selector: app == 'positron-backend'
   types:
     - Egress
   egress:

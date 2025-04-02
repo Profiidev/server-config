@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: positron-backend
+  namespace: positron
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: positron-backend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: positron-backend
+    spec:
+      containers:
+        - command:
+            - sh
+            - -c
+            - cat /etc/ssl/certs/custom/ca.crt >>
+              /etc/ssl/certs/ca-certificates.crt && app
+          envFrom:
+            - secretRef: positron-backend
+          image: ghcr.io/profiidev/positron/positron-backend:master
+          imagePullPolicy: Always
+          name: positron-backend
+          resources: {}
+          volumeMounts:
+            - mountPath: /etc/ssl/certs/custom
+              name: cluster-ca-cert
+              readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: cluster-ca-cert
+          secret:
+            defaultMode: 420
+            items:
+              - key: ca.crt
+                path: ca.crt
+            secretName: cluster-ca-cert
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: positron-backend
+  namespace: positron
+spec:
+  ports:
+    - port: 8000
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: positron-backend
+  type: ClusterIP
