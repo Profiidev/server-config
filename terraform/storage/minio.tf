@@ -5,6 +5,7 @@ resource "kubernetes_namespace" "minio_ns" {
       "${var.cloudflare_cert_label.key}" = var.cloudflare_cert_label.value
       "${var.secret_store_label.key}"    = var.secret_store_label.value
       "${var.minio_config_label.key}"    = var.minio_config_label.value
+      "${var.oidc_access_label.key}"     = var.oidc_access_label.value
     }
   }
 }
@@ -162,5 +163,28 @@ spec:
       destination:
         ports:
         - 9000
+  YAML
+}
+
+resource "kubectl_manifest" "portainer_oidc" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: minio-oidc
+  namespace: ${var.minio_ns}
+spec:
+  order: 10
+  selector: has(v1.min.io/tenant)
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        namespaceSelector: kubernetes.io/metadata.name == '${var.positron_ns}'
+        selector: app == 'positron-backend'
+        ports:
+          - 8000
   YAML
 }

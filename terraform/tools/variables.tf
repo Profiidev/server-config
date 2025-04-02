@@ -37,7 +37,6 @@ variable "cluster_secret_store" {
 
 variable "positron_ns" {
   type    = string
-  default = "positron"
 }
 
 variable "minio_access_label" {
@@ -74,8 +73,4 @@ variable "oidc_access_label" {
     key   = string
     value = string
   })
-  default = {
-    key   = "oidc-access"
-    value = "true"
-  }
 }

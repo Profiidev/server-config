@@ -47,6 +47,8 @@ module "storage" {
   postgres_access_label  = var.postgres_access_label
   everest_ns             = var.everest_ns
   minio_ns               = var.minio_ns
+  oidc_access_label      = var.oidc_access_label
+  positron_ns            = var.positron_ns
 }
 
 module "network" {
@@ -91,4 +93,6 @@ module "tools" {
   everest_ns             = var.everest_ns
   minio_ns               = var.minio_ns
   cluster_ca_cert_label  = var.cluster_ca_cert_label
+  oidc_access_label      = var.oidc_access_label
+  positron_ns            = var.positron_ns
 }

@@ -1,13 +1,13 @@
 variable "storage_class" {
-  type    = string
+  type = string
 }
 
 variable "minio_ns" {
-  type    = string
+  type = string
 }
 
 variable "everest_ns" {
-  type    = string
+  type = string
 }
 
 variable "everest_system_ns" {
@@ -32,7 +32,7 @@ variable "storage_ns" {
 }
 
 variable "ingress_class" {
-  type    = string
+  type = string
 }
 
 variable "cloudflare_cert_label" {
@@ -43,11 +43,11 @@ variable "cloudflare_cert_label" {
 }
 
 variable "cloudflare_ca_cert_var" {
-  type    = string
+  type = string
 }
 
 variable "cloudflare_cert_var" {
-  type    = string
+  type = string
 }
 
 variable "secret_store_label" {
@@ -74,7 +74,7 @@ variable "minio_config_label" {
 }
 
 variable "cluster_secret_store" {
-  type    = string
+  type = string
 }
 
 variable "minio_access_label" {
@@ -89,4 +89,15 @@ variable "postgres_access_label" {
     key   = string
     value = string
   })
+}
+
+variable "oidc_access_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+}
+
+variable "positron_ns" {
+  type = string
 }
