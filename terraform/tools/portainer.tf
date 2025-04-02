@@ -71,3 +71,27 @@ spec:
           - 6443
   YAML
 }
+
+resource "kubectl_manifest" "portainer_egress" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: GlobalNetworkPolicy
+metadata:
+  name: portainer-egress
+spec:
+  namespaceSelector: kubernetes.io/metadata.name == '${var.portainer_ns}'
+  selector: app.kubernetes.io/name == 'portainer'
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        ports:
+          - 443
+        domains:
+          - github.com
+  YAML
+
+  depends_on = [kubernetes_namespace.positron_ns]
+}

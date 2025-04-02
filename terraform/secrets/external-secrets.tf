@@ -72,7 +72,7 @@ metadata:
   namespace: ${var.secrets_ns}
 spec:
   order: 10
-  selector: app.kubernetes.io/name == 'external-secrets'
+  selector: app.kubernetes.io/name == 'external-secrets' || app.kubernetes.io/name == 'external-secrets-cert-controller'
   types:
     - Egress
   egress:

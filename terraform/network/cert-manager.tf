@@ -41,3 +41,26 @@ spec:
 
   depends_on = [helm_release.cert_manager]
 }
+
+resource "kubectl_manifest" "cert_manager_k8s_api_egress" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: k8s-api-egress
+  namespace: ${var.cert_ns}
+spec:
+  order: 10
+  selector: app.kubernetes.io/name == 'cainjector'
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        nets:
+          - 194.164.200.60/32
+        ports:
+          - 6443
+  YAML
+}

@@ -115,3 +115,26 @@ resource "null_resource" "vault_init_kv" {
 
   depends_on = [null_resource.vault_initial_unseal]
 }
+
+resource "kubectl_manifest" "vault_k8s_api_egress" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: k8s-api-egress
+  namespace: ${var.secrets_ns}
+spec:
+  order: 10
+  selector: app.kubernetes.io/name == 'vault-agent-injector'
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        nets:
+          - 194.164.200.60/32
+        ports:
+          - 6443
+  YAML
+}
