@@ -93,3 +93,14 @@ variable "cluster_ca_cert_label" {
     value = "true"
   }
 }
+
+variable "oidc_access_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+  default = {
+    key   = "oidc-access"
+    value = "true"
+  }
+}
