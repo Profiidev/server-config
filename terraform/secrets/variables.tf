@@ -16,12 +16,10 @@ variable "vault_global_token_prop" {
 
 variable "storage_class" {
   type    = string
-  default = "longhorn"
 }
 
 variable "cluster_secret_store" {
   type    = string
-  default = "cluster-secret-store"
 }
 
 variable "secret_store_label" {
@@ -29,10 +27,6 @@ variable "secret_store_label" {
     key   = string
     value = string
   })
-  default = {
-    key   = "secret-store"
-    value = "true"
-  }
 }
 
 variable "vault_svc" {
@@ -65,9 +59,5 @@ variable "cluster_ca_cert_label" {
     key   = string
     value = string
   })
-  default = {
-    key   = "cluster-ca-cert"
-    value = "true"
-  }
 }
 
