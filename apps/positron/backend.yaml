@@ -25,7 +25,8 @@ spec:
             - cat /etc/ssl/certs/custom/ca.crt >>
               /etc/ssl/certs/ca-certificates.crt && app
           envFrom:
-            - secretRef: positron-backend
+            - secretRef:
+                name: positron-backend
           image: ghcr.io/profiidev/positron/positron-backend:master
           imagePullPolicy: Always
           name: positron-backend
