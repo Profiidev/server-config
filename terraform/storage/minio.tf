@@ -141,3 +141,26 @@ spec:
           property: config.env
   YAML
 }
+
+resource "kubectl_manifest" "minio_access" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: minio-access
+  namespace: ${var.minio_ns}
+spec:
+  order: 10
+  selector: has(v1.min.io/tenant)
+  types:
+    - Ingress
+  ingress:
+    - action: Allow
+      protocol: TCP
+      source:
+        namespaceSelector: ${var.minio_access_label.key} == '${var.minio_access_label.value}'
+      destination:
+        ports:
+        - 9000
+  YAML
+}

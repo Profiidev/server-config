@@ -43,6 +43,10 @@ module "storage" {
   cloudflare_cert_var    = var.cloudflare_cert_var
   secret_store_label     = var.secret_store_label
   cluster_secret_store   = var.cluster_secret_store
+  minio_access_label     = var.minio_access_label
+  postgres_access_label  = var.postgres_access_label
+  everest_ns             = var.everest_ns
+  minio_ns               = var.minio_ns
 }
 
 module "network" {
@@ -55,9 +59,10 @@ module "network" {
 module "secrets" {
   source = "./secrets"
 
-  storage_class        = var.storage_class
-  cluster_secret_store = var.cluster_secret_store
-  secret_store_label   = var.secret_store_label
+  storage_class         = var.storage_class
+  cluster_secret_store  = var.cluster_secret_store
+  secret_store_label    = var.secret_store_label
+  cluster_ca_cert_label = var.cluster_ca_cert_label
 
   depends_on = [module.storage]
 }
@@ -81,4 +86,9 @@ module "tools" {
   cloudflare_cert_var    = var.cloudflare_cert_var
   ingress_class          = var.ingress_class
   secret_store_label     = var.secret_store_label
+  minio_access_label     = var.minio_access_label
+  postgres_access_label  = var.postgres_access_label
+  everest_ns             = var.everest_ns
+  minio_ns               = var.minio_ns
+  cluster_ca_cert_label  = var.cluster_ca_cert_label
 }

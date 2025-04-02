@@ -212,3 +212,26 @@ spec:
 
   depends_on = [null_resource.wait_for_everest_ns]
 }
+
+resource "kubectl_manifest" "postgres_access" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: postgres-access
+  namespace: ${var.everest_ns}
+spec:
+  order: 10
+  selector: app.kubernetes.io/name == 'percona-postgresql'
+  types:
+    - Ingress
+  ingress:
+    - action: Allow
+      protocol: TCP
+      source:
+        namespaceSelector: ${var.postgres_access_label.key} == '${var.postgres_access_label.value}'
+      destination:
+        ports:
+          - 5432
+  YAML
+}

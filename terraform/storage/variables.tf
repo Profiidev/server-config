@@ -91,3 +91,25 @@ variable "cluster_secret_store" {
   type    = string
   default = "cluster-secret-store"
 }
+
+variable "minio_access_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+  default = {
+    key   = "minio-access"
+    value = "true"
+  }
+}
+
+variable "postgres_access_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+  default = {
+    key   = "postgres-access"
+    value = "true"
+  }
+}
