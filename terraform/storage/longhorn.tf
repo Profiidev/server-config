@@ -41,6 +41,8 @@ spec:
         ports:
           - 6443
   YAML
+
+  depends_on = [kubernetes_namespace.storage_ns]
 }
 
 resource "kubectl_manifest" "longhorn_ns" {
@@ -61,4 +63,6 @@ spec:
       destination:
         namespaceSelector: kubernetes.io/metadata.name == '${var.storage_ns}'
   YAML
+
+  depends_on = [kubernetes_namespace.storage_ns]
 }

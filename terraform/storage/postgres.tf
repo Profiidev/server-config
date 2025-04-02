@@ -234,4 +234,6 @@ spec:
         ports:
           - 5432
   YAML
+
+  depends_on = [helm_release.postgres]
 }

@@ -137,6 +137,8 @@ spec:
         ports:
           - 6443
   YAML
+
+  depends_on = [kubernetes_namespace.secrets_ns]
 }
 
 resource "kubectl_manifest" "vault_oidc" {
@@ -197,6 +199,8 @@ resource "kubernetes_ingress_v1" "vault_ui_ingress" {
       secret_name = var.cloudflare_cert_var
     }
   }
+
+  depends_on = [kubernetes_namespace.secrets_ns]
 }
 
 resource "kubectl_manifest" "vault_io_ingress" {

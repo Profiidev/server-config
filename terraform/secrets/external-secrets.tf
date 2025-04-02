@@ -93,4 +93,6 @@ spec:
         ports:
           - 6443
   YAML
+
+  depends_on = [kubernetes_namespace.secrets_ns]
 }

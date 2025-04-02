@@ -66,6 +66,8 @@ spec:
       source:
         selector: app.kubernetes.io/name == 'operator' || has(v1.min.io/tenant)
   YAML
+
+  depends_on = [kubernetes_namespace.minio_ns]
 }
 
 resource "kubectl_manifest" "minio_k8s_api_egress" {
@@ -89,6 +91,8 @@ spec:
         ports:
           - 6443
   YAML
+
+  depends_on = [kubernetes_namespace.minio_ns]
 }
 
 resource "kubectl_manifest" "minio_ingress" {
@@ -113,6 +117,8 @@ spec:
         ports:
           - 9443
   YAML
+
+  depends_on = [kubernetes_namespace.minio_ns]
 }
 
 resource "kubectl_manifest" "minio_config" {
@@ -164,6 +170,8 @@ spec:
         ports:
         - 9000
   YAML
+
+  depends_on = [kubernetes_namespace.minio_ns]
 }
 
 resource "kubectl_manifest" "portainer_oidc" {
@@ -187,4 +195,6 @@ spec:
         ports:
           - 8000
   YAML
+
+  depends_on = [kubernetes_namespace.minio_ns]
 }

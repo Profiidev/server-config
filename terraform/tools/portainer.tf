@@ -48,6 +48,8 @@ spec:
         ports:
           - 9000
   YAML
+
+  depends_on = [kubernetes_namespace.portainer_ns]
 }
 
 resource "kubectl_manifest" "portainer_k8s_api_egress" {
@@ -71,6 +73,8 @@ spec:
         ports:
           - 6443
   YAML
+
+  depends_on = [kubernetes_namespace.portainer_ns]
 }
 
 resource "kubectl_manifest" "portainer_egress" {
@@ -93,8 +97,6 @@ spec:
         domains:
           - github.com
   YAML
-
-  depends_on = [kubernetes_namespace.positron_ns]
 }
 
 resource "kubectl_manifest" "portainer_oidc" {
@@ -118,4 +120,6 @@ spec:
         ports:
           - 8000
   YAML
+
+  depends_on = [kubernetes_namespace.portainer_ns]
 }

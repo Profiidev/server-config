@@ -63,4 +63,6 @@ spec:
         ports:
           - 6443
   YAML
+
+  depends_on = [kubernetes_namespace.cert_ns]
 }

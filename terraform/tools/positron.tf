@@ -181,6 +181,8 @@ spec:
         ports:
         - 8000
   YAML
+
+  depends_on = [kubernetes_namespace.positron_ns]
 }
 
 resource "kubernetes_ingress_v1" "positron_frontend" {
@@ -220,6 +222,8 @@ resource "kubernetes_ingress_v1" "positron_frontend" {
       secret_name = var.cloudflare_cert_var
     }
   }
+
+  depends_on = [kubernetes_namespace.positron_ns]
 }
 
 resource "kubernetes_ingress_v1" "positron_backend" {
@@ -260,4 +264,6 @@ resource "kubernetes_ingress_v1" "positron_backend" {
       secret_name = var.cloudflare_cert_var
     }
   }
+
+  depends_on = [kubernetes_namespace.positron_ns]
 }
