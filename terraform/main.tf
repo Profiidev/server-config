@@ -61,10 +61,16 @@ module "network" {
 module "secrets" {
   source = "./secrets"
 
-  storage_class         = var.storage_class
-  cluster_secret_store  = var.cluster_secret_store
-  secret_store_label    = var.secret_store_label
-  cluster_ca_cert_label = var.cluster_ca_cert_label
+  storage_class          = var.storage_class
+  cluster_secret_store   = var.cluster_secret_store
+  secret_store_label     = var.secret_store_label
+  cluster_ca_cert_label  = var.cluster_ca_cert_label
+  positron_ns            = var.positron_ns
+  oidc_access_label      = var.oidc_access_label
+  cloudflare_ca_cert_var = var.cloudflare_ca_cert_var
+  cloudflare_cert_label  = var.cloudflare_cert_label
+  cloudflare_cert_var    = var.cloudflare_cert_var
+  ingress_class          = var.ingress_class
 
   depends_on = [module.storage]
 }

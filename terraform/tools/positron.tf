@@ -187,7 +187,7 @@ resource "kubernetes_ingress_v1" "positron_frontend" {
   metadata {
     name = "positron-frontend"
     annotations = {
-      "nginx.ingress.kubernetes.io/auth-tls-secret"        = "${var.positron_ns}/${var.cloudflare_cert_var}",
+      "nginx.ingress.kubernetes.io/auth-tls-secret"        = "${var.positron_ns}/${var.cloudflare_ca_cert_var}",
       "nginx.ingress.kubernetes.io/auth-tls-verify-client" = "on"
     }
     namespace = var.positron_ns
@@ -226,7 +226,7 @@ resource "kubernetes_ingress_v1" "positron_backend" {
   metadata {
     name = "positron-backend"
     annotations = {
-      "nginx.ingress.kubernetes.io/auth-tls-secret"        = "${var.positron_ns}/${var.cloudflare_cert_var}",
+      "nginx.ingress.kubernetes.io/auth-tls-secret"        = "${var.positron_ns}/${var.cloudflare_ca_cert_var}",
       "nginx.ingress.kubernetes.io/auth-tls-verify-client" = "on",
       "nginx.ingress.kubernetes.io/rewrite-target"         = "/$1"
     }

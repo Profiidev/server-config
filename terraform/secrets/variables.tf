@@ -15,11 +15,11 @@ variable "vault_global_token_prop" {
 }
 
 variable "storage_class" {
-  type    = string
+  type = string
 }
 
 variable "cluster_secret_store" {
-  type    = string
+  type = string
 }
 
 variable "secret_store_label" {
@@ -61,3 +61,32 @@ variable "cluster_ca_cert_label" {
   })
 }
 
+variable "oidc_access_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+}
+
+variable "positron_ns" {
+  type = string
+}
+
+variable "cloudflare_cert_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+}
+
+variable "cloudflare_ca_cert_var" {
+  type = string
+}
+
+variable "cloudflare_cert_var" {
+  type = string
+}
+
+variable "ingress_class" {
+  type = string
+}

@@ -15,6 +15,8 @@ resource "kubernetes_namespace" "secrets_ns" {
     name = var.secrets_ns
     labels = {
       "${var.secret_store_label.key}" = var.secret_store_label.value
+      "${var.oidc_access_label.key}"  = var.oidc_access_label.value
+      "${var.cloudflare_cert_label.key}" = var.cloudflare_cert_label.value
     }
   }
 }
