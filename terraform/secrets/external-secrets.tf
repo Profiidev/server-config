@@ -15,6 +15,8 @@ resource "kubernetes_namespace" "secrets_ns" {
     name = var.secrets_ns
     labels = {
       "${var.secret_store_label.key}" = var.secret_store_label.value
+      "${var.oidc_access_label.key}"  = var.oidc_access_label.value
+      "${var.cloudflare_cert_label.key}" = var.cloudflare_cert_label.value
     }
   }
 }
@@ -72,7 +74,7 @@ metadata:
   namespace: ${var.secrets_ns}
 spec:
   order: 10
-  selector: app.kubernetes.io/name == 'external-secrets'
+  selector: app.kubernetes.io/name == 'external-secrets' || app.kubernetes.io/name == 'external-secrets-cert-controller'
   types:
     - Egress
   egress:
@@ -91,4 +93,6 @@ spec:
         ports:
           - 6443
   YAML
+
+  depends_on = [kubernetes_namespace.secrets_ns]
 }

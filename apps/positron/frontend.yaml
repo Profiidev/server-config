@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: positron-frontend
+  namespace: positron
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: positron-frontend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: positron-frontend
+    spec:
+      containers:
+        - image: ghcr.io/profiidev/positron/positron-frontend:master
+          imagePullPolicy: Always
+          name: positron-frontend
+          resources: {}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: positron-frontend
+  namespace: positron
+spec:
+  ports:
+    - port: 3000
+      protocol: TCP
+      targetPort: 3000
+  selector:
+    app: positron-frontend
+  type: ClusterIP

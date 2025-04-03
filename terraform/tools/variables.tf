@@ -4,30 +4,24 @@ variable "portainer_ns" {
   default     = "portainer"
 }
 
+variable "vaultwarden_ns" {
+  type    = string
+  default = "vaultwarden"
+}
+
 variable "cloudflare_cert_label" {
   type = object({
     key   = string
     value = string
   })
-  default = {
-    key   = "cloudflare-cert-secret"
-    value = "true"
-  }
 }
 
 variable "cloudflare_ca_cert_var" {
-  type    = string
-  default = "cloudflare-ca-cert"
+  type = string
 }
 
 variable "cloudflare_cert_var" {
-  type    = string
-  default = "cloudflare-cert"
-}
-
-variable "cluster_secret_store" {
-  type    = string
-  default = "cluster-secret-store"
+  type = string
 }
 
 variable "secret_store_label" {
@@ -35,13 +29,56 @@ variable "secret_store_label" {
     key   = string
     value = string
   })
-  default = {
-    key   = "secret-store"
-    value = "true"
-  }
 }
 
 variable "ingress_class" {
+  type = string
+}
+
+variable "cluster_secret_store" {
   type    = string
-  default = "ingress-nginx"
+}
+
+variable "positron_ns" {
+  type = string
+}
+
+variable "minio_access_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+}
+
+variable "postgres_access_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+}
+
+variable "everest_ns" {
+  type = string
+}
+
+variable "minio_ns" {
+  type = string
+}
+
+variable "cluster_ca_cert_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+}
+
+variable "oidc_access_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+}
+
+variable "storage_class" {
+  type = string
 }

@@ -115,3 +115,127 @@ resource "null_resource" "vault_init_kv" {
 
   depends_on = [null_resource.vault_initial_unseal]
 }
+
+resource "kubectl_manifest" "vault_k8s_api_egress" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: k8s-api-egress
+  namespace: ${var.secrets_ns}
+spec:
+  order: 10
+  selector: app.kubernetes.io/name == 'vault-agent-injector'
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        nets:
+          - 194.164.200.60/32
+        ports:
+          - 6443
+  YAML
+
+  depends_on = [kubernetes_namespace.secrets_ns]
+}
+
+resource "kubectl_manifest" "vault_oidc" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: GlobalNetworkPolicy
+metadata:
+  name: vault-egress
+spec:
+  namespaceSelector: kubernetes.io/metadata.name == '${var.secrets_ns}'
+  selector: app.kubernetes.io/name == 'vault'
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        ports:
+          - 443
+        domains:
+          - profidev.io
+  YAML
+}
+
+resource "kubernetes_ingress_v1" "vault_ui_ingress" {
+  metadata {
+    name      = "vault-ui-ingress"
+    namespace = var.secrets_ns
+    annotations = {
+      "nginx.ingress.kubernetes.io/auth-tls-secret"        = "${var.secrets_ns}/${var.cloudflare_ca_cert_var}",
+      "nginx.ingress.kubernetes.io/auth-tls-verify-client" = "on"
+      "nginx.ingress.kubernetes.io/backend-protocol"       = "HTTPS"
+    }
+  }
+
+  spec {
+    ingress_class_name = var.ingress_class
+    rule {
+      host = "vault.profidev.io"
+      http {
+        path {
+          backend {
+            service {
+              name = "vault-ui"
+              port {
+                number = 8200
+              }
+            }
+          }
+          path      = "/"
+          path_type = "Prefix"
+        }
+      }
+    }
+
+    tls {
+      hosts       = ["*.profidev.io", "profidev.io"]
+      secret_name = var.cloudflare_cert_var
+    }
+  }
+
+  depends_on = [kubernetes_namespace.secrets_ns]
+}
+
+resource "kubectl_manifest" "vault_io_ingress" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: vault-ui-ingress
+  namespace: ${var.secrets_ns}
+spec:
+  order: 10
+  selector: app.kubernetes.io/name == 'vault'
+  types:
+    - Ingress
+  ingress:
+    - action: Allow
+      protocol: TCP
+      source:
+        namespaceSelector: kubernetes.io/metadata.name == 'kube-system'
+        selector: app.kubernetes.io/name == 'rke2-ingress-nginx'
+      destination:
+        ports:
+          - 8200
+  YAML
+
+  depends_on = [kubernetes_namespace.secrets_ns]
+}
+
+/*
+Role
+vault write auth/oidc/role/default \
+  bound_audiences="7f25d29e-ff95-4161-b95a-ad5d918bd85f" \
+  allowed_redirect_uris="https://vault.profidev.io/ui/vault/auth/oidc/oidc/callback" \
+  user_claim="email" \
+  groups_claim="groups" \
+  token_policies="default" \
+  oidc_scopes="email,profile"
+*/

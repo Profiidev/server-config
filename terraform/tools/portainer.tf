@@ -4,6 +4,7 @@ resource "kubernetes_namespace" "portainer_ns" {
     labels = {
       "${var.cloudflare_cert_label.key}" = var.cloudflare_cert_label.value
       "${var.secret_store_label.key}"    = var.secret_store_label.value
+      "${var.oidc_access_label.key}"     = var.oidc_access_label.value
     }
   }
 }
@@ -47,4 +48,78 @@ spec:
         ports:
           - 9000
   YAML
+
+  depends_on = [kubernetes_namespace.portainer_ns]
+}
+
+resource "kubectl_manifest" "portainer_k8s_api_egress" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: k8s-api-egress
+  namespace: ${var.portainer_ns}
+spec:
+  order: 10
+  selector: app.kubernetes.io/name == 'portainer'
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        nets:
+          - 194.164.200.60/32
+        ports:
+          - 6443
+  YAML
+
+  depends_on = [kubernetes_namespace.portainer_ns]
+}
+
+resource "kubectl_manifest" "portainer_egress" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: GlobalNetworkPolicy
+metadata:
+  name: portainer-egress
+spec:
+  namespaceSelector: kubernetes.io/metadata.name == '${var.portainer_ns}'
+  selector: app.kubernetes.io/name == 'portainer'
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        ports:
+          - 443
+        domains:
+          - github.com
+  YAML
+}
+
+resource "kubectl_manifest" "portainer_oidc" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: portainer-oidc
+  namespace: ${var.portainer_ns}
+spec:
+  order: 10
+  selector: app.kubernetes.io/instance == 'portainer'
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        namespaceSelector: kubernetes.io/metadata.name == '${var.positron_ns}'
+        selector: app == 'positron-backend'
+        ports:
+          - 8000
+  YAML
+
+  depends_on = [kubernetes_namespace.portainer_ns]
 }

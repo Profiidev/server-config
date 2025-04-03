@@ -11,7 +11,6 @@ variable "lb_ns" {
 
 variable "ingress_class" {
   type    = string
-  default = "ingress-nginx"
 }
 
 variable "cert_ns" {
@@ -32,5 +31,4 @@ variable "cert_issuer_prod" {
 
 variable "email" {
   type    = string
-  default = "mail@profidev.io"
 }

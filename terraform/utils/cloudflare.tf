@@ -19,6 +19,8 @@ spec:
   externalSecretSpec:
     target:
       name: ${each.key}
+      template:
+        type: ${var.cloudflare_cert_var == each.key ? "kubernetes.io/tls" : "Opaque"}
     refreshInterval: 15s
     secretStoreRef:
       name: ${var.cluster_secret_store}
