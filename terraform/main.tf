@@ -101,4 +101,6 @@ module "tools" {
   cluster_ca_cert_label  = var.cluster_ca_cert_label
   oidc_access_label      = var.oidc_access_label
   positron_ns            = var.positron_ns
+  storage_class          = var.storage_class
+  cluster_secret_store   = var.cluster_secret_store
 }
