@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proton-backend
+  namespace: proton
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proton-backend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: proton-backend
+    spec:
+      containers:
+        - command:
+            - sh
+            - -c
+            - cat /etc/ssl/certs/custom/ca.crt >>
+              /etc/ssl/certs/ca-certificates.crt && app
+          envFrom:
+            - secretRef:
+                name: proton-backend
+          image: ghcr.io/profiidev/proton/proton-backend:master
+          imagePullPolicy: Always
+          name: proton-backend
+          resources: {}
+          volumeMounts:
+            - mountPath: /etc/ssl/certs/custom
+              name: cluster-ca-cert
+              readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: cluster-ca-cert
+          secret:
+            defaultMode: 420
+            items:
+              - key: ca.crt
+                path: ca.crt
+            secretName: cluster-ca-cert
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proton-backend
+  namespace: proton
+spec:
+  ports:
+    - port: 8000
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: proton-backend
+  type: ClusterIP

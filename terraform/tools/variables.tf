@@ -14,6 +14,11 @@ variable "docker_ns" {
   default = "docker"
 }
 
+variable "proton_ns" {
+  type    = string
+  default = "proton"
+}
+
 variable "cert_issuer_staging" {
   type = string
 }
