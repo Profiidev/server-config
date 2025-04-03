@@ -37,3 +37,7 @@ variable "cloudflare_cert_var" {
 variable "cloudflare" {
   type = bool
 }
+
+variable "https" {
+  type = bool
+}

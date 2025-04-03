@@ -2,12 +2,14 @@ resource "kubernetes_ingress_v1" "ingress" {
   metadata {
     name      = var.name
     namespace = var.namespace
-    annotations = var.cloudflare ? {
+    annotations = merge(var.cloudflare ? {
       "nginx.ingress.kubernetes.io/auth-tls-secret"        = "${var.namespace}/${var.cloudflare_ca_cert_var}",
       "nginx.ingress.kubernetes.io/auth-tls-verify-client" = "on"
       } : {
       "cert-manager.io/cluster-issuer" = var.cert_issuer
-    }
+      }, var.https ? {
+      "nginx.ingress.kubernetes.io/backend-protocol" = "HTTPS"
+    } : {})
   }
 
   spec {
