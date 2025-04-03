@@ -91,10 +91,14 @@ spec:
       destination:
         ports:
           - 443
+    - action: Allow
+      protocol: TCP
+      destination:
+        ports:
+          - 465
         domains:
-          - *.bitwarden.eu
-          - *.bitwarden.com
+          - mail.profidev.io
   YAML
 
-  depends_on = [kubernetes_namespace.everest_system_ns]
+  depends_on = [kubernetes_namespace.vaultwarden_ns]
 }
