@@ -1,6 +1,11 @@
 resource "kubernetes_namespace" "everest_system_ns" {
   metadata {
     name = var.everest_system_ns
+    labels = {
+      "${var.secret_store_label.key}"    = var.secret_store_label.value
+      "${var.oidc_access_label.key}"     = var.oidc_access_label.value
+      "${var.cloudflare_cert_label.key}" = var.cloudflare_cert_label.value
+    }
   }
 }
 
@@ -236,4 +241,69 @@ spec:
   YAML
 
   depends_on = [helm_release.postgres]
+}
+
+resource "kubernetes_ingress_v1" "postgres_ui_ingress" {
+  metadata {
+    name      = "vault-ui-ingress"
+    namespace = var.everest_system_ns
+    annotations = {
+      "nginx.ingress.kubernetes.io/auth-tls-secret"        = "${var.everest_system_ns}/${var.cloudflare_ca_cert_var}",
+      "nginx.ingress.kubernetes.io/auth-tls-verify-client" = "on"
+    }
+  }
+
+  spec {
+    ingress_class_name = var.ingress_class
+    rule {
+      host = "db.profidev.io"
+      http {
+        path {
+          backend {
+            service {
+              name = "everest"
+              port {
+                number = 8080
+              }
+            }
+          }
+          path      = "/"
+          path_type = "Prefix"
+        }
+      }
+    }
+
+    tls {
+      hosts       = ["*.profidev.io", "profidev.io"]
+      secret_name = var.cloudflare_cert_var
+    }
+  }
+
+  depends_on = [kubernetes_namespace.everest_system_ns]
+}
+
+resource "kubectl_manifest" "postgres_ui_ingress" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: postgres-ui-ingress
+  namespace: ${var.everest_system_ns}
+spec:
+  order: 10
+  selector: app.kubernetes.io/component == 'everest-server'
+  types:
+    - Ingress
+  ingress:
+    - action: Allow
+      protocol: TCP
+      source:
+        namespaceSelector: kubernetes.io/metadata.name == 'kube-system'
+        selector: app.kubernetes.io/name == 'rke2-ingress-nginx'
+      destination:
+        ports:
+          - 8080
+  YAML
+
+  depends_on = [kubernetes_namespace.everest_system_ns]
 }
