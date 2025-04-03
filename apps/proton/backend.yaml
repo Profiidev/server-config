@@ -24,6 +24,7 @@ spec:
             - -c
             - cat /etc/ssl/certs/custom/ca.crt >>
               /etc/ssl/certs/ca-certificates.crt && app
+          tty: true
           envFrom:
             - secretRef:
                 name: proton-backend
