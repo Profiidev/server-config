@@ -54,8 +54,10 @@ module "storage" {
 module "network" {
   source = "./network"
 
-  ingress_class = var.ingress_class
-  email         = var.email
+  ingress_class       = var.ingress_class
+  email               = var.email
+  cert_issuer_prod    = var.cert_issuer_prod
+  cert_issuer_staging = var.cert_issuer_staging
 }
 
 module "secrets" {
@@ -103,4 +105,6 @@ module "tools" {
   positron_ns            = var.positron_ns
   storage_class          = var.storage_class
   cluster_secret_store   = var.cluster_secret_store
+  cert_issuer_prod       = var.cert_issuer_prod
+  cert_issuer_staging    = var.cert_issuer_staging
 }

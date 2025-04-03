@@ -17,5 +17,9 @@ spec:
 
       ingressClass: ${var.ingress_class}
       watchIngressWithoutClass: false
+
+      networkPolicy:
+        enabled: true
+      hostNetwork: true
   YAML
 }

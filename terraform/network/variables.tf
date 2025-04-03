@@ -10,7 +10,7 @@ variable "lb_ns" {
 }
 
 variable "ingress_class" {
-  type    = string
+  type = string
 }
 
 variable "cert_ns" {
@@ -20,15 +20,13 @@ variable "cert_ns" {
 }
 
 variable "cert_issuer_staging" {
-  type    = string
-  default = "letsencrypt-staging"
+  type = string
 }
 
 variable "cert_issuer_prod" {
-  type    = string
-  default = "letsencrypt-prod"
+  type = string
 }
 
 variable "email" {
-  type    = string
+  type = string
 }

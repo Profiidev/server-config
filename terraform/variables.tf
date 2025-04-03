@@ -108,3 +108,13 @@ variable "positron_ns" {
   type    = string
   default = "positron"
 }
+
+variable "cert_issuer_staging" {
+  type    = string
+  default = "letsencrypt-staging"
+}
+
+variable "cert_issuer_prod" {
+  type    = string
+  default = "letsencrypt-prod"
+}

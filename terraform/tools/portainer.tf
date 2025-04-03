@@ -70,8 +70,10 @@ spec:
       destination:
         nets:
           - 194.164.200.60/32
+          - 172.17.0.0/16
         ports:
           - 6443
+          - 9001
   YAML
 
   depends_on = [kubernetes_namespace.portainer_ns]

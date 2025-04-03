@@ -9,6 +9,19 @@ variable "vaultwarden_ns" {
   default = "vaultwarden"
 }
 
+variable "docker_ns" {
+  type    = string
+  default = "docker"
+}
+
+variable "cert_issuer_staging" {
+  type = string
+}
+
+variable "cert_issuer_prod" {
+  type = string
+}
+
 variable "cloudflare_cert_label" {
   type = object({
     key   = string
@@ -36,7 +49,7 @@ variable "ingress_class" {
 }
 
 variable "cluster_secret_store" {
-  type    = string
+  type = string
 }
 
 variable "positron_ns" {

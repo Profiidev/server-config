@@ -51,7 +51,7 @@ metadata:
   namespace: ${var.cert_ns}
 spec:
   order: 10
-  selector: app.kubernetes.io/name == 'cainjector'
+  selector: app.kubernetes.io/name == 'cainjector' || app.kubernetes.io/name == 'cert-manager' || app.kubernetes.io/name == 'webhook'
   types:
     - Egress
   egress:
@@ -62,6 +62,51 @@ spec:
           - 194.164.200.60/32
         ports:
           - 6443
+  YAML
+
+  depends_on = [kubernetes_namespace.cert_ns]
+}
+
+resource "kubernetes_network_policy_v1" "cert_ns" {
+  metadata {
+    name      = "cert-internal"
+    namespace = var.cert_ns
+  }
+
+  spec {
+    ingress {
+      from {
+        pod_selector {}
+      }
+    }
+    pod_selector {
+
+    }
+    policy_types = ["Ingress"]
+  }
+}
+
+resource "kubectl_manifest" "cert_manager_egress" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: GlobalNetworkPolicy
+metadata:
+  name: cert-manager-egress
+spec:
+  namespaceSelector: kubernetes.io/metadata.name == '${var.cert_ns}'
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        ports:
+          - 443
+          - 80
+        domains:
+          - "*.letsencrypt.org"
+          - "*.profidev.io"
+          - "profidev.io"
   YAML
 
   depends_on = [kubernetes_namespace.cert_ns]
