@@ -97,6 +97,7 @@ spec:
           - 443
         domains:
           - github.com
+          - s3.profidev.io
   YAML
 }
 

@@ -19,12 +19,7 @@ spec:
         app: positron-backend
     spec:
       containers:
-        - command:
-            - sh
-            - -c
-            - cat /etc/ssl/certs/custom/ca.crt >>
-              /etc/ssl/certs/ca-certificates.crt && app
-          tty: true
+        - tty: true
           envFrom:
             - secretRef:
                 name: positron-backend
@@ -33,7 +28,8 @@ spec:
           name: positron-backend
           resources: {}
           volumeMounts:
-            - mountPath: /etc/ssl/certs/custom
+            - mountPath: /etc/ssl/certs/e11529a0.0
+              subPath: e11529a0.0
               name: cluster-ca-cert
               readOnly: true
       dnsPolicy: ClusterFirst
@@ -45,9 +41,6 @@ spec:
         - name: cluster-ca-cert
           secret:
             defaultMode: 420
-            items:
-              - key: ca.crt
-                path: ca.crt
             secretName: cluster-ca-cert
 ---
 apiVersion: v1

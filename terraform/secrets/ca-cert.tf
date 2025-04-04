@@ -27,24 +27,12 @@ spec:
     secretStoreRef:
       name: ${var.cluster_secret_store}
       kind: ClusterSecretStore
-    data:
-      - secretKey: ca.crt
-        remoteRef:
+    dataFrom:
+      - extract:
           key: certs/cluster
-          property: ca.crt
   YAML
 
   depends_on = [helm_release.external_secrets]
-}
-
-resource "null_resource" "vault_cluster_ca_cert" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      kubectl exec -it --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault kv put -mount="kv" "certs/cluster" ca.crt="${data.external.cluster_ca_cert.result["ca"]}"
-    EOT
-  }
-
-  depends_on = [null_resource.vault_init_kv]
 }
 
 resource "kubernetes_secret_v1" "cluster_ca_cert_secret" {
@@ -56,4 +44,29 @@ resource "kubernetes_secret_v1" "cluster_ca_cert_secret" {
   binary_data = {
     "ca.crt" = base64encode(data.external.cluster_ca_cert.result["ca"])
   }
+}
+
+resource "local_file" "ca_crt" {
+  filename = "${path.module}/certs/ca.crt"
+  content  = data.external.cluster_ca_cert.result["ca"]
+}
+
+data "external" "ca_hash" {
+  program = ["bash", "-c", <<EOT
+    openssl x509 -noout -hash -in ${path.module}/certs/ca.crt | jq -R '{hash: .}'
+  EOT
+  ]
+
+  depends_on = [local_file.ca_crt]
+}
+
+resource "null_resource" "vault_cluster_ca_cert" {
+  provisioner "local-exec" {
+    command = <<-EOT
+      kubectl exec -it --stdin=true --tty=true vault-0 -n ${var.secrets_ns} -- vault kv put \
+       -mount="kv" "certs/cluster" ca.crt="${data.external.cluster_ca_cert.result["ca"]}" ${data.external.ca_hash.result["hash"]}.0="${data.external.cluster_ca_cert.result["ca"]}"
+    EOT
+  }
+
+  depends_on = [null_resource.vault_init_kv]
 }
