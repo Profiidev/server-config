@@ -37,6 +37,7 @@ resource "helm_release" "minio_tenant" {
     cloudflare_cert_var    = var.cloudflare_cert_var
     ingress_class          = var.ingress_class
     minio_config           = var.minio_config
+    cert_issuer            = var.cert_issuer_prod
   })]
 
   depends_on = [kubernetes_namespace.minio_ns]

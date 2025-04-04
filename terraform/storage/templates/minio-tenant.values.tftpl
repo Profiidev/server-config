@@ -460,12 +460,17 @@ tenant:
 # Set the keys to conform to the Ingress controller and configuration of your choice.
 ingress:
   api:
-    enabled: false
-    ingressClassName: ""
+    enabled: true
+    ingressClassName: ${ingress_class}
     labels: {}
-    annotations: {}
-    tls: []
-    host: minio.local
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      cert-manager.io/cluster-issuer: ${cert_issuer}
+    tls:
+      - secretName: minio-api-tls
+        hosts:
+          - s3.profidev.io
+    host: s3.profidev.io
     path: /
     pathType: Prefix
   console:

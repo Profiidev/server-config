@@ -101,3 +101,7 @@ variable "oidc_access_label" {
 variable "positron_ns" {
   type = string
 }
+
+variable "cert_issuer_prod" {
+  type = string
+}

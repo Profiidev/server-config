@@ -49,6 +49,7 @@ module "storage" {
   minio_ns               = var.minio_ns
   oidc_access_label      = var.oidc_access_label
   positron_ns            = var.positron_ns
+  cert_issuer_prod       = var.cert_issuer_prod
 }
 
 module "network" {
