@@ -28,7 +28,7 @@ spec:
           name: positron-backend
           resources: {}
           volumeMounts:
-            - mountPath: /etc/ssl/certs/custom
+            - mountPath: /etc/ssl/certs
               name: cluster-ca-cert
               readOnly: true
       dnsPolicy: ClusterFirst
