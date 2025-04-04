@@ -27,11 +27,9 @@ spec:
     secretStoreRef:
       name: ${var.cluster_secret_store}
       kind: ClusterSecretStore
-    data:
-      - secretKey: ca.crt
-        remoteRef:
+    dataFrom:
+      - extract:
           key: certs/cluster
-          property: ca.crt
   YAML
 
   depends_on = [helm_release.external_secrets]
