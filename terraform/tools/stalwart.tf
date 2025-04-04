@@ -278,5 +278,3 @@ spec:
 
   depends_on = [kubernetes_namespace.stalwart_ns]
 }
-
-// trust cert 

@@ -5,6 +5,7 @@ resource "kubernetes_namespace" "everest_system_ns" {
       "${var.secret_store_label.key}"    = var.secret_store_label.value
       "${var.oidc_access_label.key}"     = var.oidc_access_label.value
       "${var.cloudflare_cert_label.key}" = var.cloudflare_cert_label.value
+      "${var.minio_access_label.key}"    = var.minio_access_label.value
     }
   }
 }
@@ -306,4 +307,55 @@ spec:
   YAML
 
   depends_on = [kubernetes_namespace.everest_system_ns]
+}
+
+resource "kubectl_manifest" "postgres_system_minio" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: postgres-minio
+  namespace: ${var.everest_system_ns}
+spec:
+  order: 10
+  namespaceSelector: kubernetes.io/metadata.name == '${var.everest_system_ns}'
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        namespaceSelector: kubernetes.io/metadata.name == '${var.minio_ns}'
+        selector: has(v1.min.io/tenant)
+        ports:
+        - 9000
+  YAML
+
+  depends_on = [kubernetes_namespace.everest_system_ns]
+}
+
+//! Add minio label to everest ns
+resource "kubectl_manifest" "postgres_minio" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: postgres-minio
+  namespace: ${var.everest_ns}
+spec:
+  order: 10
+  namespaceSelector: kubernetes.io/metadata.name == '${var.everest_ns}'
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        namespaceSelector: kubernetes.io/metadata.name == '${var.minio_ns}'
+        selector: has(v1.min.io/tenant)
+        ports:
+        - 9000
+  YAML
+
+  depends_on = [null_resource.wait_for_everest_ns]
 }
