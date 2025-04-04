@@ -61,7 +61,6 @@ metadata:
   namespace: ${var.portainer_ns}
 spec:
   order: 10
-  selector: app.kubernetes.io/name == 'portainer'
   types:
     - Egress
   egress:

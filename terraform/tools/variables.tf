@@ -19,6 +19,11 @@ variable "proton_ns" {
   default = "proton"
 }
 
+variable "stalwart_ns" {
+  type    = string
+  default = "stalwart"
+}
+
 variable "cert_issuer_staging" {
   type = string
 }
