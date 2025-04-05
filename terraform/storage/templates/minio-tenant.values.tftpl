@@ -108,13 +108,13 @@ tenant:
     - servers: 1
       ###
       # Custom name for the pool
-      name: pool-0
+      name: pool-1
       ###
       # The number of volumes attached per MinIO Tenant Pod / Server.
-      volumesPerServer: 4
+      volumesPerServer: 1
       ###
       # The capacity per volume requested per MinIO Tenant Pod.
-      size: 10Gi
+      size: 100Gi
       ###
       # The `storageClass <https://kubernetes.io/docs/concepts/storage/storage-classes/>`__ to associate with volumes generated for this pool.
       #
