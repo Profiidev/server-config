@@ -25,7 +25,7 @@ variable "stalwart_ns" {
 }
 
 variable "metrics_ns" {
-  type    = string
+  type = string
 }
 
 variable "cert_issuer_staging" {
@@ -119,5 +119,9 @@ variable "secrets_ns" {
 }
 
 variable "storage_ns" {
+  type = string
+}
+
+variable "everest_system_ns" {
   type = string
 }

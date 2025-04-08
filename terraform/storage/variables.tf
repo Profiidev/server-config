@@ -12,7 +12,6 @@ variable "everest_ns" {
 
 variable "everest_system_ns" {
   type    = string
-  default = "everest-system"
 }
 
 variable "everest_olm_ns" {

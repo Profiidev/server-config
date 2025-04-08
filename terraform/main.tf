@@ -52,6 +52,7 @@ module "storage" {
   cert_issuer_prod       = var.cert_issuer_prod
   storage_ns             = var.storage_ns
   metrics_ns             = var.metrics_ns
+  everest_system_ns      = var.everest_system_ns
 }
 
 module "network" {
@@ -116,4 +117,5 @@ module "tools" {
   secrets_ns             = var.secrets_ns
   storage_ns             = var.storage_ns
   metrics_ns             = var.metrics_ns
+  everest_system_ns      = var.everest_system_ns
 }

@@ -138,3 +138,8 @@ variable "metrics_ns" {
   type    = string
   default = "metrics-system"
 }
+
+variable "everest_system_ns" {
+  type    = string
+  default = "everest-system"
+}

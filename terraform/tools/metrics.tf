@@ -261,6 +261,18 @@ module "minio_metrics" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
+module "stalwart_metrics" {
+  source = "./metrics-np"
+
+  namespace  = var.stalwart_ns
+  port       = 8080
+  name       = "stalwart"
+  metrics_ns = var.metrics_ns
+  selector   = "app == 'stalwart'"
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
 module "ingress_nginx_dashboard" {
   source = "./dashboard"
 
