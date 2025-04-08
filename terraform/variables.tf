@@ -118,3 +118,8 @@ variable "cert_issuer_prod" {
   type    = string
   default = "letsencrypt-prod"
 }
+
+variable "cert_ns" {
+  type        = string
+  default     = "cert-system"
+}

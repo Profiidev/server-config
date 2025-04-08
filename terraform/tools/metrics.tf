@@ -158,53 +158,38 @@ spec:
   YAML
 }
 
-resource "kubectl_manifest" "prometheus_egress" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: prometheus-egress
-  namespace: ${var.metrics_ns}
-spec:
-  order: 10
-  namespaceSelector: kubernetes.io/metadata.name == '${var.metrics_ns}'
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == 'kube-system'
-        selector: app.kubernetes.io/name == 'rke2-coredns'
-        ports:
-          - 9153
-  YAML
+module "ingress_nginx_metrics" {
+  source = "./metrics-np"
 
-  depends_on = [kubernetes_namespace.metrics_ns]
+  namespace  = "kube-system"
+  port       = 9153
+  name       = "rke2-coredns"
+  metrics_ns = var.metrics_ns
 }
 
-resource "kubectl_manifest" "prometheus_coredns" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: prometheus-coredns
-  namespace: kube-system
-spec:
-  order: 10
-  namespaceSelector: kubernetes.io/metadata.name == 'kube-system'
-  selector: app.kubernetes.io/name == 'rke2-coredns'
-  types:
-    - Ingress
-  ingress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        ports:
-          - 9153
-      source:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.metrics_ns}'
-  YAML
+module "cert_manager_metrics" {
+  source = "./metrics-np"
 
-  depends_on = [kubernetes_namespace.metrics_ns]
+  namespace  = var.cert_ns
+  port       = 9402
+  name       = "cert-manager"
+  metrics_ns = var.metrics_ns
+}
+
+module "cert_manager_injector_metrics" {
+  source = "./metrics-np"
+
+  namespace  = var.cert_ns
+  port       = 9402
+  name       = "cainjector"
+  metrics_ns = var.metrics_ns
+}
+
+module "cert_manager_webhook_metrics" {
+  source = "./metrics-np"
+
+  namespace  = var.cert_ns
+  port       = 9402
+  name       = "webhook"
+  metrics_ns = var.metrics_ns
 }

@@ -59,6 +59,7 @@ module "network" {
   email               = var.email
   cert_issuer_prod    = var.cert_issuer_prod
   cert_issuer_staging = var.cert_issuer_staging
+  cert_ns             = var.cert_ns
 }
 
 module "secrets" {
@@ -108,4 +109,5 @@ module "tools" {
   cluster_secret_store   = var.cluster_secret_store
   cert_issuer_prod       = var.cert_issuer_prod
   cert_issuer_staging    = var.cert_issuer_staging
+  cert_ns                = var.cert_ns
 }

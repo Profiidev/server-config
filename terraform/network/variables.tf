@@ -14,9 +14,7 @@ variable "ingress_class" {
 }
 
 variable "cert_ns" {
-  description = "Certificate Manager Namespace"
-  type        = string
-  default     = "cert-system"
+  type = string
 }
 
 variable "cert_issuer_staging" {

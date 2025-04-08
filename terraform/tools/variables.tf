@@ -110,3 +110,7 @@ variable "oidc_access_label" {
 variable "storage_class" {
   type = string
 }
+
+variable "cert_ns" {
+  type        = string
+}
