@@ -46,6 +46,11 @@ spec:
           - 194.164.200.60/32
         ports:
           - 6443
+          - 9100
+          - 10250
+          - 10257
+          - 10259
+          - 2381
   YAML
 
   depends_on = [kubernetes_namespace.metrics_ns]
@@ -150,4 +155,55 @@ spec:
         domains:
           - grafana.com
   YAML
+}
+
+resource "kubectl_manifest" "prometheus_egress" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: prometheus-egress
+  namespace: ${var.metrics_ns}
+spec:
+  order: 10
+  namespaceSelector: kubernetes.io/metadata.name == '${var.metrics_ns}'
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        namespaceSelector: kubernetes.io/metadata.name == 'kube-system'
+        selector: app.kubernetes.io/name == 'rke2-coredns'
+        ports:
+          - 9153
+  YAML
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
+resource "kubectl_manifest" "prometheus_coredns" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: prometheus-coredns
+  namespace: kube-system
+spec:
+  order: 10
+  namespaceSelector: kubernetes.io/metadata.name == 'kube-system'
+  selector: app.kubernetes.io/name == 'rke2-coredns'
+  types:
+    - Ingress
+  ingress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        ports:
+          - 9153
+      source:
+        namespaceSelector: kubernetes.io/metadata.name == '${var.metrics_ns}'
+  YAML
+
+  depends_on = [kubernetes_namespace.metrics_ns]
 }
