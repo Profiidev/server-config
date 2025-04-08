@@ -24,6 +24,11 @@ variable "stalwart_ns" {
   default = "stalwart"
 }
 
+variable "metrics_ns" {
+  type    = string
+  default = "metrics-system"
+}
+
 variable "cert_issuer_staging" {
   type = string
 }
