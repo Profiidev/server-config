@@ -4,6 +4,9 @@ crds:
 alertmanager:
   networkPolicy:
     enabled: true
+  alertmanagerSpec:
+    alertmanagerConfiguration:
+      name: alert-manager-config
 prometheusOperator:
   networkPolicy:
     enabled: true
