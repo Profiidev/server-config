@@ -216,23 +216,12 @@ module "cert_manager_metrics" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
-module "cert_manager_injector_metrics" {
+module "external_secrets_metrics" {
   source = "./metrics-np"
 
-  namespace  = var.cert_ns
-  port       = 9402
-  name       = "cainjector"
-  metrics_ns = var.metrics_ns
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-module "cert_manager_webhook_metrics" {
-  source = "./metrics-np"
-
-  namespace  = var.cert_ns
-  port       = 9402
-  name       = "webhook"
+  namespace  = var.secrets_ns
+  port       = 8080
+  name       = "external-secrets"
   metrics_ns = var.metrics_ns
 
   depends_on = [kubernetes_namespace.metrics_ns]
@@ -265,6 +254,16 @@ module "cert_manager_dashboard" {
   namespace = var.metrics_ns
   url       = ""
   download  = false
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
+module "external_secrets_dashboard" {
+  source = "./dashboard"
+
+  name      = "external-secrets"
+  namespace = var.metrics_ns
+  url       = "https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json"
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }

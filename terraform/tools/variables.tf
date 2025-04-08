@@ -112,5 +112,9 @@ variable "storage_class" {
 }
 
 variable "cert_ns" {
-  type        = string
+  type = string
+}
+
+variable "secrets_ns" {
+  type = string
 }

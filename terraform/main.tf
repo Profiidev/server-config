@@ -75,6 +75,7 @@ module "secrets" {
   cloudflare_cert_label  = var.cloudflare_cert_label
   cloudflare_cert_var    = var.cloudflare_cert_var
   ingress_class          = var.ingress_class
+  secrets_ns             = var.secrets_ns
 
   depends_on = [module.storage]
 }
@@ -110,4 +111,5 @@ module "tools" {
   cert_issuer_prod       = var.cert_issuer_prod
   cert_issuer_staging    = var.cert_issuer_staging
   cert_ns                = var.cert_ns
+  secrets_ns             = var.secrets_ns
 }

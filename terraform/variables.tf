@@ -120,6 +120,11 @@ variable "cert_issuer_prod" {
 }
 
 variable "cert_ns" {
-  type        = string
-  default     = "cert-system"
+  type    = string
+  default = "cert-system"
+}
+
+variable "secrets_ns" {
+  type    = string
+  default = "secrets-system"
 }
