@@ -1,2 +1,3 @@
 *.json
 !cert-manager.json
+!vault.json

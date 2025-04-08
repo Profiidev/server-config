@@ -227,6 +227,17 @@ module "external_secrets_metrics" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
+module "vault_metrics" {
+  source = "./metrics-np"
+
+  namespace  = var.secrets_ns
+  port       = 8200
+  name       = "vault"
+  metrics_ns = var.metrics_ns
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
 module "ingress_nginx_dashboard" {
   source = "./dashboard"
 
@@ -264,6 +275,17 @@ module "external_secrets_dashboard" {
   name      = "external-secrets"
   namespace = var.metrics_ns
   url       = "https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json"
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
+module "vault_dashboard" {
+  source = "./dashboard"
+
+  name      = "vault"
+  namespace = var.metrics_ns
+  url       = ""
+  download  = false
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
