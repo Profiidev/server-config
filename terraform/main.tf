@@ -50,6 +50,7 @@ module "storage" {
   oidc_access_label      = var.oidc_access_label
   positron_ns            = var.positron_ns
   cert_issuer_prod       = var.cert_issuer_prod
+  storage_ns             = var.storage_ns
 }
 
 module "network" {
@@ -112,4 +113,5 @@ module "tools" {
   cert_issuer_staging    = var.cert_issuer_staging
   cert_ns                = var.cert_ns
   secrets_ns             = var.secrets_ns
+  storage_ns             = var.storage_ns
 }

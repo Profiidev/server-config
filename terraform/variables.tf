@@ -128,3 +128,8 @@ variable "secrets_ns" {
   type    = string
   default = "secrets-system"
 }
+
+variable "storage_ns" {
+  type    = string
+  default = "longhorn-system"
+}

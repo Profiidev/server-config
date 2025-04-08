@@ -118,3 +118,7 @@ variable "cert_ns" {
 variable "secrets_ns" {
   type = string
 }
+
+variable "storage_ns" {
+  type = string
+}

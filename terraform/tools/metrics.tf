@@ -238,6 +238,17 @@ module "vault_metrics" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
+module "longhorn_metrics" {
+  source = "./metrics-np"
+
+  namespace  = var.storage_ns
+  port       = 9500
+  name       = "longhorn"
+  metrics_ns = var.metrics_ns
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
 module "ingress_nginx_dashboard" {
   source = "./dashboard"
 
@@ -290,6 +301,16 @@ module "vault_dashboard" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
+module "longhorn_dashboard" {
+  source = "./dashboard"
+
+  name      = "longhorn"
+  namespace = var.metrics_ns
+  url       = "https://grafana.com/api/dashboards/16888/revisions/9/download"
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
 resource "kubectl_manifest" "cert_manager_prometheus_config" {
   yaml_body = yamlencode({
     apiVersion = "monitoring.coreos.com/v1"
@@ -299,6 +320,24 @@ resource "kubectl_manifest" "cert_manager_prometheus_config" {
       namespace = var.metrics_ns
     }
     spec = yamldecode(file("${path.module}/mixin/cert-manager.yaml"))
+  })
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
+resource "kubectl_manifest" "longhorn_prometheus_config" {
+  yaml_body = yamlencode({
+    apiVersion = "monitoring.coreos.com/v1"
+    kind       = "PrometheusRule"
+    metadata = {
+      name      = "longhorn"
+      namespace = var.metrics_ns
+      labels = {
+        prometheus = "longhorn"
+        role       = "alert-rules"
+      }
+    }
+    spec = yamldecode(file("${path.module}/mixin/longhorn.yaml"))
   })
 
   depends_on = [kubernetes_namespace.metrics_ns]

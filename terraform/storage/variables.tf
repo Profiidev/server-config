@@ -26,9 +26,7 @@ variable "everest_monitoring_ns" {
 }
 
 variable "storage_ns" {
-  description = "Storage Namespace"
-  type        = string
-  default     = "longhorn-system"
+  type = string
 }
 
 variable "ingress_class" {
