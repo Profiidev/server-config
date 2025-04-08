@@ -11,6 +11,8 @@ prometheus:
   networkPolicy:
     enabled: true
   prometheusSpec:
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
     storageSpec:
       volumeClaimTemplate:
         spec:
