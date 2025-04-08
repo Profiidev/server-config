@@ -1,3 +1,4 @@
 *.json
 !cert-manager.json
 !vault.json
+!minio.json

@@ -51,6 +51,7 @@ module "storage" {
   positron_ns            = var.positron_ns
   cert_issuer_prod       = var.cert_issuer_prod
   storage_ns             = var.storage_ns
+  metrics_ns             = var.metrics_ns
 }
 
 module "network" {
@@ -114,4 +115,5 @@ module "tools" {
   cert_ns                = var.cert_ns
   secrets_ns             = var.secrets_ns
   storage_ns             = var.storage_ns
+  metrics_ns             = var.metrics_ns
 }

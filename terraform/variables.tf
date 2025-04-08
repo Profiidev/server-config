@@ -133,3 +133,8 @@ variable "storage_ns" {
   type    = string
   default = "longhorn-system"
 }
+
+variable "metrics_ns" {
+  type    = string
+  default = "metrics-system"
+}

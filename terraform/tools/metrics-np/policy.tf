@@ -15,7 +15,7 @@ spec:
       protocol: TCP
       destination:
         namespaceSelector: kubernetes.io/metadata.name == '${var.namespace}'
-        selector: app.kubernetes.io/instance == '${var.name}'
+        selector: ${var.selector != null ? var.selector : "app.kubernetes.io/instance == '${var.name}'"}
         ports:
           - ${var.port}
   YAML
@@ -31,7 +31,7 @@ metadata:
 spec:
   order: 10
   namespaceSelector: kubernetes.io/metadata.name == '${var.namespace}'
-  selector: app.kubernetes.io/instance == '${var.name}'
+  selector: ${var.selector != null ? var.selector : "app.kubernetes.io/instance == '${var.name}'"}
   types:
     - Ingress
   ingress:

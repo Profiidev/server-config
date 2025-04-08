@@ -210,7 +210,7 @@ tenant:
   ###
   # Configures a Prometheus-compatible scraping endpoint at the specified port.
   metrics:
-    enabled: false
+    enabled: true
     port: 9000
     protocol: http
   ###
@@ -311,7 +311,7 @@ tenant:
   serviceAccountName: ""
   ###
   # Directs the Operator to add the Tenant's metric scrape configuration to an existing Kubernetes Prometheus deployment managed by the Prometheus Operator.
-  prometheusOperator: false
+  prometheusOperator: true
   ###
   # Configure pod logging configuration for the MinIO Tenant.
   #

@@ -13,3 +13,9 @@ variable "name" {
 variable "port" {
   type = number
 }
+
+variable "selector" {
+  type     = string
+  nullable = true
+  default  = null
+}

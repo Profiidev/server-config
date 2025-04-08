@@ -103,3 +103,7 @@ variable "positron_ns" {
 variable "cert_issuer_prod" {
   type = string
 }
+
+variable "metrics_ns" {
+  type = string
+}

@@ -249,6 +249,18 @@ module "longhorn_metrics" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
+module "minio_metrics" {
+  source = "./metrics-np"
+
+  namespace  = var.minio_ns
+  port       = 9000
+  name       = "minio"
+  metrics_ns = var.metrics_ns
+  selector   = "has(v1.min.io/tenant)"
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
 module "ingress_nginx_dashboard" {
   source = "./dashboard"
 
@@ -311,6 +323,17 @@ module "longhorn_dashboard" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
+module "minio_dashboard" {
+  source = "./dashboard"
+
+  name      = "minio"
+  namespace = var.metrics_ns
+  url       = "https://raw.githubusercontent.com/minio/minio/master/docs/metrics/prometheus/grafana/minio-dashboard.json"
+  download  = false
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
 resource "kubectl_manifest" "cert_manager_prometheus_config" {
   yaml_body = yamlencode({
     apiVersion = "monitoring.coreos.com/v1"
@@ -338,6 +361,24 @@ resource "kubectl_manifest" "longhorn_prometheus_config" {
       }
     }
     spec = yamldecode(file("${path.module}/mixin/longhorn.yaml"))
+  })
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
+resource "kubectl_manifest" "minio_prometheus_config" {
+  yaml_body = yamlencode({
+    apiVersion = "monitoring.coreos.com/v1"
+    kind       = "PrometheusRule"
+    metadata = {
+      name      = "minio"
+      namespace = var.metrics_ns
+      labels = {
+        prometheus = "minio"
+        role       = "alert-rules"
+      }
+    }
+    spec = yamldecode(file("${path.module}/mixin/minio.yaml"))
   })
 
   depends_on = [kubernetes_namespace.metrics_ns]
