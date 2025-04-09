@@ -13,6 +13,14 @@ global:
       name: cluster-ca-cert
       readOnly: true
 
+monitoring:
+  serviceMonitor:
+    enabled: true
+  dashboards:
+    enabled: true
+  rules:
+    enabled: true
+
 loki:
   auth_enable: false
   schemaConfig:
