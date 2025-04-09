@@ -4,10 +4,17 @@
 
 - create rke2 config `/etc/rancher/rke2/config.yaml`
 
-  ```
+  ```yaml
   cni: calico
   profile: cis
   pod-security-admission-config-file: /etc/rancher/rke2/rke2-pss-custom.yaml
+  etcd-expose-metrics: true
+  kube-controller-manager-arg:
+    - bind-address=0.0.0.0
+  kube-scheduler-arg:
+    - bind-address=0.0.0.0
+  kube-proxy-arg:
+    - metrics-bind-address=0.0.0.0
   ```
 
 - create admission config `/etc/rancher/rke2/rke2-pss-custom.yaml`

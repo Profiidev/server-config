@@ -48,3 +48,7 @@ grafana:
         hosts:
           - "*.profidev.io"
           - "profidev.io"
+kubeProxy:
+  service:
+    selector:
+      component: kube-proxy
