@@ -2,3 +2,4 @@
 !cert-manager.json
 !vault.json
 !minio.json
+!loki-logs.json

@@ -97,3 +97,14 @@ spec:
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
+
+module "loki_dashboard" {
+  source = "./dashboard"
+
+  name      = "loki-logs"
+  namespace = var.metrics_ns
+  url       = ""
+  download  = false
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
