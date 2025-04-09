@@ -1,7 +1,5 @@
 variable "secrets_ns" {
-  description = "Secrets Namespace"
-  type        = string
-  default     = "secrets-system"
+  type = string
 }
 
 variable "vault_global_token" {

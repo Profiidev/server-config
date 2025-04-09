@@ -108,13 +108,13 @@ tenant:
     - servers: 1
       ###
       # Custom name for the pool
-      name: pool-0
+      name: pool-1
       ###
       # The number of volumes attached per MinIO Tenant Pod / Server.
-      volumesPerServer: 4
+      volumesPerServer: 1
       ###
       # The capacity per volume requested per MinIO Tenant Pod.
-      size: 10Gi
+      size: 100Gi
       ###
       # The `storageClass <https://kubernetes.io/docs/concepts/storage/storage-classes/>`__ to associate with volumes generated for this pool.
       #
@@ -210,7 +210,7 @@ tenant:
   ###
   # Configures a Prometheus-compatible scraping endpoint at the specified port.
   metrics:
-    enabled: false
+    enabled: true
     port: 9000
     protocol: http
   ###
@@ -311,7 +311,7 @@ tenant:
   serviceAccountName: ""
   ###
   # Directs the Operator to add the Tenant's metric scrape configuration to an existing Kubernetes Prometheus deployment managed by the Prometheus Operator.
-  prometheusOperator: false
+  prometheusOperator: true
   ###
   # Configure pod logging configuration for the MinIO Tenant.
   #

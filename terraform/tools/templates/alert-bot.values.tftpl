@@ -1,0 +1,7 @@
+env:
+  DISCORD_WEBHOOK:
+    valueFrom:
+      secretKeyRef:
+        name: discord-webhook
+        key: url
+  VERBOSE: "ON"

@@ -1,0 +1,50 @@
+crds:
+  upgradeJob:
+    enabled: true
+alertmanager:
+  networkPolicy:
+    enabled: true
+  alertmanagerSpec:
+    alertmanagerConfiguration:
+      name: alert-manager-config
+prometheusOperator:
+  networkPolicy:
+    enabled: true
+prometheus:
+  networkPolicy:
+    enabled: true
+  prometheusSpec:
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassname: ${storage_class}
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 20Gi
+grafana:
+  persistence:
+    enabled: true
+    storageClassName: ${storage_class}
+  grafana.ini:
+    server:
+      root_url: https://grafana.profidev.io
+  sidecar:
+    datasources:
+      skipReload: true
+      initDatasources: true
+  ingress:
+    enabled: true
+    ingressClassname: ${ingress_class}
+    annotations:
+      nginx.ingress.kubernetes.io/auth-tls-secret: ${namespace}/${cloudflare_ca_cert_var}
+      nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+    hosts:
+      - grafana.profidev.io
+    tls:
+      - secretName: ${cloudflare_cert_var}
+        hosts:
+          - "*.profidev.io"
+          - "profidev.io"

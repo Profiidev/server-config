@@ -24,6 +24,10 @@ variable "stalwart_ns" {
   default = "stalwart"
 }
 
+variable "metrics_ns" {
+  type = string
+}
+
 variable "cert_issuer_staging" {
   type = string
 }
@@ -103,5 +107,25 @@ variable "oidc_access_label" {
 }
 
 variable "storage_class" {
+  type = string
+}
+
+variable "cert_ns" {
+  type = string
+}
+
+variable "secrets_ns" {
+  type = string
+}
+
+variable "storage_ns" {
+  type = string
+}
+
+variable "everest_system_ns" {
+  type = string
+}
+
+variable "ca_hash" {
   type = string
 }

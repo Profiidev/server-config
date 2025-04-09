@@ -118,3 +118,28 @@ variable "cert_issuer_prod" {
   type    = string
   default = "letsencrypt-prod"
 }
+
+variable "cert_ns" {
+  type    = string
+  default = "cert-system"
+}
+
+variable "secrets_ns" {
+  type    = string
+  default = "secrets-system"
+}
+
+variable "storage_ns" {
+  type    = string
+  default = "longhorn-system"
+}
+
+variable "metrics_ns" {
+  type    = string
+  default = "metrics-system"
+}
+
+variable "everest_system_ns" {
+  type    = string
+  default = "everest-system"
+}

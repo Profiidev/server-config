@@ -12,7 +12,6 @@ variable "everest_ns" {
 
 variable "everest_system_ns" {
   type    = string
-  default = "everest-system"
 }
 
 variable "everest_olm_ns" {
@@ -26,9 +25,7 @@ variable "everest_monitoring_ns" {
 }
 
 variable "storage_ns" {
-  description = "Storage Namespace"
-  type        = string
-  default     = "longhorn-system"
+  type = string
 }
 
 variable "ingress_class" {
@@ -103,5 +100,9 @@ variable "positron_ns" {
 }
 
 variable "cert_issuer_prod" {
+  type = string
+}
+
+variable "metrics_ns" {
   type = string
 }

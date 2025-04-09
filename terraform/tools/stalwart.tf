@@ -3,6 +3,7 @@ resource "kubernetes_namespace" "stalwart_ns" {
     name = var.stalwart_ns
     labels = {
       "${var.postgres_access_label.key}" = var.postgres_access_label.value
+      "${var.secret_store_label.key}"    = var.secret_store_label.value
     }
   }
 }
@@ -101,6 +102,9 @@ resource "kubernetes_service_v1" "stalwart" {
   metadata {
     name      = "stalwart"
     namespace = var.stalwart_ns
+    labels = {
+      "app" = "stalwart"
+    }
   }
   spec {
     type = "ClusterIP"
@@ -274,6 +278,58 @@ spec:
         ports:
           - 443
           - 25
+  YAML
+
+  depends_on = [kubernetes_namespace.stalwart_ns]
+}
+
+resource "kubectl_manifest" "stalwart_metrics" {
+  yaml_body = <<YAML
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: stalwart
+  namespace: ${var.stalwart_ns}
+spec:
+  selector:
+    matchLabels:
+      app: stalwart
+  endpoints:
+    - port: http
+      path: "/metrics/prometheus"
+      basicAuth:
+        username:
+          name: stalwart
+          key: METRICS_USERNAME
+        password:
+          name: stalwart
+          key: METRICS_SECRET
+      metricRelabelings:
+        - sourceLabels: [__name__]
+          targetLabel: __name__
+          replacement: stalwart_$1
+  YAML
+
+  depends_on = [kubernetes_namespace.stalwart_ns]
+}
+
+resource "kubectl_manifest" "stalwart_secret" {
+  yaml_body = <<YAML
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: stalwart
+  namespace: ${var.stalwart_ns}
+spec:
+  refreshInterval: 15s
+  secretStoreRef:
+    name: ${var.cluster_secret_store}
+    kind: ClusterSecretStore
+  target:
+    name: stalwart
+  dataFrom:
+  - extract:
+      key: apps/stalwart
   YAML
 
   depends_on = [kubernetes_namespace.stalwart_ns]

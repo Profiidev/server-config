@@ -50,6 +50,9 @@ module "storage" {
   oidc_access_label      = var.oidc_access_label
   positron_ns            = var.positron_ns
   cert_issuer_prod       = var.cert_issuer_prod
+  storage_ns             = var.storage_ns
+  metrics_ns             = var.metrics_ns
+  everest_system_ns      = var.everest_system_ns
 }
 
 module "network" {
@@ -59,6 +62,7 @@ module "network" {
   email               = var.email
   cert_issuer_prod    = var.cert_issuer_prod
   cert_issuer_staging = var.cert_issuer_staging
+  cert_ns             = var.cert_ns
 }
 
 module "secrets" {
@@ -74,6 +78,7 @@ module "secrets" {
   cloudflare_cert_label  = var.cloudflare_cert_label
   cloudflare_cert_var    = var.cloudflare_cert_var
   ingress_class          = var.ingress_class
+  secrets_ns             = var.secrets_ns
 
   depends_on = [module.storage]
 }
@@ -108,4 +113,10 @@ module "tools" {
   cluster_secret_store   = var.cluster_secret_store
   cert_issuer_prod       = var.cert_issuer_prod
   cert_issuer_staging    = var.cert_issuer_staging
+  cert_ns                = var.cert_ns
+  secrets_ns             = var.secrets_ns
+  storage_ns             = var.storage_ns
+  metrics_ns             = var.metrics_ns
+  everest_system_ns      = var.everest_system_ns
+  ca_hash                = module.secrets.ca_hash
 }

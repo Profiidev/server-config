@@ -18,6 +18,7 @@ resource "helm_release" "minio" {
   namespace  = var.minio_ns
 
   values = [templatefile("${path.module}/templates/minio.values.tftpl", {
+    metrics_ns = var.metrics_ns
   })]
 
   depends_on = [kubernetes_namespace.minio_ns]

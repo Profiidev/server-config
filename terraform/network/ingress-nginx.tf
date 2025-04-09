@@ -21,6 +21,12 @@ spec:
       networkPolicy:
         enabled: true
       hostNetwork: true
+      metrics:
+        enabled: true
+        serviceMonitor:
+          additionalLabels:
+            release: prometheus
+          enabled: true
     tcp:
       25: "stalwart/stalwart:25"
       587: "stalwart/stalwart:587"
