@@ -31,6 +31,10 @@ grafana:
   grafana.ini:
     server:
       root_url: https://grafana.profidev.io
+  sidecar:
+    datasources:
+      skipReload: true
+      initDatasources: true
   ingress:
     enabled: true
     ingressClassname: ${ingress_class}

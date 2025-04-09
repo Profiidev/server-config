@@ -1,0 +1,118 @@
+networkPolicy:
+  enabled: true
+
+global:
+  extraVolumes:
+    - name: cluster-ca-cert
+      secret:
+        defaultMode: 420
+        secretName: cluster-ca-cert
+  extraVolumeMounts:
+    - mountPath: /etc/ssl/certs/${ca_hash}.0
+      subPath: ${ca_hash}.0
+      name: cluster-ca-cert
+      readOnly: true
+
+loki:
+  auth_enable: false
+  schemaConfig:
+    configs:
+      - from: "2024-04-01"
+        store: tsdb
+        object_store: s3
+        schema: v13
+        index:
+          prefix: loki_index_
+          period: 24h
+  querier:
+    max_concurrent: 4
+  pattern_ingester:
+    enabled: true
+  limits_config:
+    allow_structured_metadata: true
+    volume_enabled: true
+    retention_period: 672h
+  commonConfig:
+    replication_factor: 1
+
+  storage:
+    type: s3
+    bucketNames:
+      chunks: loki-chunk
+      ruler: loki-ruler
+      admin: loki-admin
+    s3:
+      region: default
+      endpoint: "$${GRAFANA_LOKI_S3_ENDPOINT}"
+      accessKeyId: "$${GRAFANA_LOKI_S3_ACCESKEYID}"
+      secretAccessKey: "$${GRAFANA_LOKI_S3_SECRETACCESSKEY}"
+      s3ForcePathStyle: true
+
+deploymentMode: SimpleScalable
+
+backend:
+  replicas: 1
+  extraArgs:
+    - "-config.expand-env=true"
+  extraEnv:
+    - name: GRAFANA_LOKI_S3_ENDPOINT
+      valueFrom:
+        secretKeyRef:
+          name: loki-secrets
+          key: grafana-loki-s3-endpoint
+    - name: GRAFANA_LOKI_S3_ACCESKEYID
+      valueFrom:
+        secretKeyRef:
+          name: loki-secrets
+          key: grafana-loki-s3-accessKeyId
+    - name: GRAFANA_LOKI_S3_SECRETACCESSKEY
+      valueFrom:
+        secretKeyRef:
+          name: loki-secrets
+          key: grafana-loki-s3-secretAccessKey
+read:
+  replicas: 1
+  extraArgs:
+    - "-config.expand-env=true"
+  extraEnv:
+    - name: GRAFANA_LOKI_S3_ENDPOINT
+      valueFrom:
+        secretKeyRef:
+          name: loki-secrets
+          key: grafana-loki-s3-endpoint
+    - name: GRAFANA_LOKI_S3_ACCESKEYID
+      valueFrom:
+        secretKeyRef:
+          name: loki-secrets
+          key: grafana-loki-s3-accessKeyId
+    - name: GRAFANA_LOKI_S3_SECRETACCESSKEY
+      valueFrom:
+        secretKeyRef:
+          name: loki-secrets
+          key: grafana-loki-s3-secretAccessKey
+write:
+  replicas: 1
+  extraArgs:
+    - "-config.expand-env=true"
+  extraEnv:
+    - name: GRAFANA_LOKI_S3_ENDPOINT
+      valueFrom:
+        secretKeyRef:
+          name: loki-secrets
+          key: grafana-loki-s3-endpoint
+    - name: GRAFANA_LOKI_S3_ACCESKEYID
+      valueFrom:
+        secretKeyRef:
+          name: loki-secrets
+          key: grafana-loki-s3-accessKeyId
+    - name: GRAFANA_LOKI_S3_SECRETACCESSKEY
+      valueFrom:
+        secretKeyRef:
+          name: loki-secrets
+          key: grafana-loki-s3-secretAccessKey
+
+minio:
+  enabled: false
+
+gateway:
+  enabled: false

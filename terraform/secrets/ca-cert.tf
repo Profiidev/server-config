@@ -70,3 +70,7 @@ resource "null_resource" "vault_cluster_ca_cert" {
 
   depends_on = [null_resource.vault_init_kv]
 }
+
+output "ca_hash" {
+  value = data.external.ca_hash.result["hash"]
+}

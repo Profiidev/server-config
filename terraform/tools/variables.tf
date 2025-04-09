@@ -125,3 +125,7 @@ variable "storage_ns" {
 variable "everest_system_ns" {
   type = string
 }
+
+variable "ca_hash" {
+  type = string
+}
