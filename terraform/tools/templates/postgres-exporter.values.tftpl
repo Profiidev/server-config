@@ -1,0 +1,7 @@
+serviceMonitor:
+  enabled: true
+  namespace: ${namespace}
+config:
+  datasourceSecret:
+    name: postgres-exporter
+    key: dbs

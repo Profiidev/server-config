@@ -3,3 +3,4 @@
 !vault.json
 !minio.json
 !loki-logs.json
+!postgres.json
