@@ -1,0 +1,13 @@
+serviceMonitor:
+  enabled: true
+  namespace: ${namespace}
+config:
+  datasource:
+    host: postgresql-pgbouncer.everest.svc
+    user: _crunchypgbouncer
+    passwordSecret:
+      name: pgbouncer-exporter
+      key: password
+    sslmode: require
+  logLevel: "debug"
+  logFormat: "logfmt"
