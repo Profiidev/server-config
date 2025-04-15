@@ -389,16 +389,7 @@ module "pgbouncer_dashboard" {
   name      = "pgbouncer"
   namespace = var.metrics_ns
   url       = "https://raw.githubusercontent.com/monitoring-mixins/website/refs/heads/master/assets/pgbouncer/dashboards/clusterOverview"
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-module "pgbouncer_logs_dashboard" {
-  source = "./dashboard"
-
-  name      = "pgbouncer-logs"
-  namespace = var.metrics_ns
-  url       = "https://raw.githubusercontent.com/monitoring-mixins/website/refs/heads/master/assets/pgbouncer/dashboards/logs"
+  download  = false
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
@@ -409,6 +400,7 @@ module "pgbouncer_overview_dashboard" {
   name      = "pgbouncer-overview"
   namespace = var.metrics_ns
   url       = "https://raw.githubusercontent.com/monitoring-mixins/website/refs/heads/master/assets/pgbouncer/dashboards/overview"
+  download  = false
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
