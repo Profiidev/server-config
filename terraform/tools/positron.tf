@@ -83,6 +83,30 @@ spec:
   depends_on = [kubernetes_namespace.positron_ns]
 }
 
+resource "kubectl_manifest" "positron_nats" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: positron-backend-nats
+  namespace: ${var.positron_ns}
+spec:
+  order: 10
+  selector: app == 'positron-backend'
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      destination:
+        namespaceSelector: kubernetes.io/metadata.name == '${var.nats_ns}'
+        selector: app.kubernetes.io/component == 'nats'
+        ports:
+          - 4222
+  YAML
+
+  depends_on = [kubernetes_namespace.positron_ns]
+}
+
 resource "kubectl_manifest" "positron_backend_ingress" {
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1

@@ -133,3 +133,10 @@ variable "ca_hash" {
 variable "nats_ns" {
   type = string
 }
+
+variable "nats_access_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+}

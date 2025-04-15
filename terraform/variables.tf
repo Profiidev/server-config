@@ -104,6 +104,17 @@ variable "oidc_access_label" {
   }
 }
 
+variable "nats_access_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+  default = {
+    key   = "nats-access"
+    value = "true"
+  }
+}
+
 variable "positron_ns" {
   type    = string
   default = "positron"

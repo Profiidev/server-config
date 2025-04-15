@@ -92,6 +92,13 @@ variable "postgres_access_label" {
   })
 }
 
+variable "nats_access_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+}
+
 variable "oidc_access_label" {
   type = object({
     key   = string
