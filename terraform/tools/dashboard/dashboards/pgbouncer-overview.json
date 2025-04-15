@@ -2,12 +2,6 @@
   "links": [
     {
       "keepTime": true,
-      "title": "PgBouncer logs",
-      "type": "link",
-      "url": "/d/pgbouncer-logs"
-    },
-    {
-      "keepTime": true,
       "title": "PgBouncer cluster overview",
       "type": "link",
       "url": "/d/pgbouncer-cluster-overview"
@@ -375,7 +369,7 @@
             "type": "prometheus",
             "uid": "${prometheus_datasource}"
           },
-          "expr": "1000 * increase(pgbouncer_stats_queries_duration_seconds_total{job=~\"$job\"base\"}[$__interval:]) / clamp_min(increase(pgbouncer_stats_queries_pooled_total{job=~\"$job\",instance=~\"$instance\",database=~\"$database\"}[$__interval:]), 1)",
+          "expr": "1000 * increase(pgbouncer_stats_queries_duration_seconds_total{job=~\"$job\",instance=~\"$instance\",database=~\"$database\"}[$__interval:]) / clamp_min(increase(pgbouncer_stats_queries_pooled_total{job=~\"$job\",instance=~\"$instance\",database=~\"$database\"}[$__interval:]), 1)",
           "legendFormat": "{{database}}"
         }
       ],
@@ -540,6 +534,7 @@
         "y": 19
       },
       "id": 14,
+      "interval": "1m",
       "options": {
         "legend": {
           "calcs": [],

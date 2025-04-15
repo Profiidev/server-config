@@ -2,12 +2,6 @@
   "links": [
     {
       "keepTime": true,
-      "title": "PgBouncer logs",
-      "type": "link",
-      "url": "/d/pgbouncer-logs"
-    },
-    {
-      "keepTime": true,
       "title": "PgBouncer overview",
       "type": "link",
       "url": "/d/pgbouncer-overview"
@@ -156,6 +150,7 @@
         "y": 6
       },
       "id": 4,
+      "interval": "1m",
       "options": {
         "legend": {
           "calcs": [],
