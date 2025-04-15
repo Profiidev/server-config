@@ -3,3 +3,6 @@
 !vault.json
 !minio.json
 !loki-logs.json
+!postgres.json
+!pgbouncer.json
+!pgbouncer-overview.json

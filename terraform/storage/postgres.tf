@@ -184,6 +184,14 @@ resource "null_resource" "wait_for_everest_ns" {
   }
 }
 
+resource "null_resource" "everest_labels" {
+  provisioner "local-exec" {
+    command = <<EOT
+      kubectl label ns ${var.everest_ns} ${var.secret_store_label.key}=${var.secret_store_label.value}
+    EOT
+  }
+}
+
 resource "kubectl_manifest" "everest_np" {
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1

@@ -275,6 +275,30 @@ module "stalwart_metrics" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
+module "postgres_metrics" {
+  source = "./metrics-np"
+
+  namespace  = var.everest_ns
+  port       = 9187
+  name       = "prometheus-postgres-exporter"
+  metrics_ns = var.metrics_ns
+  selector   = "app == 'prometheus-postgres-exporter'"
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
+module "pgbouncer_metrics" {
+  source = "./metrics-np"
+
+  namespace  = var.everest_ns
+  port       = 9127
+  name       = "prometheus-pgbouncer-exporter"
+  metrics_ns = var.metrics_ns
+  selector   = "app == 'prometheus-pgbouncer-exporter'"
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
 module "ingress_nginx_dashboard" {
   source = "./dashboard"
 
@@ -348,6 +372,39 @@ module "minio_dashboard" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
+module "postgres_dashboard" {
+  source = "./dashboard"
+
+  name      = "postgres"
+  namespace = var.metrics_ns
+  url       = ""
+  download  = false
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
+module "pgbouncer_dashboard" {
+  source = "./dashboard"
+
+  name      = "pgbouncer"
+  namespace = var.metrics_ns
+  url       = "https://raw.githubusercontent.com/monitoring-mixins/website/refs/heads/master/assets/pgbouncer/dashboards/clusterOverview"
+  download  = false
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
+module "pgbouncer_overview_dashboard" {
+  source = "./dashboard"
+
+  name      = "pgbouncer-overview"
+  namespace = var.metrics_ns
+  url       = "https://raw.githubusercontent.com/monitoring-mixins/website/refs/heads/master/assets/pgbouncer/dashboards/overview"
+  download  = false
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
 resource "kubectl_manifest" "cert_manager_prometheus_config" {
   yaml_body = yamlencode({
     apiVersion = "monitoring.coreos.com/v1"
@@ -393,6 +450,42 @@ resource "kubectl_manifest" "minio_prometheus_config" {
       }
     }
     spec = yamldecode(file("${path.module}/mixin/minio.yaml"))
+  })
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
+resource "kubectl_manifest" "postgres_prometheus_config" {
+  yaml_body = yamlencode({
+    apiVersion = "monitoring.coreos.com/v1"
+    kind       = "PrometheusRule"
+    metadata = {
+      name      = "postgres"
+      namespace = var.metrics_ns
+      labels = {
+        prometheus = "postgres"
+        role       = "alert-rules"
+      }
+    }
+    spec = yamldecode(file("${path.module}/mixin/postgres.yaml"))
+  })
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
+resource "kubectl_manifest" "pgbouncer_prometheus_config" {
+  yaml_body = yamlencode({
+    apiVersion = "monitoring.coreos.com/v1"
+    kind       = "PrometheusRule"
+    metadata = {
+      name      = "pgbouncer"
+      namespace = var.metrics_ns
+      labels = {
+        prometheus = "pgbouncer"
+        role       = "alert-rules"
+      }
+    }
+    spec = yamldecode(file("${path.module}/mixin/pgbouncer.yaml"))
   })
 
   depends_on = [kubernetes_namespace.metrics_ns]
@@ -453,4 +546,72 @@ spec:
   YAML
 
   depends_on = [kubernetes_namespace.metrics_ns]
+}
+
+resource "helm_release" "postgres_exporter" {
+  name       = "postgres-exporter"
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "prometheus-postgres-exporter"
+  version    = "6.10.0"
+  namespace  = var.everest_ns
+
+  values = [templatefile("${path.module}/templates/postgres-exporter.values.tftpl", {
+    namespace = var.everest_ns
+  })]
+
+  depends_on = [helm_release.prometheus]
+}
+
+resource "helm_release" "pgbouncer_exporter" {
+  name       = "pgbouncer-exporter"
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "prometheus-pgbouncer-exporter"
+  version    = "0.6.0"
+  namespace  = var.everest_ns
+
+  values = [templatefile("${path.module}/templates/pgbouncer-exporter.values.tftpl", {
+    namespace = var.everest_ns
+  })]
+
+  depends_on = [helm_release.prometheus]
+}
+
+resource "kubectl_manifest" "postgres_exporter_secret" {
+  yaml_body = <<YAML
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: postgres-exporter
+  namespace: ${var.everest_ns}
+spec:
+  refreshInterval: 15s
+  secretStoreRef:
+    name: ${var.cluster_secret_store}
+    kind: ClusterSecretStore
+  target:
+    name: postgres-exporter
+  dataFrom:
+  - extract:
+      key: apps/postgres-exporter
+  YAML
+}
+
+resource "kubectl_manifest" "pgbouncer_exporter_secret" {
+  yaml_body = <<YAML
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: pgbouncer-exporter
+  namespace: ${var.everest_ns}
+spec:
+  refreshInterval: 15s
+  secretStoreRef:
+    name: ${var.cluster_secret_store}
+    kind: ClusterSecretStore
+  target:
+    name: pgbouncer-exporter
+  dataFrom:
+  - extract:
+      key: apps/pgbouncer-exporter
+  YAML
 }
