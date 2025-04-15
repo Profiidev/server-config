@@ -6,3 +6,4 @@
 !postgres.json
 !pgbouncer.json
 !pgbouncer-overview.json
+!nats*.json

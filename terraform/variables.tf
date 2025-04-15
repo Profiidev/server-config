@@ -143,3 +143,8 @@ variable "everest_system_ns" {
   type    = string
   default = "everest-system"
 }
+
+variable "nats_ns" {
+  type    = string
+  default = "nats-system"
+}
