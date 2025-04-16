@@ -7,6 +7,7 @@ resource "kubernetes_namespace" "positron_ns" {
       "${var.cluster_ca_cert_label.key}" = var.cluster_ca_cert_label.value
       "${var.minio_access_label.key}"    = var.minio_access_label.value
       "${var.postgres_access_label.key}" = var.postgres_access_label.value
+      "${var.nats_access_label.key}"     = var.nats_access_label.value
     }
   }
 }
