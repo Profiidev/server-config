@@ -11,7 +11,7 @@ variable "everest_ns" {
 }
 
 variable "everest_system_ns" {
-  type    = string
+  type = string
 }
 
 variable "everest_olm_ns" {
@@ -25,6 +25,10 @@ variable "everest_monitoring_ns" {
 }
 
 variable "storage_ns" {
+  type = string
+}
+
+variable "nats_ns" {
   type = string
 }
 
@@ -82,6 +86,13 @@ variable "minio_access_label" {
 }
 
 variable "postgres_access_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+}
+
+variable "nats_access_label" {
   type = object({
     key   = string
     value = string

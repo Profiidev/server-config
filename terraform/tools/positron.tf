@@ -7,6 +7,7 @@ resource "kubernetes_namespace" "positron_ns" {
       "${var.cluster_ca_cert_label.key}" = var.cluster_ca_cert_label.value
       "${var.minio_access_label.key}"    = var.minio_access_label.value
       "${var.postgres_access_label.key}" = var.postgres_access_label.value
+      "${var.nats_access_label.key}"     = var.nats_access_label.value
     }
   }
 }
@@ -78,6 +79,31 @@ spec:
         selector: app.kubernetes.io/name == 'percona-postgresql'
         ports:
           - 5432
+  YAML
+
+  depends_on = [kubernetes_namespace.positron_ns]
+}
+
+resource "kubectl_manifest" "positron_nats" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: positron-backend-nats
+  namespace: ${var.positron_ns}
+spec:
+  order: 10
+  selector: app == 'positron-backend'
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        namespaceSelector: kubernetes.io/metadata.name == '${var.nats_ns}'
+        selector: app.kubernetes.io/component == 'nats'
+        ports:
+          - 4222
   YAML
 
   depends_on = [kubernetes_namespace.positron_ns]

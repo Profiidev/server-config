@@ -53,6 +53,8 @@ module "storage" {
   storage_ns             = var.storage_ns
   metrics_ns             = var.metrics_ns
   everest_system_ns      = var.everest_system_ns
+  nats_ns                = var.nats_ns
+  nats_access_label      = var.nats_access_label
 }
 
 module "network" {
@@ -119,4 +121,6 @@ module "tools" {
   metrics_ns             = var.metrics_ns
   everest_system_ns      = var.everest_system_ns
   ca_hash                = module.secrets.ca_hash
+  nats_ns                = var.nats_ns
+  nats_access_label      = var.nats_access_label
 }

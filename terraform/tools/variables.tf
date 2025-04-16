@@ -129,3 +129,14 @@ variable "everest_system_ns" {
 variable "ca_hash" {
   type = string
 }
+
+variable "nats_ns" {
+  type = string
+}
+
+variable "nats_access_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+}

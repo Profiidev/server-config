@@ -1,0 +1,13 @@
+config:
+  cluster:
+    enabled: true
+    replicas: 2
+  merge:
+    accounts:
+      $SYS:
+        users:
+        - {user: system, password: a}
+promExporter:
+  enabled: true
+  podMonitor:
+    enabled: true

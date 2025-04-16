@@ -299,6 +299,18 @@ module "pgbouncer_metrics" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
+module "nats_metrics" {
+  source = "./metrics-np"
+
+  namespace  = var.nats_ns
+  port       = 7777
+  name       = "nats"
+  metrics_ns = var.metrics_ns
+  selector   = "app.kubernetes.io/component == 'nats'"
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
 module "ingress_nginx_dashboard" {
   source = "./dashboard"
 
@@ -400,6 +412,28 @@ module "pgbouncer_overview_dashboard" {
   name      = "pgbouncer-overview"
   namespace = var.metrics_ns
   url       = "https://raw.githubusercontent.com/monitoring-mixins/website/refs/heads/master/assets/pgbouncer/dashboards/overview"
+  download  = false
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
+module "nats_dashboard" {
+  source = "./dashboard"
+
+  name      = "nats"
+  namespace = var.metrics_ns
+  url       = ""
+  download  = false
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
+module "nats_jetstream_dashboard" {
+  source = "./dashboard"
+
+  name      = "nats-jetstream"
+  namespace = var.metrics_ns
+  url       = ""
   download  = false
 
   depends_on = [kubernetes_namespace.metrics_ns]
