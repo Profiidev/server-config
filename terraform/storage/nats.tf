@@ -32,10 +32,12 @@ spec:
     - Ingress
   egress:
     - action: Allow
+      protocol: TCP
       destination:
         namespaceSelector: kubernetes.io/metadata.name == '${var.nats_ns}'
   ingress:
     - action: Allow
+      protocol: TCP
       source:
         namespaceSelector: kubernetes.io/metadata.name == '${var.nats_ns}'
   YAML
@@ -57,6 +59,7 @@ spec:
     - Ingress
   ingress:
     - action: Allow
+      protocol: TCP
       source:
         namespaceSelector: ${var.nats_access_label.key} == '${var.nats_access_label.value}'
       destination:

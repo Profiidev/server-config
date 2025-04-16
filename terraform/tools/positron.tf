@@ -98,6 +98,7 @@ spec:
     - Egress
   egress:
     - action: Allow
+      protocol: TCP
       destination:
         namespaceSelector: kubernetes.io/metadata.name == '${var.nats_ns}'
         selector: app.kubernetes.io/component == 'nats'
