@@ -1,0 +1,28 @@
+coder:
+  env:
+    - name: CODER_ACCESS_URL
+      value: https://coder.profidev.io
+    - name: CODER_WILDCARD_URL
+      value: "*.coder.profidev.io"
+    - name: CODER_PROMETHEUS_ADDRESS
+      value: 0.0.0.0:2112
+    - name: CODER_OAUTH2_GITHUB_DEFAULT_PROVIDER_ENABLE
+      value: "false"
+    - name: CODER_OIDC_IGNORE_EMAIL_VERIFIED
+      value: "true"
+  envFrom:
+    - secretRef:
+        name: coder
+  podLabels:
+    postgres-access: "true"
+  service:
+    type: ClusterIP
+  ingress:
+    enable: true
+    className: ${ingress_class}
+    host: coder.profidev.io
+    annotations:
+      cert-manager.io/cluster-issuer: ${cert_issuer}
+    tls:
+      enable: true
+      secretName: coder-tls

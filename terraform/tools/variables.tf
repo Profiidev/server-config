@@ -140,3 +140,8 @@ variable "nats_access_label" {
     value = string
   })
 }
+
+variable "coder_ns" {
+  type    = string
+  default = "coder"
+}
