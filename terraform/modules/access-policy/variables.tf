@@ -16,3 +16,8 @@ variable "selector" {
 variable "port" {
   type = number
 }
+
+variable "target_selector" {
+  type    = string
+  default = ""
+}

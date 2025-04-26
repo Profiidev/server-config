@@ -29,7 +29,7 @@ metadata:
   name: ${var.namespace}-egress
 spec:
   namespaceSelector: ${var.namespace_label.key} == '${var.namespace_label.value}'
-  selector: ${var.namespace_label.key} == '${var.namespace_label.value}'
+  selector: ${var.namespace_label.key} == '${var.namespace_label.value}'${var.target_selector != "" ? " && ${var.target_selector}" : ""}
   types:
     - Egress
   egress:

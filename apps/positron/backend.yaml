@@ -18,6 +18,7 @@ spec:
       labels:
         app: positron-backend
         nats-access: "true"
+        minio-access: "true"
     spec:
       containers:
         - tty: true

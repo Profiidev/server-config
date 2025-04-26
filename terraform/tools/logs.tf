@@ -73,31 +73,6 @@ spec:
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
-resource "kubectl_manifest" "loki_minio" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: loki-minio
-  namespace: ${var.metrics_ns}
-spec:
-  order: 10
-  selector: app.kubernetes.io/name == 'loki'
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.minio_ns}'
-        selector: has(v1.min.io/tenant)
-        ports:
-        - 9000
-  YAML
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
 module "loki_dashboard" {
   source = "./dashboard"
 

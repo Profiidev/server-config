@@ -92,28 +92,3 @@ spec:
 
   depends_on = [kubernetes_namespace.storage_ns]
 }
-
-resource "kubectl_manifest" "longhorn_minio" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: longhorn-minio
-  namespace: ${var.storage_ns}
-spec:
-  order: 10
-  namespaceSelector: kubernetes.io/metadata.name == '${var.storage_ns}'
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.minio_ns}'
-        selector: has(v1.min.io/tenant)
-        ports:
-        - 9000
-  YAML
-
-  depends_on = [kubernetes_namespace.storage_ns]
-}

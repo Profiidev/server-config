@@ -34,31 +34,6 @@ spec:
   depends_on = [kubernetes_namespace.positron_ns]
 }
 
-resource "kubectl_manifest" "positron_minio" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: positron-backend-minio
-  namespace: ${var.positron_ns}
-spec:
-  order: 10
-  selector: app == 'positron-backend'
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.minio_ns}'
-        selector: has(v1.min.io/tenant)
-        ports:
-        - 9000
-  YAML
-
-  depends_on = [kubernetes_namespace.positron_ns]
-}
-
 resource "kubectl_manifest" "positron_postgres" {
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1

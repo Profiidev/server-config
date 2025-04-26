@@ -6,6 +6,7 @@ resource "kubernetes_namespace" "metrics_ns" {
       "${var.cloudflare_cert_label.key}" = var.cloudflare_cert_label.value
       "${var.secret_store_label.key}"    = var.secret_store_label.value
       "${var.cluster_ca_cert_label.key}" = var.cluster_ca_cert_label.value
+      "${var.minio_access_label.key}"      = var.minio_access_label.value
     }
   }
 }
