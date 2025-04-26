@@ -74,7 +74,7 @@ spec:
 }
 
 module "loki_dashboard" {
-  source = "./dashboard"
+  source = "../modules/grafana-dashboard"
 
   name      = "loki-logs"
   namespace = var.metrics_ns

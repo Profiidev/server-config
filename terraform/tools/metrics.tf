@@ -6,7 +6,7 @@ resource "kubernetes_namespace" "metrics_ns" {
       "${var.cloudflare_cert_label.key}" = var.cloudflare_cert_label.value
       "${var.secret_store_label.key}"    = var.secret_store_label.value
       "${var.cluster_ca_cert_label.key}" = var.cluster_ca_cert_label.value
-      "${var.minio_access_label.key}"      = var.minio_access_label.value
+      "${var.minio_access_label.key}"    = var.minio_access_label.value
     }
   }
 }
@@ -173,7 +173,7 @@ spec:
 }
 
 module "ingress_nginx_metrics" {
-  source = "./metrics-np"
+  source = "../modules/metrics-np"
 
   namespace  = "kube-system"
   port       = 9153
@@ -184,7 +184,7 @@ module "ingress_nginx_metrics" {
 }
 
 module "cert_manager_metrics" {
-  source = "./metrics-np"
+  source = "../modules/metrics-np"
 
   namespace  = var.cert_ns
   port       = 9402
@@ -195,7 +195,7 @@ module "cert_manager_metrics" {
 }
 
 module "external_secrets_metrics" {
-  source = "./metrics-np"
+  source = "../modules/metrics-np"
 
   namespace  = var.secrets_ns
   port       = 8080
@@ -206,7 +206,7 @@ module "external_secrets_metrics" {
 }
 
 module "vault_metrics" {
-  source = "./metrics-np"
+  source = "../modules/metrics-np"
 
   namespace  = var.secrets_ns
   port       = 8200
@@ -217,7 +217,7 @@ module "vault_metrics" {
 }
 
 module "longhorn_metrics" {
-  source = "./metrics-np"
+  source = "../modules/metrics-np"
 
   namespace  = var.storage_ns
   port       = 9500
@@ -228,7 +228,7 @@ module "longhorn_metrics" {
 }
 
 module "minio_metrics" {
-  source = "./metrics-np"
+  source = "../modules/metrics-np"
 
   namespace  = var.minio_ns
   port       = 9000
@@ -240,7 +240,7 @@ module "minio_metrics" {
 }
 
 module "stalwart_metrics" {
-  source = "./metrics-np"
+  source = "../modules/metrics-np"
 
   namespace  = var.stalwart_ns
   port       = 8080
@@ -252,7 +252,7 @@ module "stalwart_metrics" {
 }
 
 module "postgres_metrics" {
-  source = "./metrics-np"
+  source = "../modules/metrics-np"
 
   namespace  = var.everest_ns
   port       = 9187
@@ -264,7 +264,7 @@ module "postgres_metrics" {
 }
 
 module "pgbouncer_metrics" {
-  source = "./metrics-np"
+  source = "../modules/metrics-np"
 
   namespace  = var.everest_ns
   port       = 9127
@@ -276,7 +276,7 @@ module "pgbouncer_metrics" {
 }
 
 module "nats_metrics" {
-  source = "./metrics-np"
+  source = "../modules/metrics-np"
 
   namespace  = var.nats_ns
   port       = 7777
@@ -288,7 +288,7 @@ module "nats_metrics" {
 }
 
 module "ingress_nginx_dashboard" {
-  source = "./dashboard"
+  source = "../modules/grafana-dashboard"
 
   name      = "ingress-nginx"
   namespace = var.metrics_ns
@@ -298,7 +298,7 @@ module "ingress_nginx_dashboard" {
 }
 
 module "ingress_nginx_request_dashboard" {
-  source = "./dashboard"
+  source = "../modules/grafana-dashboard"
 
   name      = "ingress-nginx-request"
   namespace = var.metrics_ns
@@ -308,7 +308,7 @@ module "ingress_nginx_request_dashboard" {
 }
 
 module "cert_manager_dashboard" {
-  source = "./dashboard"
+  source = "../modules/grafana-dashboard"
 
   name      = "cert-manager"
   namespace = var.metrics_ns
@@ -319,7 +319,7 @@ module "cert_manager_dashboard" {
 }
 
 module "external_secrets_dashboard" {
-  source = "./dashboard"
+  source = "../modules/grafana-dashboard"
 
   name      = "external-secrets"
   namespace = var.metrics_ns
@@ -329,7 +329,7 @@ module "external_secrets_dashboard" {
 }
 
 module "vault_dashboard" {
-  source = "./dashboard"
+  source = "../modules/grafana-dashboard"
 
   name      = "vault"
   namespace = var.metrics_ns
@@ -340,7 +340,7 @@ module "vault_dashboard" {
 }
 
 module "longhorn_dashboard" {
-  source = "./dashboard"
+  source = "../modules/grafana-dashboard"
 
   name      = "longhorn"
   namespace = var.metrics_ns
@@ -350,7 +350,7 @@ module "longhorn_dashboard" {
 }
 
 module "minio_dashboard" {
-  source = "./dashboard"
+  source = "../modules/grafana-dashboard"
 
   name      = "minio"
   namespace = var.metrics_ns
@@ -361,7 +361,7 @@ module "minio_dashboard" {
 }
 
 module "postgres_dashboard" {
-  source = "./dashboard"
+  source = "../modules/grafana-dashboard"
 
   name      = "postgres"
   namespace = var.metrics_ns
@@ -372,7 +372,7 @@ module "postgres_dashboard" {
 }
 
 module "pgbouncer_dashboard" {
-  source = "./dashboard"
+  source = "../modules/grafana-dashboard"
 
   name      = "pgbouncer"
   namespace = var.metrics_ns
@@ -383,7 +383,7 @@ module "pgbouncer_dashboard" {
 }
 
 module "pgbouncer_overview_dashboard" {
-  source = "./dashboard"
+  source = "../modules/grafana-dashboard"
 
   name      = "pgbouncer-overview"
   namespace = var.metrics_ns
@@ -394,7 +394,7 @@ module "pgbouncer_overview_dashboard" {
 }
 
 module "nats_dashboard" {
-  source = "./dashboard"
+  source = "../modules/grafana-dashboard"
 
   name      = "nats"
   namespace = var.metrics_ns
@@ -405,7 +405,7 @@ module "nats_dashboard" {
 }
 
 module "nats_jetstream_dashboard" {
-  source = "./dashboard"
+  source = "../modules/grafana-dashboard"
 
   name      = "nats-jetstream"
   namespace = var.metrics_ns
