@@ -125,27 +125,13 @@ resource "null_resource" "everest_labels" {
   }
 }
 
-resource "kubectl_manifest" "postgres_access" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: postgres-access
-  namespace: ${var.everest_ns}
-spec:
-  order: 10
-  selector: app.kubernetes.io/name == 'percona-postgresql'
-  types:
-    - Ingress
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: ${var.postgres_access_label.key} == '${var.postgres_access_label.value}'
-      destination:
-        ports:
-          - 5432
-  YAML
+module "postgres_access" {
+  source = "../modules/access-policy"
+  
+  namespace = var.everest_ns
+  namespace_label = var.postgres_access_label
+  selector = "app.kubernetes.io/name == 'percona-postgresql'"
+  port = 5432
 
   depends_on = [helm_release.postgres]
 }

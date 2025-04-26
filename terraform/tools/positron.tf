@@ -34,31 +34,6 @@ spec:
   depends_on = [kubernetes_namespace.positron_ns]
 }
 
-resource "kubectl_manifest" "positron_postgres" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: positron-backend-db
-  namespace: ${var.positron_ns}
-spec:
-  order: 10
-  selector: app == 'positron-backend'
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.everest_ns}'
-        selector: app.kubernetes.io/name == 'percona-postgresql'
-        ports:
-          - 5432
-  YAML
-
-  depends_on = [kubernetes_namespace.positron_ns]
-}
-
 resource "kubectl_manifest" "positron_backend_ingress" {
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1
