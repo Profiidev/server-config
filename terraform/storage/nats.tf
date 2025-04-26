@@ -69,3 +69,27 @@ spec:
 
   depends_on = [helm_release.nats]
 }
+
+resource "kubectl_manifest" "nats_egress" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: GlobalNetworkPolicy
+metadata:
+  name: nats-egress
+spec:
+  namespaceSelector: ${var.nats_access_label.key} == '${var.nats_access_label.value}'
+  selector: ${var.nats_access_label.key} == '${var.nats_access_label.value}'
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        namespaceSelector: kubernetes.io/metadata.name == '${var.nats_ns}'
+        selector: app.kubernetes.io/component == 'nats'
+        ports:
+          - 4222
+  YAML
+
+  depends_on = [helm_release.nats]
+}

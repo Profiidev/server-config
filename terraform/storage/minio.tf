@@ -176,7 +176,7 @@ spec:
   depends_on = [kubernetes_namespace.minio_ns]
 }
 
-resource "kubectl_manifest" "portainer_oidc" {
+resource "kubectl_manifest" "minio_oidc" {
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1
 kind: NetworkPolicy

@@ -17,6 +17,7 @@ spec:
     metadata:
       labels:
         app: positron-backend
+        nats-access: "true"
     spec:
       containers:
         - tty: true
