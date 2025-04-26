@@ -57,20 +57,20 @@ groups:
           summary: Number of alive coderd replicas is below the threshold = 1.
         labels:
           severity: critical
-      - alert: CoderdReplicas
-        expr: sum(up{pod=~`coder.*`, pod!~`.*provisioner.*`, namespace=`coder`}) < 3
-        for: 5m
-        annotations:
-          summary: Number of alive coderd replicas is below the threshold = 3.
-        labels:
-          severity: notify
-      - alert: CoderdReplicas
-        expr: sum(up{pod=~`coder.*`, pod!~`.*provisioner.*`, namespace=`coder`}) < 2
-        for: 5m
-        annotations:
-          summary: Number of alive coderd replicas is below the threshold = 2.
-        labels:
-          severity: warning
+      #- alert: CoderdReplicas
+      #  expr: sum(up{pod=~`coder.*`, pod!~`.*provisioner.*`, namespace=`coder`}) < 3
+      #  for: 5m
+      #  annotations:
+      #    summary: Number of alive coderd replicas is below the threshold = 3.
+      #  labels:
+      #    severity: notify
+      #- alert: CoderdReplicas
+      #  expr: sum(up{pod=~`coder.*`, pod!~`.*provisioner.*`, namespace=`coder`}) < 2
+      #  for: 5m
+      #  annotations:
+      #    summary: Number of alive coderd replicas is below the threshold = 2.
+      #  labels:
+      #    severity: warning
       - alert: CoderdWorkspaceBuildFailures
         expr: sum(increase(coderd_workspace_builds_total{pod=~`coder.*`, pod!~`.*provisioner.*`, namespace=`coder`, status="failed" }[10m])) > 10
         for: 10m
