@@ -7,3 +7,4 @@
 !pgbouncer.json
 !pgbouncer-overview.json
 !nats*.json
+!coder*.json
