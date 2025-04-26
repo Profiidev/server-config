@@ -13,16 +13,6 @@ variable "cloudflare_cert_label" {
   })
 }
 
-variable "user_name" {
-  type    = string
-  default = "profidev"
-}
-
-variable "admin_group" {
-  type    = string
-  default = "admin"
-}
-
 variable "cluster_secret_store" {
   type    = string
 }
