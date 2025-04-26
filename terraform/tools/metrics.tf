@@ -287,6 +287,18 @@ module "nats_metrics" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
+module "longhorn_proxy_metrics" {
+  source = "../modules/metrics-np"
+
+  namespace  = var.storage_ns
+  port       = 44180
+  name       = "longhorn-proxy"
+  metrics_ns = var.metrics_ns
+  selector   = "app == 'oauth2-proxy'"
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
 module "ingress_nginx_dashboard" {
   source = "../modules/grafana-dashboard"
 
