@@ -45,51 +45,13 @@ spec:
   depends_on = [kubernetes_namespace.nats_ns]
 }
 
-resource "kubectl_manifest" "nats_access" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: nats-access
-  namespace: ${var.nats_ns}
-spec:
-  order: 10
-  selector: app.kubernetes.io/component == 'nats'
-  types:
-    - Ingress
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: ${var.nats_access_label.key} == '${var.nats_access_label.value}'
-      destination:
-        ports:
-          - 4222
-  YAML
+module "nats_access" {
+  source = "../modules/access-policy"
 
-  depends_on = [helm_release.nats]
-}
-
-resource "kubectl_manifest" "nats_egress" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: GlobalNetworkPolicy
-metadata:
-  name: nats-egress
-spec:
-  namespaceSelector: ${var.nats_access_label.key} == '${var.nats_access_label.value}'
-  selector: ${var.nats_access_label.key} == '${var.nats_access_label.value}'
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.nats_ns}'
-        selector: app.kubernetes.io/component == 'nats'
-        ports:
-          - 4222
-  YAML
+  namespace       = var.nats_ns
+  namespace_label = var.nats_access_label
+  selector        = "app.kubernetes.io/component == 'nats'"
+  port            = 4222
 
   depends_on = [helm_release.nats]
 }

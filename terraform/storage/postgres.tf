@@ -23,41 +23,6 @@ resource "helm_release" "postgres" {
   depends_on = [kubernetes_namespace.everest_system_ns]
 }
 
-resource "kubectl_manifest" "everest_system_np" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: everest-np
-  namespace: ${var.everest_system_ns}
-spec:
-  order: 10
-  selector: all()
-  types:
-    - Egress
-    - Ingress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        nets:
-          - 194.164.200.60/32
-        ports:
-          - 6443
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.everest_monitoring_ns}' || kubernetes.io/metadata.name == '${var.everest_olm_ns}' || kubernetes.io/metadata.name == '${var.everest_system_ns}' || kubernetes.io/metadata.name == '${var.everest_ns}'
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.everest_monitoring_ns}' || kubernetes.io/metadata.name == '${var.everest_olm_ns}' || kubernetes.io/metadata.name == '${var.everest_system_ns}' || kubernetes.io/metadata.name == '${var.everest_ns}'
-  YAML
-
-  depends_on = [kubernetes_namespace.everest_system_ns]
-}
-
 resource "kubectl_manifest" "everest_system_gnp" {
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1
@@ -92,13 +57,15 @@ resource "null_resource" "wait_for_everest_olm_ns" {
   }
 }
 
-resource "kubectl_manifest" "everest_olm_np" {
+resource "kubectl_manifest" "everest_np" {
+  for_each = toset([var.everest_monitoring_ns, var.everest_olm_ns, var.everest_system_ns, var.everest_ns])
+
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1
 kind: NetworkPolicy
 metadata:
   name: everest-np
-  namespace: ${var.everest_olm_ns}
+  namespace: ${each.value}
 spec:
   order: 10
   selector: all()
@@ -138,41 +105,6 @@ resource "null_resource" "wait_for_everest_monitoring_ns" {
   }
 }
 
-resource "kubectl_manifest" "everest_monitoring_np" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: everest-np
-  namespace: ${var.everest_monitoring_ns}
-spec:
-  order: 10
-  selector: all()
-  types:
-    - Egress
-    - Ingress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        nets:
-          - 194.164.200.60/32
-        ports:
-          - 6443
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.everest_monitoring_ns}' || kubernetes.io/metadata.name == '${var.everest_olm_ns}' || kubernetes.io/metadata.name == '${var.everest_system_ns}' || kubernetes.io/metadata.name == '${var.everest_ns}'
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.everest_monitoring_ns}' || kubernetes.io/metadata.name == '${var.everest_olm_ns}' || kubernetes.io/metadata.name == '${var.everest_system_ns}' || kubernetes.io/metadata.name == '${var.everest_ns}'
-  YAML
-
-  depends_on = [null_resource.wait_for_everest_monitoring_ns]
-}
-
 resource "null_resource" "wait_for_everest_ns" {
   provisioner "local-exec" {
     command = <<EOT
@@ -190,41 +122,6 @@ resource "null_resource" "everest_labels" {
       kubectl label ns ${var.everest_ns} ${var.secret_store_label.key}=${var.secret_store_label.value}
     EOT
   }
-}
-
-resource "kubectl_manifest" "everest_np" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: everest-np
-  namespace: ${var.everest_ns}
-spec:
-  order: 10
-  selector: all()
-  types:
-    - Egress
-    - Ingress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        nets:
-          - 194.164.200.60/32
-        ports:
-          - 6443
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.everest_monitoring_ns}' || kubernetes.io/metadata.name == '${var.everest_olm_ns}' || kubernetes.io/metadata.name == '${var.everest_system_ns}' || kubernetes.io/metadata.name == '${var.everest_ns}'
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.everest_monitoring_ns}' || kubernetes.io/metadata.name == '${var.everest_olm_ns}' || kubernetes.io/metadata.name == '${var.everest_system_ns}' || kubernetes.io/metadata.name == '${var.everest_ns}'
-  YAML
-
-  depends_on = [null_resource.wait_for_everest_ns]
 }
 
 resource "kubectl_manifest" "postgres_access" {
