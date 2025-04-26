@@ -100,28 +100,3 @@ spec:
           - s3.profidev.io
   YAML
 }
-
-resource "kubectl_manifest" "portainer_oidc" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: portainer-oidc
-  namespace: ${var.portainer_ns}
-spec:
-  order: 10
-  selector: app.kubernetes.io/instance == 'portainer'
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.positron_ns}'
-        selector: app == 'positron-backend'
-        ports:
-          - 8000
-  YAML
-
-  depends_on = [kubernetes_namespace.portainer_ns]
-}

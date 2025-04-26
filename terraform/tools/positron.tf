@@ -110,32 +110,6 @@ spec:
   depends_on = [kubernetes_namespace.positron_ns]
 }
 
-resource "kubectl_manifest" "oidc_access" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: oidc-access
-  namespace: ${var.positron_ns}
-spec:
-  order: 10
-  namespaceSelector: kubernetes.io/metadata.name == '${var.positron_ns}'
-  selector: app == 'positron-backend'
-  types:
-    - Ingress
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: ${var.oidc_access_label.key} == '${var.oidc_access_label.value}'
-      destination:
-        ports:
-        - 8000
-  YAML
-
-  depends_on = [kubernetes_namespace.positron_ns]
-}
-
 resource "kubernetes_ingress_v1" "positron_frontend" {
   metadata {
     name = "positron-frontend"
@@ -215,6 +189,18 @@ resource "kubernetes_ingress_v1" "positron_backend" {
       secret_name = var.cloudflare_cert_var
     }
   }
+
+  depends_on = [kubernetes_namespace.positron_ns]
+}
+
+module "oidc_access" {
+  source = "../modules/access-policy"
+
+  namespace       = var.positron_ns
+  namespace_label = var.oidc_access_label
+  selector        = "app == 'positron-backend'"
+  port            = 8000
+  target_selector = "all()"
 
   depends_on = [kubernetes_namespace.positron_ns]
 }

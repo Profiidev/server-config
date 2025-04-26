@@ -151,31 +151,6 @@ spec:
   YAML
 }
 
-resource "kubectl_manifest" "minio_oidc" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: minio-oidc
-  namespace: ${var.minio_ns}
-spec:
-  order: 10
-  selector: has(v1.min.io/tenant)
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.positron_ns}'
-        selector: app == 'positron-backend'
-        ports:
-          - 8000
-  YAML
-
-  depends_on = [kubernetes_namespace.minio_ns]
-}
-
 module "minio_access" {
   source = "../modules/access-policy"
 
