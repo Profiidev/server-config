@@ -24,6 +24,7 @@ resource "kubernetes_deployment_v1" "stalwart" {
       metadata {
         labels = {
           app = "stalwart"
+          "${var.postgres_access_label.key}" = var.postgres_access_label.value
         }
       }
       spec {
@@ -138,31 +139,6 @@ resource "kubernetes_service_v1" "stalwart" {
       app = "stalwart"
     }
   }
-
-  depends_on = [kubernetes_namespace.stalwart_ns]
-}
-
-resource "kubectl_manifest" "stalwart_postgres" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: stalwart-db
-  namespace: ${var.stalwart_ns}
-spec:
-  order: 10
-  selector: app == 'stalwart'
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.everest_ns}'
-        selector: app.kubernetes.io/name == 'percona-postgresql'
-        ports:
-          - 5432
-  YAML
 
   depends_on = [kubernetes_namespace.stalwart_ns]
 }

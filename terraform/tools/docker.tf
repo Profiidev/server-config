@@ -9,7 +9,7 @@ resource "kubernetes_namespace" "docker_ns" {
 }
 
 module "seafile" {
-  source = "./docker"
+  source = "../modules/docker"
 
   name                   = "seafile"
   port                   = 80
@@ -27,7 +27,7 @@ module "seafile" {
 }
 
 module "wings" {
-  source = "./docker"
+  source = "../modules/docker"
 
   name                   = "wings"
   port                   = 443
@@ -45,7 +45,7 @@ module "wings" {
 }
 
 module "panel" {
-  source = "./docker"
+  source = "../modules/docker"
 
   name                   = "panel"
   port                   = 80

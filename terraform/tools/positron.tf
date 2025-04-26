@@ -34,81 +34,6 @@ spec:
   depends_on = [kubernetes_namespace.positron_ns]
 }
 
-resource "kubectl_manifest" "positron_minio" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: positron-backend-minio
-  namespace: ${var.positron_ns}
-spec:
-  order: 10
-  selector: app == 'positron-backend'
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.minio_ns}'
-        selector: has(v1.min.io/tenant)
-        ports:
-        - 9000
-  YAML
-
-  depends_on = [kubernetes_namespace.positron_ns]
-}
-
-resource "kubectl_manifest" "positron_postgres" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: positron-backend-db
-  namespace: ${var.positron_ns}
-spec:
-  order: 10
-  selector: app == 'positron-backend'
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.everest_ns}'
-        selector: app.kubernetes.io/name == 'percona-postgresql'
-        ports:
-          - 5432
-  YAML
-
-  depends_on = [kubernetes_namespace.positron_ns]
-}
-
-resource "kubectl_manifest" "positron_nats" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: positron-backend-nats
-  namespace: ${var.positron_ns}
-spec:
-  order: 10
-  selector: app == 'positron-backend'
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.nats_ns}'
-        selector: app.kubernetes.io/component == 'nats'
-        ports:
-          - 4222
-  YAML
-
-  depends_on = [kubernetes_namespace.positron_ns]
-}
-
 resource "kubectl_manifest" "positron_backend_ingress" {
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1
@@ -180,32 +105,6 @@ spec:
           - 443
         domains:
           - api.nasa.gov
-  YAML
-
-  depends_on = [kubernetes_namespace.positron_ns]
-}
-
-resource "kubectl_manifest" "oidc_access" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: oidc-access
-  namespace: ${var.positron_ns}
-spec:
-  order: 10
-  namespaceSelector: kubernetes.io/metadata.name == '${var.positron_ns}'
-  selector: app == 'positron-backend'
-  types:
-    - Ingress
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: ${var.oidc_access_label.key} == '${var.oidc_access_label.value}'
-      destination:
-        ports:
-        - 8000
   YAML
 
   depends_on = [kubernetes_namespace.positron_ns]
@@ -290,6 +189,18 @@ resource "kubernetes_ingress_v1" "positron_backend" {
       secret_name = var.cloudflare_cert_var
     }
   }
+
+  depends_on = [kubernetes_namespace.positron_ns]
+}
+
+module "oidc_access" {
+  source = "../modules/access-policy"
+
+  namespace       = var.positron_ns
+  namespace_label = var.oidc_access_label
+  selector        = "app == 'positron-backend'"
+  port            = 8000
+  target_selector = "all()"
 
   depends_on = [kubernetes_namespace.positron_ns]
 }

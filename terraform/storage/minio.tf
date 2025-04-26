@@ -151,52 +151,14 @@ spec:
   YAML
 }
 
-resource "kubectl_manifest" "minio_access" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: minio-access
-  namespace: ${var.minio_ns}
-spec:
-  order: 10
-  selector: has(v1.min.io/tenant)
-  types:
-    - Ingress
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: ${var.minio_access_label.key} == '${var.minio_access_label.value}'
-      destination:
-        ports:
-        - 9000
-  YAML
+module "minio_access" {
+  source = "../modules/access-policy"
 
-  depends_on = [kubernetes_namespace.minio_ns]
-}
-
-resource "kubectl_manifest" "portainer_oidc" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: minio-oidc
-  namespace: ${var.minio_ns}
-spec:
-  order: 10
-  selector: has(v1.min.io/tenant)
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.positron_ns}'
-        selector: app == 'positron-backend'
-        ports:
-          - 8000
-  YAML
+  namespace       = var.minio_ns
+  namespace_label = var.minio_access_label
+  selector        = "has(v1.min.io/tenant)"
+  port            = 9000
+  target_selector = "all()"
 
   depends_on = [kubernetes_namespace.minio_ns]
 }
