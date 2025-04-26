@@ -135,3 +135,23 @@ spec:
 
   depends_on = [kubernetes_namespace.coder_ns]
 }
+
+resource "kubectl_manifest" "coder_pod_monitor" {
+  yaml_body = <<YAML
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: coder
+  namespace: ${var.coder_ns}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: coder
+  podMetricsEndpoints:
+    - port: prometheus-http
+      interval: 10s
+      scrapeTimeout: 10s
+  YAML
+
+  depends_on = [kubernetes_namespace.coder_ns]
+}

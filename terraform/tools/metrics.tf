@@ -299,6 +299,18 @@ module "longhorn_proxy_metrics" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
+module "coder_metrics" {
+  source = "../modules/metrics-np"
+
+  namespace  = var.coder_ns
+  port       = 2112
+  name       = "coder"
+  metrics_ns = var.metrics_ns
+  selector   = "app.kubernetes.io/name == 'coder'"
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
 module "ingress_nginx_dashboard" {
   source = "../modules/grafana-dashboard"
 
@@ -427,6 +439,39 @@ module "nats_jetstream_dashboard" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
+module "coderd_dashboard" {
+  source = "../modules/grafana-dashboard"
+
+  name      = "coderd"
+  namespace = var.metrics_ns
+  url       = ""
+  download  = false
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
+module "coder_workspaces_dashboard" {
+  source = "../modules/grafana-dashboard"
+
+  name      = "coder-workspaces"
+  namespace = var.metrics_ns
+  url       = ""
+  download  = false
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
+module "coder_workspace_detail_dashboard" {
+  source = "../modules/grafana-dashboard"
+
+  name      = "coder-workspace-detail"
+  namespace = var.metrics_ns
+  url       = ""
+  download  = false
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
 resource "kubectl_manifest" "cert_manager_prometheus_config" {
   yaml_body = yamlencode({
     apiVersion = "monitoring.coreos.com/v1"
@@ -508,6 +553,24 @@ resource "kubectl_manifest" "pgbouncer_prometheus_config" {
       }
     }
     spec = yamldecode(file("${path.module}/mixin/pgbouncer.yaml"))
+  })
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
+resource "kubectl_manifest" "coder_prometheus_config" {
+  yaml_body = yamlencode({
+    apiVersion = "monitoring.coreos.com/v1"
+    kind       = "PrometheusRule"
+    metadata = {
+      name      = "coder"
+      namespace = var.metrics_ns
+      labels = {
+        prometheus = "coder"
+        role       = "alert-rules"
+      }
+    }
+    spec = yamldecode(file("${path.module}/mixin/coder.yaml"))
   })
 
   depends_on = [kubernetes_namespace.metrics_ns]
