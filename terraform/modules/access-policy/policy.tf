@@ -3,7 +3,7 @@ resource "kubectl_manifest" "nats_ingress" {
 apiVersion: crd.projectcalico.org/v1
 kind: NetworkPolicy
 metadata:
-  name: ${var.namespace}-ingress
+  name: ${var.namespace}-access-ingress
   namespace: ${var.namespace}
 spec:
   order: 10
@@ -26,7 +26,7 @@ resource "kubectl_manifest" "nats_egress" {
 apiVersion: crd.projectcalico.org/v1
 kind: GlobalNetworkPolicy
 metadata:
-  name: ${var.namespace}-egress
+  name: ${var.namespace}-access-egress
 spec:
   namespaceSelector: ${var.namespace_label.key} == '${var.namespace_label.value}'
   selector: ${var.namespace_label.key} == '${var.namespace_label.value}'${var.target_selector != "" ? " || ${var.target_selector}" : ""}
