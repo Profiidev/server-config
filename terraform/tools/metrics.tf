@@ -1,177 +1,3 @@
-resource "kubernetes_namespace" "metrics_ns" {
-  metadata {
-    name = var.metrics_ns
-    labels = {
-      "${var.oidc_access_label.key}"     = var.oidc_access_label.value
-      "${var.cloudflare_cert_label.key}" = var.cloudflare_cert_label.value
-      "${var.secret_store_label.key}"    = var.secret_store_label.value
-      "${var.cluster_ca_cert_label.key}" = var.cluster_ca_cert_label.value
-      "${var.minio_access_label.key}"    = var.minio_access_label.value
-    }
-  }
-}
-
-resource "helm_release" "prometheus" {
-  name       = "prometheus"
-  repository = "https://prometheus-community.github.io/helm-charts"
-  chart      = "kube-prometheus-stack"
-  version    = "70.4.2"
-  namespace  = var.metrics_ns
-
-  values = [templatefile("${path.module}/templates/prometheus.values.tftpl", {
-    namespace              = var.metrics_ns
-    cloudflare_ca_cert_var = var.cloudflare_ca_cert_var
-    cloudflare_cert_var    = var.cloudflare_cert_var
-    ingress_class          = var.ingress_class
-    storage_class          = var.storage_class
-  })]
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-resource "helm_release" "alert_bot" {
-  name       = "alert-bot"
-  repository = "https://k8s-at-home.com/charts"
-  chart      = "alertmanager-discord"
-  version    = "1.3.2"
-  namespace  = var.metrics_ns
-
-  values = [templatefile("${path.module}/templates/alert-bot.values.tftpl", {})]
-}
-
-resource "kubectl_manifest" "prometheus_k8s_api_egress" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: k8s-api-egress
-  namespace: ${var.metrics_ns}
-spec:
-  order: 10
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        nets:
-          - 194.164.200.60/32
-        ports:
-          - 6443
-          - 9100
-          - 10249
-          - 10250
-          - 10254
-          - 10257
-          - 10259
-          - 2381
-  YAML
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-resource "kubectl_manifest" "metrics_ns" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: metrics-namespace
-  namespace: ${var.metrics_ns}
-spec:
-  order: 10
-  namespaceSelector: kubernetes.io/metadata.name == '${var.metrics_ns}'
-  types:
-    - Egress
-    - Ingress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.metrics_ns}'
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.metrics_ns}'
-  YAML
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-resource "kubectl_manifest" "metrics_ingress" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: metrics-ingress
-  namespace: ${var.metrics_ns}
-spec:
-  order: 10
-  selector: app.kubernetes.io/name == 'grafana'
-  types:
-    - Ingress
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: kubernetes.io/metadata.name == 'kube-system'
-        selector: app.kubernetes.io/name == 'rke2-ingress-nginx'
-      destination:
-        ports:
-          - 3000
-  YAML
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-resource "kubectl_manifest" "metrics_egress" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: GlobalNetworkPolicy
-metadata:
-  name: metrics-egress
-spec:
-  namespaceSelector: kubernetes.io/metadata.name == '${var.metrics_ns}'
-  selector: app.kubernetes.io/name == 'grafana'
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        ports:
-          - 443
-        domains:
-          - grafana.com
-  YAML
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-resource "kubectl_manifest" "alert_egress" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: GlobalNetworkPolicy
-metadata:
-  name: alert-egress
-spec:
-  namespaceSelector: kubernetes.io/metadata.name == '${var.metrics_ns}'
-  selector: app.kubernetes.io/name == 'alertmanager' || app.kubernetes.io/name == 'alertmanager-discord'
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        ports:
-          - 443
-        domains:
-          - discord.com
-  YAML
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
 module "ingress_nginx_metrics" {
   source = "../modules/metrics-np"
 
@@ -472,6 +298,17 @@ module "coder_workspace_detail_dashboard" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
+module "loki_dashboard" {
+  source = "../modules/grafana-dashboard"
+
+  name      = "loki-logs"
+  namespace = var.metrics_ns
+  url       = ""
+  download  = false
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
 resource "kubectl_manifest" "cert_manager_prometheus_config" {
   yaml_body = yamlencode({
     apiVersion = "monitoring.coreos.com/v1"
@@ -576,63 +413,6 @@ resource "kubectl_manifest" "coder_prometheus_config" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
-resource "kubectl_manifest" "alert_manager_config" {
-  yaml_body = <<YAML
-apiVersion: monitoring.coreos.com/v1alpha1
-kind: AlertmanagerConfig
-metadata:
-  name: alert-manager-config
-  namespace: ${var.metrics_ns}
-  labels:
-    alertmanagerConfig: alert-manager-config
-spec:
-  route:
-    groupBy: ['job']
-    groupWait: 30s
-    groupInterval: 5m
-    repeatInterval: 12h
-    receiver: 'discord'
-    routes:
-      - receiver: 'null'
-        matchers:
-        - matchType: "="
-          name: alertname
-          value: Watchdog
-  receivers:
-  - name: 'null'
-  - name: 'discord'
-    webhookConfigs:
-    - urlSecret:
-        name: discord-webhook
-        key: proxy
-      sendResolved: true
-  YAML
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-resource "kubectl_manifest" "discord_webhook" {
-  yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
-metadata:
-  name: discord-webhook
-  namespace: ${var.metrics_ns}
-spec:
-  refreshInterval: 15s
-  secretStoreRef:
-    name: ${var.cluster_secret_store}
-    kind: ClusterSecretStore
-  target:
-    name: discord-webhook
-  dataFrom:
-  - extract:
-      key: apps/alert-bot
-  YAML
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
 resource "helm_release" "postgres_exporter" {
   name       = "postgres-exporter"
   repository = "https://prometheus-community.github.io/helm-charts"
@@ -643,8 +423,6 @@ resource "helm_release" "postgres_exporter" {
   values = [templatefile("${path.module}/templates/postgres-exporter.values.tftpl", {
     namespace = var.everest_ns
   })]
-
-  depends_on = [helm_release.prometheus]
 }
 
 resource "helm_release" "pgbouncer_exporter" {
@@ -657,8 +435,6 @@ resource "helm_release" "pgbouncer_exporter" {
   values = [templatefile("${path.module}/templates/pgbouncer-exporter.values.tftpl", {
     namespace = var.everest_ns
   })]
-
-  depends_on = [helm_release.prometheus]
 }
 
 resource "kubectl_manifest" "postgres_exporter_secret" {

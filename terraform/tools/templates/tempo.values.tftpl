@@ -1,0 +1,44 @@
+rbac:
+  create: true
+metricsGenerator:
+  enabled: true
+traces:
+  otlp:
+    http:
+      enabled: true
+    grpc:
+      enabled: true
+memcachedExporter:
+  enabled: true
+prometheusRules:
+  enabled: true
+storage:
+  trace:
+    backend: s3
+    s3:
+      bucket_name: tempo
+      endpoint: "$${GRAFANA_S3_ENDPOINT}"
+      access_key_id: "$${GRAFANA_TEMPO_S3_ACCESS_KEY}"
+      secret_access_key: "$${GRAFANA_TEMPO_S3_SECRET_KEY}"
+      s3forcepathstyle: true
+querier: &s3_auth
+  extraVolumes:
+    - name: cluster-ca-cert
+      secret:
+        defaultMode: 420
+        secretName: cluster-ca-cert
+  extraVolumeMounts:
+    - mountPath: /etc/ssl/certs/${ca_hash}.0
+      subPath: ${ca_hash}.0
+      name: cluster-ca-cert
+      readOnly: true
+  extraArgs:
+    - "-config.expand-env=true"
+  extraEnvFrom:
+    - secretRef:
+        name: lgtm
+compactor:
+  <<: *s3_auth
+ingester:
+  replicas: 1
+  <<: *s3_auth
