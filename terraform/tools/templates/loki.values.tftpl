@@ -13,6 +13,8 @@ global:
       subPath: ${ca_hash}.0
       name: cluster-ca-cert
       readOnly: true
+  extraArgs:
+    - "-config.expand-env=true"
 
 monitoring:
   serviceMonitor:
@@ -33,28 +35,41 @@ loki:
         index:
           prefix: loki_index_
           period: 24h
+
   querier:
     max_concurrent: 4
+
   pattern_ingester:
     enabled: true
+
   limits_config:
     allow_structured_metadata: true
     volume_enabled: true
     retention_period: 672h
+
   commonConfig:
     replication_factor: 1
+
+  ruler:
+    enable_api: true
+    storage:
+      type: s3
+      s3:
+        bucketnames: loki-ruler
 
   storage:
     type: s3
     bucketNames:
-      chunks: loki-chunk
+      chunk: loki-chunk
       ruler: loki-ruler
-    s3:
-      region: default
+
+  storage_config:
+    aws:
       endpoint: "$${GRAFANA_S3_ENDPOINT}"
-      accessKeyId: "$${GRAFANA_LOKI_S3_ACCESKEYID}"
-      secretAccessKey: "$${GRAFANA_LOKI_S3_SECRETACCESSKEY}"
-      s3ForcePathStyle: true
+      access_key_id: "$${GRAFANA_LOKI_S3_ACCESKEYID}"
+      secret_access_key: "$${GRAFANA_LOKI_S3_SECRETACCESSKEY}"
+      s3forcepathstyle: true
+      bucketnames: loki-chunk
 
 deploymentMode: Distributed
 

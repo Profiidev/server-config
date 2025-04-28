@@ -40,6 +40,34 @@ resource "helm_release" "mimir" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
+resource "helm_release" "tempo" {
+  name       = "tempo"
+  repository = "https://grafana.github.io/helm-charts"
+  chart      = "tempo-distributed"
+  version    = "1.34.0"
+  namespace  = var.metrics_ns
+
+  values = [templatefile("${path.module}/templates/tempo.values.tftpl", {
+    ca_hash = var.ca_hash
+  })]
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
+resource "helm_release" "alloy" {
+  name       = "alloy"
+  repository = "https://grafana.github.io/helm-charts"
+  chart      = "alloy"
+  version    = "0.12.6"
+  namespace  = var.metrics_ns
+
+  values = [templatefile("${path.module}/templates/alloy.values.tftpl", {
+    ca_hash = var.ca_hash
+  })]
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
 resource "helm_release" "grafana" {
   name       = "grafana"
   repository = "https://grafana.github.io/helm-charts"
@@ -173,7 +201,6 @@ metadata:
   name: metrics-egress
 spec:
   namespaceSelector: kubernetes.io/metadata.name == '${var.metrics_ns}'
-  selector: app.kubernetes.io/name == 'grafana'
   types:
     - Egress
   egress:
@@ -184,6 +211,7 @@ spec:
           - 443
         domains:
           - grafana.com
+          - "*.grafana.com"
   YAML
 
   depends_on = [kubernetes_namespace.metrics_ns]

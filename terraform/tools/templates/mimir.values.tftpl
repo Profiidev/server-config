@@ -26,6 +26,18 @@ mimir:
           access_key_id: "$${GRAFANA_MIMIR_S3_ACCESS_KEY}"
           secret_access_key: "$${GRAFANA_MIMIR_S3_SECRET_KEY}"
 
+    alertmanager:
+      sharding_ring:
+        replication_factor: 1
+
+    ingester:
+      ring:
+        replication_factor: 1
+
+    store_gateway:
+      sharding_ring:
+        replication_factor: 1
+
     blocks_storage:
       s3:
         bucket_name: mimir-blocks
@@ -35,6 +47,9 @@ mimir:
     ruler_storage:
       s3:
         bucket_name: mimir-ruler
+    memberlist:
+      cluster_label: "mimir"
+      cluster_label_verification_disabled: true
 
 ingester:
   replicas: 1
@@ -48,7 +63,7 @@ store_gateway:
 querier:
   replicas: 1
 
-querier_scheduler:
+query_scheduler:
   replicas: 1
 
 minio:

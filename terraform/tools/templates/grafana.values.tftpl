@@ -35,6 +35,10 @@ datasources:
         uid: loki
         type: loki
         url: http://loki-gateway
+        jsonData:
+          httpHeaderName1: X-Scope-OrgID
+        secureJsonData:
+          httpHeaderValue1: "1"
         isDefault: false
       # https://grafana.com/docs/grafana/latest/datasources/prometheus/#provision-the-data-source
       - name: Mimir
