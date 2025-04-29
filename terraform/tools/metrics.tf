@@ -161,6 +161,11 @@ module "dashboards" {
     "tempo-rollout-progress",
     "tempo-tenants",
     "tempo-writes",
+    "alloy-controller",
+    "alloy-logs",
+    "alloy-otel",
+    "alloy-prom",
+    "alloy-resources",
   ])
 
   source = "../modules/grafana-dashboard"
@@ -171,128 +176,34 @@ module "dashboards" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
-resource "kubectl_manifest" "cert_manager_prometheus_config" {
+resource "kubectl_manifest" "alert_configs" {
+  for_each = toset([
+    "cert-manager",
+    "longhorn",
+    "minio",
+    "postgres",
+    "pgbouncer",
+    "coder",
+    "tempo",
+    "alloy",
+  ])
+
   yaml_body = yamlencode({
     apiVersion = "monitoring.coreos.com/v1"
     kind       = "PrometheusRule"
     metadata = {
-      name      = "cert-manager"
-      namespace = var.metrics_ns
-    }
-    spec = yamldecode(file("${path.module}/mixin/cert-manager.yaml"))
-  })
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-resource "kubectl_manifest" "longhorn_prometheus_config" {
-  yaml_body = yamlencode({
-    apiVersion = "monitoring.coreos.com/v1"
-    kind       = "PrometheusRule"
-    metadata = {
-      name      = "longhorn"
+      name      = each.key
       namespace = var.metrics_ns
       labels = {
-        prometheus = "longhorn"
+        prometheus = each.key
         role       = "alert-rules"
       }
     }
-    spec = yamldecode(file("${path.module}/mixin/longhorn.yaml"))
+    spec = yamldecode(file("${path.module}/mixin/${each.key}.yaml"))
   })
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
-
-resource "kubectl_manifest" "minio_prometheus_config" {
-  yaml_body = yamlencode({
-    apiVersion = "monitoring.coreos.com/v1"
-    kind       = "PrometheusRule"
-    metadata = {
-      name      = "minio"
-      namespace = var.metrics_ns
-      labels = {
-        prometheus = "minio"
-        role       = "alert-rules"
-      }
-    }
-    spec = yamldecode(file("${path.module}/mixin/minio.yaml"))
-  })
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-resource "kubectl_manifest" "postgres_prometheus_config" {
-  yaml_body = yamlencode({
-    apiVersion = "monitoring.coreos.com/v1"
-    kind       = "PrometheusRule"
-    metadata = {
-      name      = "postgres"
-      namespace = var.metrics_ns
-      labels = {
-        prometheus = "postgres"
-        role       = "alert-rules"
-      }
-    }
-    spec = yamldecode(file("${path.module}/mixin/postgres.yaml"))
-  })
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-resource "kubectl_manifest" "pgbouncer_prometheus_config" {
-  yaml_body = yamlencode({
-    apiVersion = "monitoring.coreos.com/v1"
-    kind       = "PrometheusRule"
-    metadata = {
-      name      = "pgbouncer"
-      namespace = var.metrics_ns
-      labels = {
-        prometheus = "pgbouncer"
-        role       = "alert-rules"
-      }
-    }
-    spec = yamldecode(file("${path.module}/mixin/pgbouncer.yaml"))
-  })
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-resource "kubectl_manifest" "coder_prometheus_config" {
-  yaml_body = yamlencode({
-    apiVersion = "monitoring.coreos.com/v1"
-    kind       = "PrometheusRule"
-    metadata = {
-      name      = "coder"
-      namespace = var.metrics_ns
-      labels = {
-        prometheus = "coder"
-        role       = "alert-rules"
-      }
-    }
-    spec = yamldecode(file("${path.module}/mixin/coder.yaml"))
-  })
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-resource "kubectl_manifest" "tempo_prometheus_config" {
-  yaml_body = yamlencode({
-    apiVersion = "monitoring.coreos.com/v1"
-    kind       = "PrometheusRule"
-    metadata = {
-      name      = "tempo"
-      namespace = var.metrics_ns
-      labels = {
-        prometheus = "tempo"
-        role       = "alert-rules"
-      }
-    }
-    spec = yamldecode(file("${path.module}/mixin/tempo.yaml"))
-  })
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
 
 resource "helm_release" "postgres_exporter" {
   name       = "postgres-exporter"

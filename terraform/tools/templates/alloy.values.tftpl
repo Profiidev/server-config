@@ -81,6 +81,16 @@ alloy:
 
       loki.source.kubernetes "pod_logs" {
         targets    = discovery.relabel.pod_logs.output
+        forward_to = [loki.process.pod_logs.receiver]
+      }
+
+      loki.process "pod_logs" {
+        stage.static_labels {
+            values = {
+              cluster = "main",
+            }
+        }
+
         forward_to = [loki.write.loki.receiver]
       }
 
@@ -89,6 +99,7 @@ alloy:
             __path__  = "/var/log/syslog",
             job       = "node/syslog",
             node_name = sys.env("HOSTNAME"),
+            cluster   = "main",
         }]
       }
 
@@ -105,6 +116,12 @@ alloy:
 
       loki.process "cluster_events" {
         forward_to = [loki.write.loki.receiver]
+
+        stage.static_labels {
+          values = {
+            cluster = "main",
+          }
+        }
 
         stage.labels {
           values = {

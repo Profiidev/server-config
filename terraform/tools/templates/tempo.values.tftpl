@@ -10,6 +10,10 @@ memcachedExporter:
   enabled: true
 prometheusRules:
   enabled: true
+metaMonitoring:
+  serviceMonitor:
+    enabled: true
+    interval: 60s
 storage:
   trace:
     backend: s3
