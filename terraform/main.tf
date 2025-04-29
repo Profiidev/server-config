@@ -60,11 +60,13 @@ module "storage" {
 module "network" {
   source = "./network"
 
-  ingress_class       = var.ingress_class
-  email               = var.email
-  cert_issuer_prod    = var.cert_issuer_prod
-  cert_issuer_staging = var.cert_issuer_staging
-  cert_ns             = var.cert_ns
+  ingress_class        = var.ingress_class
+  email                = var.email
+  cert_issuer_prod     = var.cert_issuer_prod
+  cert_issuer_staging  = var.cert_issuer_staging
+  cert_ns              = var.cert_ns
+  cluster_secret_store = var.cluster_secret_store
+  secret_store_label   = var.secret_store_label
 }
 
 module "secrets" {

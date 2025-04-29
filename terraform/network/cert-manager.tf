@@ -1,6 +1,9 @@
 resource "kubernetes_namespace" "cert_ns" {
   metadata {
     name = var.cert_ns
+    labels = {
+      "${var.secret_store_label.key}" = var.secret_store_label.value
+    }
   }
 }
 
@@ -12,6 +15,28 @@ resource "helm_release" "cert_manager" {
   namespace  = var.cert_ns
 
   values = [templatefile("${path.module}/templates/cert-manager.values.tftpl", {})]
+
+  depends_on = [kubernetes_namespace.cert_ns]
+}
+
+resource "kubectl_manifest" "cert_manager_secrets" {
+  yaml_body = <<YAML
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: cert-manager
+  namespace: ${var.cert_ns}
+spec:
+  refreshInterval: 15s
+  secretStoreRef:
+    name: ${var.cluster_secret_store}
+    kind: ClusterSecretStore
+  target:
+    name: cert-manager
+  dataFrom:
+  - extract:
+      key: certs/cert-manager
+  YAML
 
   depends_on = [kubernetes_namespace.cert_ns]
 }
@@ -37,6 +62,11 @@ spec:
       - http01:
           ingress:
             ingressClassName: ${var.ingress_class}
+      - dns01:
+          cloudflare:
+            apiTokenSecretRef:
+              name: cert-manager
+              key: cloudflare
   YAML
 
   depends_on = [helm_release.cert_manager]
@@ -103,10 +133,12 @@ spec:
         ports:
           - 443
           - 80
+          - 53
         domains:
           - "*.letsencrypt.org"
           - "*.profidev.io"
           - "profidev.io"
+          - "*.cloudflare.com"
   YAML
 
   depends_on = [kubernetes_namespace.cert_ns]

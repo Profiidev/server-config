@@ -28,3 +28,14 @@ variable "cert_issuer_prod" {
 variable "email" {
   type = string
 }
+
+variable "cluster_secret_store" {
+  type = string
+}
+
+variable "secret_store_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+}
