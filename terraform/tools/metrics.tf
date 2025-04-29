@@ -142,7 +142,6 @@ module "ingress_nginx_dashboard" {
 
   name      = "ingress-nginx"
   namespace = var.metrics_ns
-  url       = "https://raw.githubusercontent.com/kubernetes/ingress-nginx/refs/heads/main/deploy/grafana/dashboards/nginx.json"
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
@@ -152,7 +151,6 @@ module "ingress_nginx_request_dashboard" {
 
   name      = "ingress-nginx-request"
   namespace = var.metrics_ns
-  url       = "https://raw.githubusercontent.com/kubernetes/ingress-nginx/refs/heads/main/deploy/grafana/dashboards/request-handling-performance.json"
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
@@ -162,8 +160,6 @@ module "cert_manager_dashboard" {
 
   name      = "cert-manager"
   namespace = var.metrics_ns
-  url       = ""
-  download  = false
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
@@ -173,7 +169,6 @@ module "external_secrets_dashboard" {
 
   name      = "external-secrets"
   namespace = var.metrics_ns
-  url       = "https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json"
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
@@ -183,8 +178,6 @@ module "vault_dashboard" {
 
   name      = "vault"
   namespace = var.metrics_ns
-  url       = ""
-  download  = false
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
@@ -194,7 +187,6 @@ module "longhorn_dashboard" {
 
   name      = "longhorn"
   namespace = var.metrics_ns
-  url       = "https://grafana.com/api/dashboards/16888/revisions/9/download"
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
@@ -204,8 +196,6 @@ module "minio_dashboard" {
 
   name      = "minio"
   namespace = var.metrics_ns
-  url       = "https://raw.githubusercontent.com/minio/minio/master/docs/metrics/prometheus/grafana/minio-dashboard.json"
-  download  = false
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
@@ -215,8 +205,6 @@ module "postgres_dashboard" {
 
   name      = "postgres"
   namespace = var.metrics_ns
-  url       = ""
-  download  = false
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
@@ -226,8 +214,6 @@ module "pgbouncer_dashboard" {
 
   name      = "pgbouncer"
   namespace = var.metrics_ns
-  url       = "https://raw.githubusercontent.com/monitoring-mixins/website/refs/heads/master/assets/pgbouncer/dashboards/clusterOverview"
-  download  = false
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
@@ -237,8 +223,6 @@ module "pgbouncer_overview_dashboard" {
 
   name      = "pgbouncer-overview"
   namespace = var.metrics_ns
-  url       = "https://raw.githubusercontent.com/monitoring-mixins/website/refs/heads/master/assets/pgbouncer/dashboards/overview"
-  download  = false
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
@@ -248,8 +232,6 @@ module "nats_dashboard" {
 
   name      = "nats"
   namespace = var.metrics_ns
-  url       = ""
-  download  = false
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
@@ -259,8 +241,6 @@ module "nats_jetstream_dashboard" {
 
   name      = "nats-jetstream"
   namespace = var.metrics_ns
-  url       = ""
-  download  = false
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
@@ -270,8 +250,6 @@ module "coderd_dashboard" {
 
   name      = "coderd"
   namespace = var.metrics_ns
-  url       = ""
-  download  = false
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
@@ -281,8 +259,6 @@ module "coder_workspaces_dashboard" {
 
   name      = "coder-workspaces"
   namespace = var.metrics_ns
-  url       = ""
-  download  = false
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
@@ -292,8 +268,6 @@ module "coder_workspace_detail_dashboard" {
 
   name      = "coder-workspace-detail"
   namespace = var.metrics_ns
-  url       = ""
-  download  = false
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
@@ -303,8 +277,6 @@ module "loki_dashboard" {
 
   name      = "loki-logs"
   namespace = var.metrics_ns
-  url       = ""
-  download  = false
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
