@@ -25,9 +25,7 @@
       "icon": "external link",
       "includeVars": true,
       "keepTime": true,
-      "tags": [
-        "loki"
-      ],
+      "tags": ["loki"],
       "targetBlank": false,
       "title": "Loki Dashboards",
       "tooltip": "",
@@ -39,7 +37,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "P8E80F9AEF21F6940"
+        "uid": "loki"
       },
       "fieldConfig": {
         "defaults": {
@@ -77,9 +75,7 @@
         "orientation": "horizontal",
         "percentChangeColorMode": "same_as_value",
         "reduceOptions": {
-          "calcs": [
-            "sum"
-          ],
+          "calcs": ["sum"],
           "fields": "",
           "values": false
         },
@@ -92,7 +88,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "P8E80F9AEF21F6940"
+            "uid": "loki"
           },
           "direction": "backward",
           "editorMode": "code",
@@ -107,7 +103,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "P8E80F9AEF21F6940"
+        "uid": "loki"
       },
       "fieldConfig": {
         "defaults": {},
@@ -144,7 +140,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "P8E80F9AEF21F6940"
+            "uid": "loki"
           },
           "direction": "backward",
           "editorMode": "code",
@@ -159,10 +155,7 @@
   ],
   "preload": false,
   "schemaVersion": 41,
-  "tags": [
-    "loki",
-    "log"
-  ],
+  "tags": ["loki", "log"],
   "templating": {
     "list": [
       {
@@ -173,7 +166,7 @@
         },
         "datasource": {
           "type": "loki",
-          "uid": "P8E80F9AEF21F6940"
+          "uid": "loki"
         },
         "definition": "",
         "name": "namespace",
@@ -196,7 +189,7 @@
         },
         "datasource": {
           "type": "loki",
-          "uid": "P8E80F9AEF21F6940"
+          "uid": "loki"
         },
         "definition": "",
         "label": "pod",
@@ -215,12 +208,8 @@
       {
         "allowCustomValue": false,
         "current": {
-          "text": [
-            "$__all"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": ["$__all"],
+          "value": ["$__all"]
         },
         "includeAll": true,
         "multi": true,

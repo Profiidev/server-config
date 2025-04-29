@@ -96,18 +96,6 @@ resource "helm_release" "alert_bot" {
   values = [templatefile("${path.module}/templates/alert-bot.values.tftpl", {})]
 }
 
-resource "helm_release" "promtail" {
-  name       = "promtail"
-  repository = "https://grafana.github.io/helm-charts"
-  chart      = "promtail"
-  version    = "6.16.6"
-  namespace  = var.metrics_ns
-
-  values = [templatefile("${path.module}/templates/promtail.values.tftpl", {})]
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
 resource "kubectl_manifest" "prometheus_k8s_api_egress" {
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1
