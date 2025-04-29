@@ -1,0 +1,36 @@
+crds:
+  upgradeJob:
+    enabled: true
+
+windowsMonitoring:
+  enabled: false
+
+prometheus-windows-exporter:
+  prometheus:
+    monitor:
+      enabled: false
+
+alertmanager:
+  enabled: false
+
+grafana:
+  enabled: false
+  forceDeployDashboards: true
+
+prometheusOperator:
+  enabled: false
+
+prometheus:
+  enabled: false
+
+kubeProxy:
+  service:
+    selector:
+      component: kube-proxy
+
+nodeExporter:
+  operatingSystems:
+    aix:
+      enabled: false
+    darwin:
+      enabled: false

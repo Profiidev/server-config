@@ -96,6 +96,17 @@ resource "helm_release" "alert_bot" {
   values = [templatefile("${path.module}/templates/alert-bot.values.tftpl", {})]
 }
 
+// just the rules and dashboards
+resource "helm_release" "k8s_dashboards" {
+  name       = "prometheus"
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "kube-prometheus-stack"
+  version    = "70.4.2"
+  namespace  = var.metrics_ns
+
+  values = [templatefile("${path.module}/templates/kube-prom.values.tftpl", {})]
+}
+
 resource "kubectl_manifest" "prometheus_k8s_api_egress" {
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1
