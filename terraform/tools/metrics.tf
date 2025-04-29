@@ -153,7 +153,7 @@ module "dashboards" {
     "coderd",
     "coder-workspaces",
     "coder-workspace-detail",
-    "loki-logs",
+    "pod-logs",
     "tempo-block-builder",
     "tempo-operational",
     "tempo-reads",
@@ -166,6 +166,15 @@ module "dashboards" {
     "alloy-otel",
     "alloy-prom",
     "alloy-resources",
+    "loki-chunks",
+    "loki-deletion",
+    "loki-logs",
+    "loki-operational",
+    "loki-reads-resources",
+    "loki-reads",
+    "loki-retention",
+    "loki-writes-resources",
+    "loki-writes",
   ])
 
   source = "../modules/grafana-dashboard"
