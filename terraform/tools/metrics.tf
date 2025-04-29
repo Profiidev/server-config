@@ -137,145 +137,35 @@ module "coder_metrics" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
-module "ingress_nginx_dashboard" {
+module "dashboards" {
+  for_each = toset([
+    "ingress-nginx",
+    "ingress-nginx-request",
+    "cert-manager",
+    "external-secrets",
+    "vault", "longhorn",
+    "minio",
+    "postgres",
+    "pgbouncer",
+    "pgbouncer-overview",
+    "nats",
+    "nats-jetstream",
+    "coderd",
+    "coder-workspaces",
+    "coder-workspace-detail",
+    "loki-logs",
+    "tempo-block-builder",
+    "tempo-operational",
+    "tempo-reads",
+    "tempo-resources",
+    "tempo-rollout-progress",
+    "tempo-tenants",
+    "tempo-writes",
+  ])
+
   source = "../modules/grafana-dashboard"
 
-  name      = "ingress-nginx"
-  namespace = var.metrics_ns
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-module "ingress_nginx_request_dashboard" {
-  source = "../modules/grafana-dashboard"
-
-  name      = "ingress-nginx-request"
-  namespace = var.metrics_ns
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-module "cert_manager_dashboard" {
-  source = "../modules/grafana-dashboard"
-
-  name      = "cert-manager"
-  namespace = var.metrics_ns
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-module "external_secrets_dashboard" {
-  source = "../modules/grafana-dashboard"
-
-  name      = "external-secrets"
-  namespace = var.metrics_ns
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-module "vault_dashboard" {
-  source = "../modules/grafana-dashboard"
-
-  name      = "vault"
-  namespace = var.metrics_ns
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-module "longhorn_dashboard" {
-  source = "../modules/grafana-dashboard"
-
-  name      = "longhorn"
-  namespace = var.metrics_ns
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-module "minio_dashboard" {
-  source = "../modules/grafana-dashboard"
-
-  name      = "minio"
-  namespace = var.metrics_ns
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-module "postgres_dashboard" {
-  source = "../modules/grafana-dashboard"
-
-  name      = "postgres"
-  namespace = var.metrics_ns
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-module "pgbouncer_dashboard" {
-  source = "../modules/grafana-dashboard"
-
-  name      = "pgbouncer"
-  namespace = var.metrics_ns
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-module "pgbouncer_overview_dashboard" {
-  source = "../modules/grafana-dashboard"
-
-  name      = "pgbouncer-overview"
-  namespace = var.metrics_ns
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-module "nats_dashboard" {
-  source = "../modules/grafana-dashboard"
-
-  name      = "nats"
-  namespace = var.metrics_ns
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-module "nats_jetstream_dashboard" {
-  source = "../modules/grafana-dashboard"
-
-  name      = "nats-jetstream"
-  namespace = var.metrics_ns
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-module "coderd_dashboard" {
-  source = "../modules/grafana-dashboard"
-
-  name      = "coderd"
-  namespace = var.metrics_ns
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-module "coder_workspaces_dashboard" {
-  source = "../modules/grafana-dashboard"
-
-  name      = "coder-workspaces"
-  namespace = var.metrics_ns
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-module "coder_workspace_detail_dashboard" {
-  source = "../modules/grafana-dashboard"
-
-  name      = "coder-workspace-detail"
-  namespace = var.metrics_ns
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
-module "loki_dashboard" {
-  source = "../modules/grafana-dashboard"
-
-  name      = "loki-logs"
+  name      = each.key
   namespace = var.metrics_ns
 
   depends_on = [kubernetes_namespace.metrics_ns]
@@ -384,6 +274,25 @@ resource "kubectl_manifest" "coder_prometheus_config" {
 
   depends_on = [kubernetes_namespace.metrics_ns]
 }
+
+resource "kubectl_manifest" "tempo_prometheus_config" {
+  yaml_body = yamlencode({
+    apiVersion = "monitoring.coreos.com/v1"
+    kind       = "PrometheusRule"
+    metadata = {
+      name      = "tempo"
+      namespace = var.metrics_ns
+      labels = {
+        prometheus = "tempo"
+        role       = "alert-rules"
+      }
+    }
+    spec = yamldecode(file("${path.module}/mixin/tempo.yaml"))
+  })
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
 
 resource "helm_release" "postgres_exporter" {
   name       = "postgres-exporter"
