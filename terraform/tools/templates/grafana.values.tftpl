@@ -25,6 +25,7 @@ ingress:
         - "profidev.io"
 serviceMonitor:
   enabled: true
+  interval: 60s
 
 datasources:
   datasources.yaml:
@@ -37,6 +38,7 @@ datasources:
         url: http://loki-gateway
         jsonData:
           httpHeaderName1: X-Scope-OrgID
+          timeInterval: 60s
         secureJsonData:
           httpHeaderValue1: "1"
         isDefault: false

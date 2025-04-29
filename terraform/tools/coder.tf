@@ -149,7 +149,7 @@ spec:
       app.kubernetes.io/name: coder
   podMetricsEndpoints:
     - port: prometheus-http
-      interval: 10s
+      interval: 60s
       scrapeTimeout: 10s
   YAML
 
