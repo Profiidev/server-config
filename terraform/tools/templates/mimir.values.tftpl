@@ -50,6 +50,8 @@ mimir:
     memberlist:
       cluster_label: "mimir"
       cluster_label_verification_disabled: true
+    limits:
+      max_global_series_per_user: 0
 
 ingester:
   replicas: 1

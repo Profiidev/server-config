@@ -135,3 +135,7 @@ alloy:
           url = "http://loki-gateway/loki/api/v1/push"
         }
       }
+
+      mimir.rules.kubernetes "rules" {
+        address = "http://mimir-nginx"
+      }
