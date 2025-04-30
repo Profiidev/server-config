@@ -65,6 +65,7 @@ spec:
           - 443
         domains:
           - "profidev.io"
+          - "github.com"
   YAML
 
   depends_on = [kubernetes_namespace.argo_ns]

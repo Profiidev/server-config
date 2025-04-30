@@ -18,6 +18,11 @@ configs:
         - profile
         - email
 
+  rbac:
+    policy.csv: |
+      g, "ArgoCD Admin", role:admin
+    policy.default: role:readonly
+
 controller:
   metrics:
     enabled: true
