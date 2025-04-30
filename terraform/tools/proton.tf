@@ -9,92 +9,34 @@ resource "kubernetes_namespace" "proton_ns" {
   }
 }
 
-resource "kubectl_manifest" "proton_secrets" {
+resource "kubectl_manifest" "proton_app" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
+apiVersion: argoproj.io/v1alpha1
+kind: Application
 metadata:
-  name: proton-backend
-  namespace: ${var.proton_ns}
+  name: proton
+  namespace: ${var.argo_ns}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
-  refreshInterval: 15s
-  secretStoreRef:
-    name: ${var.cluster_secret_store}
-    kind: ClusterSecretStore
-  target:
-    name: proton-backend
-  dataFrom:
-  - extract:
-      key: apps/proton
+  project: default
+  source:
+    repoURL: https://github.com/Profiidev/server-config
+    path: apps/proton
+    targetRevision: feat/argocd
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=false
+      - Validate=true
+      - PruneLast=true
+      - PrunePropagationPolicy=foreground
   YAML
-
-  depends_on = [kubernetes_namespace.proton_ns]
-}
-
-resource "kubectl_manifest" "proton_backend_ingress" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: proton-backend-ingress
-  namespace: ${var.proton_ns}
-spec:
-  order: 10
-  selector: app == 'proton-backend'
-  types:
-    - Ingress
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: kubernetes.io/metadata.name == 'kube-system'
-        selector: app.kubernetes.io/name == 'rke2-ingress-nginx'
-      destination:
-        ports:
-          - 8000
-  YAML
-
-  depends_on = [kubernetes_namespace.proton_ns]
-}
-
-resource "kubernetes_ingress_v1" "proton_backend" {
-  metadata {
-    name = "proton-backend"
-    annotations = {
-      "nginx.ingress.kubernetes.io/auth-tls-secret"        = "${var.proton_ns}/${var.cloudflare_ca_cert_var}",
-      "nginx.ingress.kubernetes.io/auth-tls-verify-client" = "on",
-      "nginx.ingress.kubernetes.io/rewrite-target"         = "/$1"
-    }
-    namespace = var.proton_ns
-  }
-
-  spec {
-    ingress_class_name = var.ingress_class
-    rule {
-      host = "proton.profidev.io"
-      http {
-        path {
-          backend {
-            service {
-              name = "proton-backend"
-              port {
-                number = 8000
-              }
-            }
-          }
-          path      = "/backend(.*)"
-          path_type = "ImplementationSpecific"
-        }
-      }
-    }
-    tls {
-      hosts = [
-        "profidev.io",
-        "*.profidev.io"
-      ]
-      secret_name = var.cloudflare_cert_var
-    }
-  }
 
   depends_on = [kubernetes_namespace.proton_ns]
 }
