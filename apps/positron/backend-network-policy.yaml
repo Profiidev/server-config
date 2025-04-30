@@ -1,0 +1,38 @@
+---
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: positron-backend-ingress
+  namespace: positron
+spec:
+  order: 10
+  selector: app == 'positron-backend'
+  types:
+    - Ingress
+  ingress:
+    - action: Allow
+      protocol: TCP
+      source:
+        namespaceSelector: kubernetes.io/metadata.name == 'kube-system'
+        selector: app.kubernetes.io/name == 'rke2-ingress-nginx'
+      destination:
+        ports:
+          - 8000
+---
+apiVersion: crd.projectcalico.org/v1
+kind: GlobalNetworkPolicy
+metadata:
+  name: positron-egress
+spec:
+  namespaceSelector: kubernetes.io/metadata.name == 'positron'
+  selector: app == 'positron-backend'
+  types:
+    - Egress
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        ports:
+          - 443
+        domains:
+          - api.nasa.gov

@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -29,7 +30,13 @@ spec:
           image: ghcr.io/profiidev/positron/positron-backend:master
           imagePullPolicy: Always
           name: positron-backend
-          resources: {}
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
           volumeMounts:
             - mountPath: /etc/ssl/certs/e11529a0.0
               subPath: e11529a0.0
@@ -45,17 +52,3 @@ spec:
           secret:
             defaultMode: 420
             secretName: cluster-ca-cert
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: positron-backend
-  namespace: positron
-spec:
-  ports:
-    - port: 8000
-      protocol: TCP
-      targetPort: 8000
-  selector:
-    app: positron-backend
-  type: ClusterIP
