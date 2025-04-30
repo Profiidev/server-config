@@ -211,6 +211,7 @@ spec:
         domains:
           - grafana.com
           - "*.grafana.com"
+          - "grafana.profidev.io"
   YAML
 
   depends_on = [kubernetes_namespace.metrics_ns]
