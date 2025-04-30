@@ -7,7 +7,6 @@ metadata:
 spec:
   order: 10
   selector: app == 'positron-backend'
-  namespaceSelector: kubernetes.io/metadata.name == 'positron'
   types:
     - Ingress
     - Egress
