@@ -55,10 +55,41 @@ mimir:
       ruler_max_rules_per_rule_group: 0
       ruler_max_rule_groups_per_tenant: 0
 
+alertmanager:
+  fallbackConfig: |
+    route:
+      group_by: ["job"]
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: "discord"
+      routes:
+        - receiver: "null"
+          matchers:
+            - 'alertname="Watchdog"'
+    receivers:
+      - name: "null"
+      - name: "discord"
+        webhook_configs:
+          - url_file: "/etc/alertmanager/config/discord_webhook_url"
+            send_resolved: true
+  extraVolumes:
+    - name: discord-webhook
+      secret:
+        defaultMode: 420
+        secretName: discord-webhook
+  extraVolumeMounts:
+    - mountPath: /etc/alertmanager/config/discord_webhook_url
+      subPath: proxy
+      name: discord-webhook
+      readOnly: true
+
 ingester:
   replicas: 1
   zoneAwareReplication:
     enabled: false
+  persistentVolume:
+    size: 20Gi
 
 store_gateway:
   zoneAwareReplication:

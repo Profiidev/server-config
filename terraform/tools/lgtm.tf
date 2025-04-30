@@ -240,41 +240,6 @@ spec:
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
-resource "kubectl_manifest" "alert_manager_config" {
-  yaml_body = <<YAML
-apiVersion: monitoring.coreos.com/v1alpha1
-kind: AlertmanagerConfig
-metadata:
-  name: alert-manager-config
-  namespace: ${var.metrics_ns}
-  labels:
-    alertmanagerConfig: alert-manager-config
-spec:
-  route:
-    groupBy: ['job']
-    groupWait: 30s
-    groupInterval: 5m
-    repeatInterval: 12h
-    receiver: 'discord'
-    routes:
-      - receiver: 'null'
-        matchers:
-        - matchType: "="
-          name: alertname
-          value: Watchdog
-  receivers:
-  - name: 'null'
-  - name: 'discord'
-    webhookConfigs:
-    - urlSecret:
-        name: discord-webhook
-        key: proxy
-      sendResolved: true
-  YAML
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
 resource "kubectl_manifest" "discord_webhook" {
   yaml_body = <<YAML
 apiVersion: external-secrets.io/v1beta1
