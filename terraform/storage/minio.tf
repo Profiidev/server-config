@@ -177,7 +177,7 @@ spec:
   endpoints:
     - port: https-minio
       interval: 60s
-      path: "/minio/v2/metrics/cluster"
+      path: /minio/v2/metrics/cluster
       scheme: https
       tlsConfig:
         insecureSkipVerify: true
