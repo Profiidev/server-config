@@ -73,30 +73,16 @@ spec:
         ports:
           - 6443
           - 9001
-  YAML
-
-  depends_on = [kubernetes_namespace.portainer_ns]
-}
-
-resource "kubectl_manifest" "portainer_egress" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: GlobalNetworkPolicy
-metadata:
-  name: portainer-egress
-spec:
-  namespaceSelector: kubernetes.io/metadata.name == '${var.portainer_ns}'
-  selector: app.kubernetes.io/name == 'portainer'
-  types:
-    - Egress
-  egress:
     - action: Allow
       protocol: TCP
       destination:
+        notNets:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
         ports:
           - 443
-        domains:
-          - github.com
-          - s3.profidev.io
   YAML
+
+  depends_on = [kubernetes_namespace.portainer_ns]
 }

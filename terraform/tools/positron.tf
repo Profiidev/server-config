@@ -18,7 +18,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: positron
-  namespace: ${var.positron_ns}
+  namespace: ${var.argo_ns}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -26,7 +26,7 @@ spec:
   source:
     repoURL: https://github.com/Profiidev/server-config
     path: apps/positron
-    targetRevision: HEAD
+    targetRevision: feat/argocd
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:

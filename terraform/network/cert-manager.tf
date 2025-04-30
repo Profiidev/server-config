@@ -92,6 +92,17 @@ spec:
           - 194.164.200.60/32
         ports:
           - 6443
+    - action: Allow
+      protocol: TCP
+      destination:
+        notNets:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
+        ports:
+          - 443
+          - 80
+          - 53
   YAML
 
   depends_on = [kubernetes_namespace.cert_ns]
@@ -114,32 +125,4 @@ resource "kubernetes_network_policy_v1" "cert_ns" {
     }
     policy_types = ["Ingress"]
   }
-}
-
-resource "kubectl_manifest" "cert_manager_egress" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: GlobalNetworkPolicy
-metadata:
-  name: cert-manager-egress
-spec:
-  namespaceSelector: kubernetes.io/metadata.name == '${var.cert_ns}'
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        ports:
-          - 443
-          - 80
-          - 53
-        domains:
-          - "*.letsencrypt.org"
-          - "*.profidev.io"
-          - "profidev.io"
-          - "*.cloudflare.com"
-  YAML
-
-  depends_on = [kubernetes_namespace.cert_ns]
 }

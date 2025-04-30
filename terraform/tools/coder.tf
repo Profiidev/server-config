@@ -50,9 +50,10 @@ spec:
 resource "kubectl_manifest" "coder_egress" {
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1
-kind: GlobalNetworkPolicy
+kind: NetworkPolicy
 metadata:
   name: coder-egress
+  namespace: ${var.coder_ns}
 spec:
   namespaceSelector: kubernetes.io/metadata.name == '${var.coder_ns}'
   selector: app.kubernetes.io/instance == 'coder'
@@ -62,12 +63,12 @@ spec:
     - action: Allow
       protocol: TCP
       destination:
+        notNets:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
         ports:
           - 443
-        domains:
-          - api.github.com
-          - github.com
-          - profidev.io
     - action: Allow
       protocol: TCP
       destination:
@@ -80,8 +81,6 @@ spec:
       destination:
         ports:
           - 19302
-        domains:
-          - "*.l.google.com"
   YAML
 
   depends_on = [kubernetes_namespace.positron_ns]

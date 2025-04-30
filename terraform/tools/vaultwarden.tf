@@ -77,9 +77,10 @@ spec:
 resource "kubectl_manifest" "vaultwarden_egress" {
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1
-kind: GlobalNetworkPolicy
+kind: NetworkPolicy
 metadata:
   name: vaultwarden-egress
+  namespace: ${var.vaultwarden_ns}
 spec:
   namespaceSelector: kubernetes.io/metadata.name == '${var.vaultwarden_ns}'
   selector: app.kubernetes.io/name == 'vaultwarden'
@@ -89,6 +90,10 @@ spec:
     - action: Allow
       protocol: TCP
       destination:
+        notNets:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
         ports:
           - 443
     - action: Allow
@@ -96,8 +101,6 @@ spec:
       destination:
         ports:
           - 465
-        domains:
-          - mail.profidev.io
   YAML
 
   depends_on = [kubernetes_namespace.vaultwarden_ns]

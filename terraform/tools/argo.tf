@@ -42,30 +42,15 @@ spec:
           - 194.164.200.60/32
         ports:
           - 6443
-  YAML
-
-  depends_on = [kubernetes_namespace.argo_ns]
-}
-
-resource "kubectl_manifest" "argo_egress" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: GlobalNetworkPolicy
-metadata:
-  name: argo-egress
-spec:
-  namespaceSelector: kubernetes.io/metadata.name == '${var.argo_ns}'
-  types:
-    - Egress
-  egress:
     - action: Allow
       protocol: TCP
       destination:
+        notNets:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
         ports:
           - 443
-        domains:
-          - "profidev.io"
-          - "github.com"
   YAML
 
   depends_on = [kubernetes_namespace.argo_ns]

@@ -7,8 +7,10 @@ metadata:
 spec:
   order: 10
   selector: app == 'positron-backend'
+  namespaceSelector: kubernetes.io/metadata.name == 'positron'
   types:
     - Ingress
+    - Egress
   ingress:
     - action: Allow
       protocol: TCP
@@ -18,21 +20,13 @@ spec:
       destination:
         ports:
           - 8000
----
-apiVersion: crd.projectcalico.org/v1
-kind: GlobalNetworkPolicy
-metadata:
-  name: positron-egress
-spec:
-  namespaceSelector: kubernetes.io/metadata.name == 'positron'
-  selector: app == 'positron-backend'
-  types:
-    - Egress
   egress:
     - action: Allow
       protocol: TCP
       destination:
+        notNets:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
         ports:
           - 443
-        domains:
-          - api.nasa.gov

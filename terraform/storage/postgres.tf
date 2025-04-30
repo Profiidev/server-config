@@ -23,12 +23,13 @@ resource "helm_release" "postgres" {
   depends_on = [kubernetes_namespace.everest_system_ns]
 }
 
-resource "kubectl_manifest" "everest_system_gnp" {
+resource "kubectl_manifest" "everest_system_egress" {
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1
-kind: GlobalNetworkPolicy
+kind: NetworkPolicy
 metadata:
   name: everest-egress
+  namespace: ${var.everest_system_ns}
 spec:
   namespaceSelector: kubernetes.io/metadata.name == '${var.everest_system_ns}'
   types:
@@ -37,10 +38,12 @@ spec:
     - action: Allow
       protocol: TCP
       destination:
+        notNets:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
         ports:
           - 443
-        domains:
-          - check.percona.com
   YAML
 
   depends_on = [kubernetes_namespace.everest_system_ns]
@@ -127,11 +130,11 @@ resource "null_resource" "everest_labels" {
 
 module "postgres_access" {
   source = "../modules/access-policy"
-  
-  namespace = var.everest_ns
+
+  namespace       = var.everest_ns
   namespace_label = var.postgres_access_label
-  selector = "app.kubernetes.io/name == 'percona-postgresql'"
-  port = 5432
+  selector        = "app.kubernetes.io/name == 'percona-postgresql'"
+  port            = 5432
 
   depends_on = [helm_release.postgres]
 }
