@@ -137,6 +137,18 @@ module "coder_metrics" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
+module "argocd_metrics" {
+  source = "../modules/metrics-np"
+
+  namespace  = var.argo_ns
+  port       = 8083
+  ports      = [8082, 8080, 9001, 8084]
+  name       = "argocd"
+  metrics_ns = var.metrics_ns
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
 module "dashboards" {
   for_each = toset([
     "ingress-nginx",
@@ -175,6 +187,9 @@ module "dashboards" {
     "loki-retention",
     "loki-writes-resources",
     "loki-writes",
+    "argo-cd-application",
+    "argo-cd-notifications",
+    "argo-cd-operational",
   ])
 
   source = "../modules/grafana-dashboard"
@@ -195,6 +210,7 @@ resource "kubectl_manifest" "alert_configs" {
     "coder",
     "tempo",
     "alloy",
+    "argocd",
   ])
 
   yaml_body = yamlencode({

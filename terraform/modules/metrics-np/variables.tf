@@ -14,6 +14,11 @@ variable "port" {
   type = number
 }
 
+variable "ports" {
+  type    = list(number)
+  default = []
+}
+
 variable "selector" {
   type     = string
   nullable = true
