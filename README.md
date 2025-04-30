@@ -15,6 +15,8 @@
     - bind-address=0.0.0.0
   kube-proxy-arg:
     - metrics-bind-address=0.0.0.0
+  kubelet-arg:
+    - max-pods=200
   ```
 
 - create admission config `/etc/rancher/rke2/rke2-pss-custom.yaml`
