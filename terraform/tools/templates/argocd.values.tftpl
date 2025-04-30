@@ -23,6 +23,10 @@ configs:
       g, "ArgoCD Admin", role:admin
     policy.default: role:readonly
 
+  secret:
+    extra:
+      webhook.github.secret: $argo:webhook.github.secret
+
 controller:
   metrics:
     enabled: true
