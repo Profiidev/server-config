@@ -272,6 +272,7 @@ spec:
       app: stalwart
   endpoints:
     - port: http
+      interval: 60s
       path: "/metrics/prometheus"
       basicAuth:
         username:

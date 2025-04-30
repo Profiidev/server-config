@@ -311,7 +311,7 @@ tenant:
   serviceAccountName: ""
   ###
   # Directs the Operator to add the Tenant's metric scrape configuration to an existing Kubernetes Prometheus deployment managed by the Prometheus Operator.
-  prometheusOperator: true
+  prometheusOperator: false
   ###
   # Configure pod logging configuration for the MinIO Tenant.
   #
@@ -329,7 +329,9 @@ tenant:
   ###
   # serviceMetadata allows passing additional labels and annotations to MinIO and Console specific
   # services created by the operator.
-  serviceMetadata: {}
+  serviceMetadata:
+    minioServiceLabels:
+      app: minio-metrics
   ###
   # Add environment variables to be set in MinIO container (https://github.com/minio/minio/tree/master/docs/config)
   env: []

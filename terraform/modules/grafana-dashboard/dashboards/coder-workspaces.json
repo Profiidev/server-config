@@ -34,7 +34,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "prom"
       },
       "fieldConfig": {
         "defaults": {
@@ -116,7 +116,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "prom"
           },
           "editorMode": "code",
           "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=`coder`}[$__rate_interval]))",
@@ -133,7 +133,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "prom"
       },
       "fieldConfig": {
         "defaults": {
@@ -215,7 +215,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "prom"
           },
           "editorMode": "code",
           "expr": "max by (pod) (container_memory_working_set_bytes{namespace=`coder`})",
@@ -232,7 +232,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "prom"
       },
       "fieldConfig": {
         "defaults": {
@@ -315,7 +315,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "prom"
           },
           "editorMode": "code",
           "expr": "sum by (pod) (\n  round(increase(kube_pod_container_status_restarts_total{namespace=`coder`}[$__interval]))\n) > 0",
@@ -332,7 +332,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "prom"
       },
       "description": "",
       "fieldConfig": {
@@ -416,7 +416,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "prom"
           },
           "editorMode": "code",
           "expr": "sum by (pod, reason) (\n  count_over_time(kube_pod_container_status_terminated_reason{namespace=`coder`}[$__interval])\n)",
@@ -446,7 +446,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "prom"
       },
       "fieldConfig": {
         "defaults": {
@@ -573,7 +573,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "prom"
           },
           "editorMode": "code",
           "expr": "sum by (workspace_transition) (\n    (\n      # Since new series are created and are initially set to a value of 1, we cannot use \"increase\" (because an increase from <nothing> to 1 does not yield 1).\n      # So we compare the current series to an interval ago to see if we have any new series and then sum the series we find. \n      (\n        coderd_workspace_builds_total{status=\"success\", workspace_name=~\"$workspace_name\", template_name=~\"$template_name\"} - \n        coderd_workspace_builds_total{status=\"success\", workspace_name=~\"$workspace_name\", template_name=~\"$template_name\"} offset $__interval\n      ) >= 0) \n      or coderd_workspace_builds_total{status=\"success\", workspace_name=~\"$workspace_name\", template_name=~\"$template_name\"}\n) > 0",
@@ -590,7 +590,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "prom"
       },
       "fieldConfig": {
         "defaults": {
@@ -717,7 +717,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "prom"
           },
           "editorMode": "code",
           "expr": "sum by (workspace_transition) (\n    (\n      # Since new series are created and are initially set to a value of 1, we cannot use \"increase\" (because an increase from <nothing> to 1 does not yield 1).\n      # So we compare the current series to an interval ago to see if we have any new series and then sum the series we find. \n      (\n        coderd_workspace_builds_total{status=\"failed\", workspace_name=~\"$workspace_name\", template_name=~\"$template_name\"} - \n        coderd_workspace_builds_total{status=\"failed\", workspace_name=~\"$workspace_name\", template_name=~\"$template_name\"} offset $__interval\n      ) >= 0) \n      or coderd_workspace_builds_total{status=\"failed\", workspace_name=~\"$workspace_name\", template_name=~\"$template_name\"}\n) > 0",
@@ -733,7 +733,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "prom"
       },
       "description": "",
       "fieldConfig": {
@@ -868,7 +868,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "prom"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -988,7 +988,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "prom"
       },
       "fieldConfig": {
         "defaults": {
@@ -1038,7 +1038,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "prom"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1055,7 +1055,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "prom"
       },
       "fieldConfig": {
         "defaults": {
@@ -1105,7 +1105,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "prom"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1122,7 +1122,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "prom"
       },
       "fieldConfig": {
         "defaults": {
@@ -1172,7 +1172,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "prom"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1189,7 +1189,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "prom"
       },
       "fieldConfig": {
         "defaults": {
@@ -1239,7 +1239,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "prom"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1268,7 +1268,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "prometheus"
+          "uid": "prom"
         },
         "definition": "label_values(coderd_workspace_builds_total,workspace_name)",
         "hide": 0,
@@ -1297,7 +1297,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "prometheus"
+          "uid": "prom"
         },
         "definition": "label_values(coderd_workspace_builds_total,template_name)",
         "hide": 0,

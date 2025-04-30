@@ -162,3 +162,51 @@ module "minio_access" {
 
   depends_on = [kubernetes_namespace.minio_ns]
 }
+
+resource "kubectl_manifest" "minio_metrics" {
+  yaml_body = <<YAML
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: minio
+  namespace: ${var.minio_ns}
+spec:
+  selector:
+    matchLabels:
+      app: minio-metrics
+  endpoints:
+    - port: https-minio
+      interval: 60s
+      path: /minio/v2/metrics/cluster
+      scheme: https
+      tlsConfig:
+        insecureSkipVerify: true
+      bearerTokenSecret:
+        name: minio-metrics
+        key: token
+  YAML
+
+  depends_on = [kubernetes_namespace.minio_ns]
+}
+
+resource "kubectl_manifest" "minio_metrics_secret" {
+  yaml_body = <<YAML
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: minio-metrics
+  namespace: ${var.minio_ns}
+spec:
+  refreshInterval: 15s
+  secretStoreRef:
+    name: ${var.cluster_secret_store}
+    kind: ClusterSecretStore
+  target:
+    name: minio-metrics
+  dataFrom:
+  - extract:
+      key: minio/metrics
+  YAML
+
+  depends_on = [kubernetes_namespace.minio_ns]
+}

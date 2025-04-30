@@ -2,6 +2,7 @@ postgresql:
   enabled: false
 serviceMonitor:
   enabled: true
+  interval: 60s
   namespace: ${namespace}
 config:
   datasource:
