@@ -3,17 +3,17 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: positron-backend
-  namespace: positron
+  namespace: {{ .Release.Namespace }}
   labels:
     name: positron-backend
+  {{- with .Values.backend.ingress.annotations }}
   annotations:
-    nginx.ingress.kubernetes.io/auth-tls-secret: positron/cloudflare-ca-cert
-    nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
-    nginx.ingress.kubernetes.io/rewrite-target: "/$1"
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
-  ingressClassName: ingress-nginx
+  ingressClassName: {{ .Values.backend.ingress.className | default "nginx" }}
   rules:
-    - host: profidev.io
+    - host: {{ .Values.backend.ingress.host }}
       http:
         paths:
           - pathType: ImplementationSpecific
@@ -23,8 +23,7 @@ spec:
                 name: positron-backend
                 port:
                   number: 8000
+  {{- with .Values.backend.ingress.tls }}
   tls:
-    - hosts:
-        - profidev.io
-        - "*.profi.dev"
-      secretName: cloudflare-cert
+    {{- toYaml . | nindent 4 }}
+  {{- end }}

@@ -3,9 +3,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: positron-backend
-  namespace: positron
+  namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.backend.replicaCount | default 1 }}
   selector:
     matchLabels:
       app: positron-backend
@@ -18,16 +18,17 @@ spec:
     metadata:
       labels:
         app: positron-backend
-        nats-access: "true"
-        minio-access: "true"
-        postgres-access: "true"
+        {{- with .Values.backend.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
+      revisionHistoryLimit: 0
       containers:
         - tty: true
           envFrom:
             - secretRef:
                 name: positron-backend
-          image: ghcr.io/profiidev/positron/positron-backend:master
+          image: ghcr.io/profiidev/positron/positron-backend:{{ .Chart.Version }}
           imagePullPolicy: Always
           name: positron-backend
           resources:
@@ -37,18 +38,16 @@ spec:
             requests:
               cpu: 200m
               memory: 128Mi
+          {{- with .Values.backend.extraVolumeMounts }}
           volumeMounts:
-            - mountPath: /etc/ssl/certs/e11529a0.0
-              subPath: e11529a0.0
-              name: cluster-ca-cert
-              readOnly: true
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
+      {{- with .Values.backend.extraVolumes }}
       volumes:
-        - name: cluster-ca-cert
-          secret:
-            defaultMode: 420
-            secretName: cluster-ca-cert
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

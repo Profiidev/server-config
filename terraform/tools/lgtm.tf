@@ -34,7 +34,8 @@ resource "helm_release" "mimir" {
   namespace  = var.metrics_ns
 
   values = [templatefile("${path.module}/templates/mimir.values.tftpl", {
-    ca_hash = var.ca_hash
+    ca_hash   = var.ca_hash
+    namespace = var.metrics_ns
   })]
 
   depends_on = [kubernetes_namespace.metrics_ns]
