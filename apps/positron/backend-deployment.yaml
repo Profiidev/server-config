@@ -32,10 +32,10 @@ spec:
           name: positron-backend
           resources:
             limits:
-              cpu: 200m
+              cpu: 1000m
               memory: 256Mi
             requests:
-              cpu: 100m
+              cpu: 200m
               memory: 128Mi
           volumeMounts:
             - mountPath: /etc/ssl/certs/e11529a0.0
