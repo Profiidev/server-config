@@ -3,6 +3,16 @@ entries:
   positron:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2025-05-01T14:51:23.06332063Z"
+    description: A Helm chart for Kubernetes
+    digest: 459db43bad13b6ba90e1ec0e6bbc48a762d04efb5fa970470115362100f40750
+    name: positron
+    type: application
+    urls:
+    - https://github.com/Profiidev/server-config/releases/download/positron-v0.1.1/positron-v0.1.1.tgz
+    version: v0.1.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2025-05-01T13:44:59.059713779Z"
     description: A Helm chart for Kubernetes
     digest: f4a7304254f22edbb197e6935a98bfa56b7af23eb46631d1e7785a38837c0312
@@ -166,4 +176,4 @@ entries:
     urls:
     - https://github.com/Profiidev/server-config/releases/download/vault-auto-unseal-0.1.0/vault-auto-unseal-0.1.0.tgz
     version: 0.1.0
-generated: "2025-05-01T13:44:59.646121721Z"
+generated: "2025-05-01T14:51:23.063354053Z"
