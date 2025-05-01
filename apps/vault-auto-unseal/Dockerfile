@@ -1,12 +1,6 @@
 ARG BIN=vault-auto-unseal
 
-FROM messense/rust-musl-cross:x86_64-musl AS chef
-RUN rustup update
-
-RUN cargo install cargo-chef 
-WORKDIR /app
-
-FROM chef AS planner
+FROM ghcr.io/profiidev/images/rust-musl-builder:main AS planner
 
 ARG BIN
 ENV BIN=$BIN
@@ -15,7 +9,7 @@ COPY apps/vault-auto-unseal/Cargo.toml ./Cargo.lock ./
 
 RUN cargo chef prepare --recipe-path recipe.json --bin $BIN
 
-FROM chef AS builder
+FROM ghcr.io/profiidev/images/rust-musl-builder:main AS builder
 
 ARG BIN
 ENV BIN=$BIN
