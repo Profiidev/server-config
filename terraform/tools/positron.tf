@@ -41,7 +41,7 @@ spec:
           extraVolumeMounts:
             - name: cluster-ca-cert
               readOnly: true
-              subPath: ${var.ca_hash}
+              subPath: ${var.ca_hash}.0
               mountPath: /etc/ssl/certs/${var.ca_hash}.0
           podLabels:
             ${var.nats_access_label.key}: "${var.nats_access_label.value}"

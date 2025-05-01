@@ -11,7 +11,7 @@ backend:
         secretName: cluster-ca-cert
   extraVolumeMounts:
     - mountPath: /etc/ssl/certs/e11529a0.0
-      subPath: e11529a0
+      subPath: e11529a0.0
       name: cluster-ca-cert
       readOnly: true
 

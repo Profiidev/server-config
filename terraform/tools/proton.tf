@@ -38,7 +38,7 @@ spec:
           extraVolumeMounts:
             - name: cluster-ca-cert
               readOnly: true
-              subPath: ${var.ca_hash}
+              subPath: ${var.ca_hash}.0
               mountPath: /etc/ssl/certs/${var.ca_hash}.0
           ingress:
             className: ${var.ingress_class}
