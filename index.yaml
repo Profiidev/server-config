@@ -2,6 +2,15 @@ apiVersion: v1
 entries:
   positron:
   - apiVersion: v2
+    created: "2025-05-01T16:30:38.826852547Z"
+    description: A Personal Website
+    digest: 30561d55a14d38b480fb3ee3f46b9096e5d21a56a699efa6e740608f26182f1b
+    name: positron
+    type: application
+    urls:
+    - https://github.com/Profiidev/server-config/releases/download/positron-v0.1.4/positron-v0.1.4.tgz
+    version: v0.1.4
+  - apiVersion: v2
     appVersion: 1.16.0
     created: "2025-05-01T16:06:38.01663457Z"
     description: A Helm chart for Kubernetes
@@ -43,6 +52,15 @@ entries:
     version: v0.1.0
   proton:
   - apiVersion: v2
+    created: "2025-05-01T16:30:38.963843608Z"
+    description: A Minecraft Launcher
+    digest: c9681e43213bd33e8eb742ae0c24be84fb77d621fb58f5561baf41e5f3dbb275
+    name: proton
+    type: application
+    urls:
+    - https://github.com/Profiidev/server-config/releases/download/proton-v0.1.1/proton-v0.1.1.tgz
+    version: v0.1.1
+  - apiVersion: v2
     appVersion: 1.16.0
     created: "2025-05-01T13:44:59.311208387Z"
     description: A Helm chart for Kubernetes
@@ -53,6 +71,18 @@ entries:
     - https://github.com/Profiidev/server-config/releases/download/proton-v0.1.0/proton-v0.1.0.tgz
     version: v0.1.0
   vault-auto-unseal:
+  - apiVersion: v2
+    created: "2025-05-01T16:30:39.172227591Z"
+    description: Automatic unseal for HashiCorp Vault
+    digest: c618c3f3b4cdad95445bee3112cec009217e6d163d3cbd436122036fb26a4e02
+    maintainers:
+    - email: mail@profidev.io
+      name: ProfiDev
+    name: vault-auto-unseal
+    type: application
+    urls:
+    - https://github.com/Profiidev/server-config/releases/download/vault-auto-unseal-v0.1.11/vault-auto-unseal-v0.1.11.tgz
+    version: v0.1.11
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2025-05-01T13:44:59.646076216Z"
@@ -196,4 +226,4 @@ entries:
     urls:
     - https://github.com/Profiidev/server-config/releases/download/vault-auto-unseal-0.1.0/vault-auto-unseal-0.1.0.tgz
     version: 0.1.0
-generated: "2025-05-01T16:06:38.016674154Z"
+generated: "2025-05-01T16:30:39.172295919Z"
