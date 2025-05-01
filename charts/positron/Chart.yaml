@@ -1,6 +1,5 @@
 apiVersion: v2
 name: positron
-description: A Helm chart for Kubernetes
+description: A Personal Website
 type: application
 version: v0.1.3
-appVersion: "1.16.0"
