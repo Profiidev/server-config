@@ -28,7 +28,7 @@ mimir:
 
     alertmanager:
       sharding_ring:
-        replication_factor: 1
+        replication_factor: 2
       external_url: "http://mimir-nginx.${namespace}.svc.cluster.local/alertmanager"
 
     ingester:
