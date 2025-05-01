@@ -6,7 +6,7 @@ backend:
   replicaCount: 1
   extraVolumeMounts:
     - mountPath: /etc/ssl/certs/e11529a0.0
-      subPath: e11529a0
+      subPath: e11529a0.0
       name: cluster-ca-cert
       readOnly: true
   extraVolumes:
