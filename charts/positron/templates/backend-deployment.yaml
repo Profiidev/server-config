@@ -28,7 +28,7 @@ spec:
           envFrom:
             - secretRef:
                 name: positron-backend
-          image: ghcr.io/profiidev/positron/positron-backend: {{ .Chart.Version }}
+          image: ghcr.io/profiidev/positron/positron-backend:{{ .Chart.Version }}
           imagePullPolicy: Always
           name: positron-backend
           resources:
