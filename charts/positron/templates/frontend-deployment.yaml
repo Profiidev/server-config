@@ -6,6 +6,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.frontend.replicaCount }}
+  revisionHistoryLimit: 0
   selector:
     matchLabels:
       app: positron-frontend
@@ -19,7 +20,6 @@ spec:
       labels:
         app: positron-frontend
     spec:
-      revisionHistoryLimit: 0
       containers:
         - image: ghcr.io/profiidev/positron/positron-frontend:{{ .Chart.Version }}
           imagePullPolicy: Always
