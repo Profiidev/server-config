@@ -1,0 +1,49 @@
+secret:
+  storeName: cluster-secret-store
+  path: apps/positron
+
+backend:
+  replicaCount: 1
+  extraVolumes:
+    - name: cluster-ca-cert
+      secret:
+        defaultMode: 420
+        secretName: cluster-ca-cert
+  extraVolumeMounts:
+    - mountPath: /etc/ssl/certs/e11529a0.0
+      subPath: e11529a0.0
+      name: cluster-ca-cert
+      readOnly: true
+
+  podLabels:
+    nats-access: "true"
+    minio-access: "true"
+    postgres-access: "true"
+
+  ingress:
+    className: ingress-nginx
+    annotations:
+      nginx.ingress.kubernetes.io/auth-tls-secret: positron/cloudflare-ca-cert
+      nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+      nginx.ingress.kubernetes.io/rewrite-target: "/$1"
+    host: profidev.io
+    tls:
+      - hosts:
+          - profidev.io
+          - "*.profi.dev"
+        secretName: cloudflare-cert
+
+frontend:
+  replicaCount: 1
+
+  ingress:
+    className: ingress-nginx
+    annotations:
+      nginx.ingress.kubernetes.io/auth-tls-secret: positron/cloudflare-ca-cert
+      nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+    host: profidev.io
+    tls:
+      - hosts:
+          - profidev.io
+          - "*.profi.dev"
+        secretName: cloudflare-cert

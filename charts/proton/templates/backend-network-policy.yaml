@@ -1,12 +1,11 @@
----
 apiVersion: crd.projectcalico.org/v1
 kind: NetworkPolicy
 metadata:
-  name: positron-frontend-ingress
-  namespace: positron
+  name: proton-backend-ingress
+  namespace: {{ .Release.Namespace }}
 spec:
   order: 10
-  selector: app == 'positron-frontend'
+  selector: app == 'proton-backend'
   types:
     - Ingress
   ingress:
@@ -17,4 +16,4 @@ spec:
         selector: app.kubernetes.io/name == 'rke2-ingress-nginx'
       destination:
         ports:
-          - 3000
+          - 8000

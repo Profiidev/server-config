@@ -1,13 +1,15 @@
+---
 apiVersion: crd.projectcalico.org/v1
 kind: NetworkPolicy
 metadata:
-  name: proton-backend-ingress
-  namespace: proton
+  name: positron-backend-ingress
+  namespace: {{ .Release.Namespace }}
 spec:
   order: 10
-  selector: app == 'proton-backend'
+  selector: app == 'positron-backend'
   types:
     - Ingress
+    - Egress
   ingress:
     - action: Allow
       protocol: TCP
@@ -17,3 +19,13 @@ spec:
       destination:
         ports:
           - 8000
+  egress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        notNets:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
+        ports:
+          - 443

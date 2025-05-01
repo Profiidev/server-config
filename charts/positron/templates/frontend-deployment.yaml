@@ -3,9 +3,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: positron-frontend
-  namespace: positron
+  namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.frontend.replicaCount }}
   selector:
     matchLabels:
       app: positron-frontend
@@ -21,7 +21,7 @@ spec:
     spec:
       revisionHistoryLimit: 0
       containers:
-        - image: ghcr.io/profiidev/positron/positron-frontend:master
+        - image: ghcr.io/profiidev/positron/positron-frontend:{{ .Chart.Version }}
           imagePullPolicy: Always
           name: positron-frontend
           resources:
