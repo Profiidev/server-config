@@ -19,6 +19,7 @@ spec:
       labels:
         app: positron-frontend
     spec:
+      revisionHistoryLimit: 0
       containers:
         - image: ghcr.io/profiidev/positron/positron-frontend:master
           imagePullPolicy: Always

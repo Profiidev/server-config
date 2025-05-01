@@ -23,7 +23,7 @@ spec:
   source:
     repoURL: https://github.com/Profiidev/server-config
     path: apps/proton
-    targetRevision: feat/argocd
+    targetRevision: master
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:

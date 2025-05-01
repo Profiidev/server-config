@@ -22,6 +22,7 @@ spec:
         minio-access: "true"
         postgres-access: "true"
     spec:
+      revisionHistoryLimit: 0
       containers:
         - tty: true
           envFrom:
