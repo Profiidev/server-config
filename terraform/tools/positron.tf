@@ -44,9 +44,9 @@ spec:
               subPath: ${var.ca_hash}
               mountPath: /etc/ssl/certs/${var.ca_hash}.0
           podLabels:
-            ${var.nats_access_label.key}: ${var.nats_access_label.value}
-            ${var.minio_access_label.key}: ${var.minio_access_label.value}
-            ${var.postgres_access_label.key}: ${var.postgres_access_label.value}
+            ${var.nats_access_label.key}: "${var.nats_access_label.value}"
+            ${var.minio_access_label.key}: "${var.minio_access_label.value}"
+            ${var.postgres_access_label.key}: "${var.postgres_access_label.value}"
           ingress:
             className: ${var.ingress_class}
             annotations:
