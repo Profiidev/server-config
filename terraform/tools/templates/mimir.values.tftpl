@@ -29,7 +29,7 @@ mimir:
     alertmanager:
       sharding_ring:
         replication_factor: 1
-      external_url: "https://grafana.profidev.io/alerting/list?search=state:firing"
+      external_url: "http://mimir-nginx.${namespace}.svc.cluster.local/alertmanager"
 
     ingester:
       ring:
