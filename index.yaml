@@ -1,6 +1,41 @@
 apiVersion: v1
 entries:
+  positron:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2025-05-01T13:44:59.059713779Z"
+    description: A Helm chart for Kubernetes
+    digest: f4a7304254f22edbb197e6935a98bfa56b7af23eb46631d1e7785a38837c0312
+    name: positron
+    type: application
+    urls:
+    - https://github.com/Profiidev/server-config/releases/download/positron-v0.1.0/positron-v0.1.0.tgz
+    version: v0.1.0
+  proton:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2025-05-01T13:44:59.311208387Z"
+    description: A Helm chart for Kubernetes
+    digest: 0fc73738bd905a64de1323fd2dc5ffa6e17339f8d704f521e2f51cc42dc6d9eb
+    name: proton
+    type: application
+    urls:
+    - https://github.com/Profiidev/server-config/releases/download/proton-v0.1.0/proton-v0.1.0.tgz
+    version: v0.1.0
   vault-auto-unseal:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2025-05-01T13:44:59.646076216Z"
+    description: Automatic unseal for HashiCorp Vault
+    digest: 59dc50a48dc24a8023ae8038fbe368b1e63fcf5f4c18473d1f072ea470faa34e
+    maintainers:
+    - email: mail@profidev.io
+      name: ProfiDev
+    name: vault-auto-unseal
+    type: application
+    urls:
+    - https://github.com/Profiidev/server-config/releases/download/vault-auto-unseal-v0.1.10/vault-auto-unseal-v0.1.10.tgz
+    version: v0.1.10
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2025-04-01T10:17:55.346281356Z"
@@ -131,4 +166,4 @@ entries:
     urls:
     - https://github.com/Profiidev/server-config/releases/download/vault-auto-unseal-0.1.0/vault-auto-unseal-0.1.0.tgz
     version: 0.1.0
-generated: "2025-04-01T10:17:55.346319097Z"
+generated: "2025-05-01T13:44:59.646121721Z"
