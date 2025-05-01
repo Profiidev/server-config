@@ -26,7 +26,7 @@ spec:
   source:
     repoURL: https://github.com/Profiidev/server-config
     path: apps/positron
-    targetRevision: master
+    targetRevision: 1ca61df70d4caa1b764793f6417dc84d6479fa64
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
