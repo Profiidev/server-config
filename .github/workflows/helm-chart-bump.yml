@@ -29,6 +29,6 @@ jobs:
           branch: chore/bump-chart-version-${{ github.event.client_payload.chart_name }}-${{ github.event.client_payload.chart_version }}
           title: "Bump chart version for ${{ github.event.client_payload.chart_name }} to ${{ github.event.client_payload.chart_version }}"
           body: "This PR bumps the chart version for ${{ github.event.client_payload.chart_name }} to ${{ github.event.client_payload.chart_version }}."
-          base: master
+          base: main
           sign-commits: true
           labels: bump-chart
