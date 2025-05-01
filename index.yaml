@@ -2,6 +2,15 @@ apiVersion: v1
 entries:
   positron:
   - apiVersion: v2
+    created: "2025-05-01T19:08:14.824762013Z"
+    description: A Personal Website
+    digest: 3670357377dabc4df10edff2892d4302843c471825f256aa5f695950c3740b6e
+    name: positron
+    type: application
+    urls:
+    - https://github.com/Profiidev/server-config/releases/download/positron-v0.1.7/positron-v0.1.7.tgz
+    version: v0.1.7
+  - apiVersion: v2
     created: "2025-05-01T18:50:14.367031169Z"
     description: A Personal Website
     digest: 604a93524567d48d508f892e126bd7e0f59b1bfafe5aafef40a0f427988f3146
@@ -262,4 +271,4 @@ entries:
     urls:
     - https://github.com/Profiidev/server-config/releases/download/vault-auto-unseal-0.1.0/vault-auto-unseal-0.1.0.tgz
     version: 0.1.0
-generated: "2025-05-01T18:50:14.505355739Z"
+generated: "2025-05-01T19:08:14.82483535Z"
