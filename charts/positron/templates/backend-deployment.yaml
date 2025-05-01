@@ -6,6 +6,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.backend.replicaCount | default 1 }}
+  revisionHistoryLimit: 0
   selector:
     matchLabels:
       app: positron-backend
