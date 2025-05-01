@@ -1,0 +1,80 @@
+global:
+  domain: argocd.profidev.io
+  networkPolicy:
+    create: true
+
+configs:
+  cm:
+    oidc.config: |
+      name: Positron
+      issuer: https://profidev.io/backend/oauth/b90e4564-27b4-42c6-b5ee-235a00f5ca5a
+      clientID: b90e4564-27b4-42c6-b5ee-235a00f5ca5a
+      clientSecret: $argo:oidc.positron.clientSecret
+      requestedIDTokenClaims:
+        groups:
+          essential: true
+      requestedScopes:
+        - openid
+        - profile
+        - email
+
+  rbac:
+    policy.csv: |
+      g, "ArgoCD Admin", role:admin
+    policy.default: role:readonly
+
+  secret:
+    extra:
+      webhook.github.secret: $argo:webhook.github.secret
+
+controller:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      interval: 60s
+
+dex:
+  enabled: false
+
+redis:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      interval: 60s
+
+server:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      interval: 60s
+  ingress:
+    enabled: true
+    ingressClassName: ${ingress_class}
+    tls: true
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      cert-manager.io/cluster-issuer: ${cert_issuer}
+
+repoServer:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      interval: 60s
+
+applicationSet:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      interval: 60s
+
+notifications:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      interval: 60s

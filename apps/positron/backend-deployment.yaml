@@ -1,13 +1,14 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: proton-backend
-  namespace: proton
+  name: positron-backend
+  namespace: positron
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: proton-backend
+      app: positron-backend
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -16,17 +17,26 @@ spec:
   template:
     metadata:
       labels:
-        app: proton-backend
+        app: positron-backend
+        nats-access: "true"
+        minio-access: "true"
+        postgres-access: "true"
     spec:
       containers:
         - tty: true
           envFrom:
             - secretRef:
-                name: proton-backend
-          image: ghcr.io/profiidev/proton/proton-backend:master
+                name: positron-backend
+          image: ghcr.io/profiidev/positron/positron-backend:master
           imagePullPolicy: Always
-          name: proton-backend
-          resources: {}
+          name: positron-backend
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 256Mi
+            requests:
+              cpu: 200m
+              memory: 128Mi
           volumeMounts:
             - mountPath: /etc/ssl/certs/e11529a0.0
               subPath: e11529a0.0
@@ -42,17 +52,3 @@ spec:
           secret:
             defaultMode: 420
             secretName: cluster-ca-cert
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: proton-backend
-  namespace: proton
-spec:
-  ports:
-    - port: 8000
-      protocol: TCP
-      targetPort: 8000
-  selector:
-    app: proton-backend
-  type: ClusterIP

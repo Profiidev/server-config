@@ -1,0 +1,19 @@
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: proton-backend-ingress
+  namespace: proton
+spec:
+  order: 10
+  selector: app == 'proton-backend'
+  types:
+    - Ingress
+  ingress:
+    - action: Allow
+      protocol: TCP
+      source:
+        namespaceSelector: kubernetes.io/metadata.name == 'kube-system'
+        selector: app.kubernetes.io/name == 'rke2-ingress-nginx'
+      destination:
+        ports:
+          - 8000

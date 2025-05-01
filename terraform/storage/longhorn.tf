@@ -84,6 +84,15 @@ spec:
           - 194.164.200.60/32
         ports:
           - 6443
+    - action: Allow
+      protocol: TCP
+      destination:
+        notNets:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
+        ports:
+          - 443
   YAML
 
   depends_on = [kubernetes_namespace.storage_ns]
@@ -134,30 +143,6 @@ spec:
   dataFrom:
   - extract:
       key: apps/longhorn
-  YAML
-
-  depends_on = [kubernetes_namespace.storage_ns]
-}
-
-resource "kubectl_manifest" "longhorn_egress" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: GlobalNetworkPolicy
-metadata:
-  name: positron-egress
-spec:
-  namespaceSelector: kubernetes.io/metadata.name == '${var.storage_ns}'
-  selector: app == 'oauth2-proxy'
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        ports:
-          - 443
-        domains:
-          - profidev.io
   YAML
 
   depends_on = [kubernetes_namespace.storage_ns]

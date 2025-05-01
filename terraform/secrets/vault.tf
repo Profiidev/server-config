@@ -136,31 +136,18 @@ spec:
           - 194.164.200.60/32
         ports:
           - 6443
-  YAML
-
-  depends_on = [kubernetes_namespace.secrets_ns]
-}
-
-resource "kubectl_manifest" "vault_oidc" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: GlobalNetworkPolicy
-metadata:
-  name: vault-egress
-spec:
-  namespaceSelector: kubernetes.io/metadata.name == '${var.secrets_ns}'
-  selector: app.kubernetes.io/name == 'vault'
-  types:
-    - Egress
-  egress:
     - action: Allow
       protocol: TCP
       destination:
+        notNets:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
         ports:
           - 443
-        domains:
-          - profidev.io
   YAML
+
+  depends_on = [kubernetes_namespace.secrets_ns]
 }
 
 resource "kubernetes_ingress_v1" "vault_ui_ingress" {

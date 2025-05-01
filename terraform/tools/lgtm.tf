@@ -133,6 +133,15 @@ spec:
           - 10257
           - 10259
           - 2381
+    - action: Allow
+      protocol: TCP
+      destination:
+        notNets:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
+        ports:
+          - 443
   YAML
 
   depends_on = [kubernetes_namespace.metrics_ns]
@@ -192,31 +201,6 @@ spec:
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
-resource "kubectl_manifest" "metrics_egress" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: GlobalNetworkPolicy
-metadata:
-  name: metrics-egress
-spec:
-  namespaceSelector: kubernetes.io/metadata.name == '${var.metrics_ns}'
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        ports:
-          - 443
-        domains:
-          - grafana.com
-          - "*.grafana.com"
-          - "grafana.profidev.io"
-  YAML
-
-  depends_on = [kubernetes_namespace.metrics_ns]
-}
-
 resource "kubectl_manifest" "alert_egress" {
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1
@@ -234,8 +218,6 @@ spec:
       destination:
         ports:
           - 443
-        domains:
-          - discord.com
   YAML
 
   depends_on = [kubernetes_namespace.metrics_ns]

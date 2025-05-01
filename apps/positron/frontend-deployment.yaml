@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,23 +23,15 @@ spec:
         - image: ghcr.io/profiidev/positron/positron-frontend:master
           imagePullPolicy: Always
           name: positron-frontend
-          resources: {}
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: positron-frontend
-  namespace: positron
-spec:
-  ports:
-    - port: 3000
-      protocol: TCP
-      targetPort: 3000
-  selector:
-    app: positron-frontend
-  type: ClusterIP

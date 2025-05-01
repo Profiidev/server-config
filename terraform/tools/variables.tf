@@ -145,3 +145,8 @@ variable "coder_ns" {
   type    = string
   default = "coder"
 }
+
+variable "argo_ns" {
+  type    = string
+  default = "argo-system"
+}

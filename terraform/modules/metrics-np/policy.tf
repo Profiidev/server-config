@@ -18,6 +18,9 @@ spec:
         selector: ${var.selector != null ? var.selector : "app.kubernetes.io/instance == '${var.name}'"}
         ports:
           - ${var.port}
+          %{for port in var.ports}
+          - ${port}
+          %{endfor}
   YAML
 }
 
@@ -40,6 +43,9 @@ spec:
       destination:
         ports:
           - ${var.port}
+          %{for port in var.ports}
+          - ${port}
+          %{endfor}
       source:
         namespaceSelector: kubernetes.io/metadata.name == '${var.metrics_ns}'
   YAML
