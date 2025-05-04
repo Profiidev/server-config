@@ -90,7 +90,7 @@ ingester:
   zoneAwareReplication:
     enabled: false
   persistentVolume:
-    size: 20Gi
+    size: 40Gi
 
 store_gateway:
   zoneAwareReplication:
@@ -101,6 +101,10 @@ querier:
 
 query_scheduler:
   replicas: 1
+
+compactor:
+  persistentVolume:
+    size: 10Gi
 
 minio:
   enabled: false
