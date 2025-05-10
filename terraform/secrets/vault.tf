@@ -125,7 +125,7 @@ metadata:
   namespace: ${var.secrets_ns}
 spec:
   order: 10
-  selector: app.kubernetes.io/name == 'vault-agent-injector'
+  selector: app.kubernetes.io/name == 'vault-agent-injector' || app.kubernetes.io/name == 'vault'
   types:
     - Egress
   egress:
