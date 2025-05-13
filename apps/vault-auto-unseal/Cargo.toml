@@ -6,7 +6,7 @@ edition = "2024"
 [dependencies]
 anyhow = "1.0.98"
 serde = { version = "1.0.219", features = ["derive"] }
-signal-hook = "0.3.17"
+signal-hook = "0.3.18"
 ureq = { version = "3.0.11", features = ["json"] }
 
 [[bin]]
