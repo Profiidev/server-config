@@ -23,6 +23,13 @@ spec:
                 name: positron-backend
                 port:
                   number: 8000
+          - pathType: ImplementationSpecific
+            path: "(/.well-known/.*)"
+            backend:
+              service:
+                name: positron-backend
+                port:
+                  number: 8000
   {{- with .Values.backend.ingress.tls }}
   tls:
     {{- toYaml . | nindent 4 }}
