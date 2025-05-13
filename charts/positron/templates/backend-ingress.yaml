@@ -24,7 +24,7 @@ spec:
                 port:
                   number: 8000
           - pathType: ImplementationSpecific
-            path: "(/.well-known/.*)"
+            path: "/.well-known/(.*)"
             backend:
               service:
                 name: positron-backend
