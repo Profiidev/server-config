@@ -2,11 +2,11 @@
 apiVersion: crd.projectcalico.org/v1
 kind: NetworkPolicy
 metadata:
-  name: positron-backend-ingress
+  name: {{ .Chart.Name }}-backend-ingress
   namespace: {{ .Release.Namespace }}
 spec:
   order: 10
-  selector: app == 'positron-backend'
+  selector: app == '{{ .Chart.Name }}-backend'
   types:
     - Ingress
     - Egress

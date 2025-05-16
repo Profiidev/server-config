@@ -2,10 +2,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: positron-backend
+  name: {{ .Chart.Name }}-backend
   namespace: {{ .Release.Namespace }}
   labels:
-    name: positron-backend
+    name: {{ .Chart.Name }}-backend
   {{- with .Values.backend.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -20,14 +20,14 @@ spec:
             path: "/backend(.*)"
             backend:
               service:
-                name: positron-backend
+                name: {{ .Chart.Name }}-backend
                 port:
                   number: 8000
           - pathType: ImplementationSpecific
             path: "/.well-known/(.*)"
             backend:
               service:
-                name: positron-backend
+                name: {{ .Chart.Name }}-backend
                 port:
                   number: 8000
   {{- with .Values.backend.ingress.tls }}
