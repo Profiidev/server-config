@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: proton-backend
+  name: {{ .Chart.Name }}-backend
   namespace: {{ .Release.Namespace }}
 spec:
   ports:
@@ -10,5 +10,5 @@ spec:
       protocol: TCP
       targetPort: 8000
   selector:
-    app: proton-backend
+    app: {{ .Chart.Name }}-backend
   type: ClusterIP
