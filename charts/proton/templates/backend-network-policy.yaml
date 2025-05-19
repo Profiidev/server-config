@@ -1,11 +1,11 @@
 apiVersion: crd.projectcalico.org/v1
 kind: NetworkPolicy
 metadata:
-  name: proton-backend-ingress
+  name: {{ .Chart.Name }}-backend-ingress
   namespace: {{ .Release.Namespace }}
 spec:
   order: 10
-  selector: app == 'proton-backend'
+  selector: app == '{{ .Chart.Name }}-backend'
   types:
     - Ingress
   ingress:

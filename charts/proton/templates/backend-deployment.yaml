@@ -2,14 +2,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: proton-backend
+  name: {{ .Chart.Name }}-backend
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.backend.replicaCount | default 1 }}
   revisionHistoryLimit: 0
   selector:
     matchLabels:
-      app: proton-backend
+      app: {{ .Chart.Name }}-backend
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       labels:
-        app: proton-backend
+        app: {{ .Chart.Name }}-backend
         {{- with .Values.backend.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -27,10 +27,10 @@ spec:
         - tty: true
           envFrom:
             - secretRef:
-                name: proton-backend
-          image: ghcr.io/profiidev/proton/proton-backend:{{ .Chart.Version }}
+                name: {{ .Chart.Name }}-backend
+          image: ghcr.io/profiidev/proton/{{ .Chart.Name }}-backend:{{ .Chart.Version }}
           imagePullPolicy: Always
-          name: proton-backend
+          name: {{ .Chart.Name }}-backend
           resources:
             limits:
               cpu: 1000m
