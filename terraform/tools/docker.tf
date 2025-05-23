@@ -61,39 +61,3 @@ module "panel" {
 
   depends_on = [kubernetes_namespace.docker_ns]
 }
-
-module "hausfix" {
-  source = "../modules/docker"
-
-  name                   = "hausfix"
-  port                   = 3000
-  cert_issuer            = var.cert_issuer_prod
-  cloudflare             = true
-  cloudflare_ca_cert_var = var.cloudflare_ca_cert_var
-  cloudflare_cert_var    = var.cloudflare_cert_var
-  ip                     = "192.168.210.10"
-  domain                 = "hausfix.profidev.io"
-  ingress_class          = var.ingress_class
-  namespace              = var.docker_ns
-  https                  = false
-
-  depends_on = [kubernetes_namespace.docker_ns]
-}
-
-module "hausfix-backend" {
-  source = "../modules/docker"
-
-  name                   = "hausfix-backend"
-  port                   = 42069
-  cert_issuer            = var.cert_issuer_prod
-  cloudflare             = true
-  cloudflare_ca_cert_var = var.cloudflare_ca_cert_var
-  cloudflare_cert_var    = var.cloudflare_cert_var
-  ip                     = "192.168.210.20"
-  domain                 = "hausfix-backend.profidev.io"
-  ingress_class          = var.ingress_class
-  namespace              = var.docker_ns
-  https                  = false
-
-  depends_on = [kubernetes_namespace.docker_ns]
-}
