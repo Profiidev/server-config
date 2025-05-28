@@ -20,11 +20,11 @@ spec:
       labels:
         app: {{ .Chart.Name }}-frontend
     spec:
+      imagePullSecrets:
+        - name: {{ .Values.frontend.imagePullSecret | default "ghcr-profidev" }}
       containers:
         - image: ghcr.io/profiidev/{{ .Chart.Name }}/{{ .Chart.Name }}-frontend:{{ .Chart.Version }}
           imagePullPolicy: Always
-          imagePullSecrets:
-            - name: {{ .Values.frontend.imagePullSecret | default "ghcr-profidev" }}
           name: {{ .Chart.Name }}-frontend
           resources:
             limits:
