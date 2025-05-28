@@ -23,6 +23,8 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      imagePullSecrets:
+        - name: {{ .Values.backend.imagePullSecret | default "ghcr-profidev" }}
       containers:
         - tty: true
           envFrom:
@@ -30,8 +32,6 @@ spec:
                 name: {{ .Chart.Name }}-backend
           image: ghcr.io/profiidev/{{ .Chart.Name }}/{{ .Chart.Name }}-backend:{{ .Chart.Version }}
           imagePullPolicy: Always
-          imagePullSecrets:
-            - name: {{ .Values.backend.imagePullSecret | default "ghcr-profidev" }}
           name: {{ .Chart.Name }}-backend
           resources:
             limits:
