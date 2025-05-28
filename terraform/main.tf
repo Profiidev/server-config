@@ -83,6 +83,8 @@ module "secrets" {
   cloudflare_cert_var    = var.cloudflare_cert_var
   ingress_class          = var.ingress_class
   secrets_ns             = var.secrets_ns
+  ghcr_profidev          = var.ghcr_profidev
+  ghcr_profidev_label    = var.ghcr_profidev_label
 
   depends_on = [module.storage]
 }
@@ -125,4 +127,6 @@ module "tools" {
   ca_hash                = module.secrets.ca_hash
   nats_ns                = var.nats_ns
   nats_access_label      = var.nats_access_label
+  ghcr_profidev          = var.ghcr_profidev
+  ghcr_profidev_label    = var.ghcr_profidev_label
 }

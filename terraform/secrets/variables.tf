@@ -88,3 +88,14 @@ variable "cloudflare_cert_var" {
 variable "ingress_class" {
   type = string
 }
+
+variable "ghcr_profidev" {
+  type = string
+}
+
+variable "ghcr_profidev_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+}
