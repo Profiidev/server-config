@@ -6,6 +6,7 @@ resource "kubernetes_namespace" "charm_ns" {
       "${var.secret_store_label.key}"    = var.secret_store_label.value
       "${var.cluster_ca_cert_label.key}" = var.cluster_ca_cert_label.value
       "${var.ghcr_profidev_label.key}"   = var.ghcr_profidev_label.value
+      "${var.postgres_access_label.key}" = var.postgres_access_label.value
     }
   }
 }
@@ -43,6 +44,8 @@ spec:
               readOnly: true
               subPath: ${var.ca_hash}.0
               mountPath: /etc/ssl/certs/${var.ca_hash}.0
+          podLabels:
+            ${var.postgres_access_label.key}: "${var.postgres_access_label.value}"
           ingress:
             className: ${var.ingress_class}
             annotations:
