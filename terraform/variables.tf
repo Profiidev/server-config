@@ -159,3 +159,19 @@ variable "nats_ns" {
   type    = string
   default = "nats-system"
 }
+
+variable "ghcr_profidev" {
+  type    = string
+  default = "ghcr-profidev"
+}
+
+variable "ghcr_profidev_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+  default = {
+    key   = "ghcr-profidev-secret"
+    value = "true"
+  }
+}

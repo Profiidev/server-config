@@ -150,3 +150,19 @@ variable "argo_ns" {
   type    = string
   default = "argo-system"
 }
+
+variable "charm_ns" {
+  type    = string
+  default = "charm"
+}
+
+variable "ghcr_profidev" {
+  type = string
+}
+
+variable "ghcr_profidev_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+}
