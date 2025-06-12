@@ -1,0 +1,5 @@
+apiVersion: v2
+name: auto-clean-bot
+description: A Bot to automatically clean discord messages after a certain time.
+type: application
+version: v0.0.1
