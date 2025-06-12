@@ -2,6 +2,15 @@ apiVersion: v1
 entries:
   auto-clean-bot:
   - apiVersion: v2
+    created: "2025-06-12T17:44:42.73980278Z"
+    description: A Bot to automatically clean discord messages after a certain time.
+    digest: 8c653f12ae9c4e72be3f5423f00a93be1f4f398db3397ed46e68cf9084adf087
+    name: auto-clean-bot
+    type: application
+    urls:
+    - https://github.com/Profiidev/server-config/releases/download/auto-clean-bot-v0.1.0/auto-clean-bot-v0.1.0.tgz
+    version: v0.1.0
+  - apiVersion: v2
     created: "2025-06-12T17:35:30.27537849Z"
     description: A Bot to automatically clean discord messages after a certain time.
     digest: 3f733470a3efe6e428a40b416d215c240ec85057c41abfde521934918d744cc0
@@ -372,4 +381,4 @@ entries:
     urls:
     - https://github.com/Profiidev/server-config/releases/download/vault-auto-unseal-0.1.0/vault-auto-unseal-0.1.0.tgz
     version: 0.1.0
-generated: "2025-06-12T17:35:30.275444444Z"
+generated: "2025-06-12T17:44:42.739898571Z"
