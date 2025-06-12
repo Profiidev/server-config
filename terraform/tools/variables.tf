@@ -166,3 +166,8 @@ variable "ghcr_profidev_label" {
     value = string
   })
 }
+
+variable "auto_clean_bot_ns" {
+  type    = string
+  default = "auto-clean-bot"
+}
