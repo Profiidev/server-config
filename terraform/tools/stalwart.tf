@@ -148,6 +148,7 @@ resource "kubernetes_ingress_v1" "stalwart" {
     name = "stalwart"
     annotations = {
       "cert-manager.io/cluster-issuer" = var.cert_issuer_prod
+      "nginx.ingress.kubernetes.io/ssl-redirect" = "false"
     }
     namespace = var.stalwart_ns
   }
