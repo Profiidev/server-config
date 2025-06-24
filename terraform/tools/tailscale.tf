@@ -42,7 +42,7 @@ spec:
   depends_on = [kubernetes_namespace.tailscale_ns]
 }
 
-resource "kubectl_manifest" "tailscale_network_policy" {
+resource "kubectl_manifest" "tailscale_egress" {
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1
 kind: NetworkPolicy
@@ -56,15 +56,51 @@ spec:
     - Ingress
   egress:
     - action: Allow
-      protocol: TCP
-    - action: Allow
-      protocol: UDP
   ingress:
     - action: Allow
-      protocol: TCP
-    - action: Allow
-      protocol: UDP
   YAML
 
   depends_on = [kubernetes_namespace.tailscale_ns]
+}
+
+resource "kubectl_manifest" "tailscale_ingress" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: GlobalNetworkPolicy
+metadata:
+  name: tailscale-ingress
+spec:
+  types:
+    - Ingress
+    - Egress
+  ingress:
+    - action: Allow
+      source:
+        namespaceSelector: "kubernetes.io/metadata.name == '${var.tailscale_ns}'"
+  egress:
+    - action: Allow
+      destination:
+        namespaceSelector: "kubernetes.io/metadata.name == '${var.tailscale_ns}'"
+  YAML
+
+  depends_on = [kubernetes_namespace.tailscale_ns]
+}
+
+resource "kubectl_manifest" "tailscale_crd" {
+  yaml_body = <<YAML
+apiVersion: tailscale.com/v1alpha1
+kind: Connector
+metadata:
+  name: tailscale-connector
+  namespace: ${var.tailscale_ns}
+spec:
+  hostname: "ubuntu"
+  exitNode: true
+  subnetRouter:
+    advertiseRoutes:
+      - "10.42.0.0/16"
+      - "10.43.0.0/16"
+  YAML
+
+  depends_on = [kubernetes_namespace.tailscale_ns, helm_release.tailscale]
 }
