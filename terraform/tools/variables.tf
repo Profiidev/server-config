@@ -171,3 +171,8 @@ variable "auto_clean_bot_ns" {
   type    = string
   default = "auto-clean-bot"
 }
+
+variable "tailscale_ns" {
+  type    = string
+  default = "tailscale"
+}
