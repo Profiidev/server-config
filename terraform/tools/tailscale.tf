@@ -50,6 +50,7 @@ metadata:
   name: tailscale
   namespace: ${var.tailscale_ns}
 spec:
+  order: 10
   namespaceSelector: kubernetes.io/metadata.name == '${var.tailscale_ns}'
   types:
     - Egress
@@ -70,6 +71,7 @@ kind: GlobalNetworkPolicy
 metadata:
   name: tailscale-ingress
 spec:
+  order: 95
   types:
     - Ingress
     - Egress
@@ -77,10 +79,16 @@ spec:
     - action: Allow
       source:
         namespaceSelector: "kubernetes.io/metadata.name == '${var.tailscale_ns}'"
+    - action: Pass
+      source:
+        namespaceSelector: "kubernetes.io/metadata.name != '${var.tailscale_ns}'"
   egress:
     - action: Allow
       destination:
         namespaceSelector: "kubernetes.io/metadata.name == '${var.tailscale_ns}'"
+    - action: Pass
+      destination:
+        namespaceSelector: "kubernetes.io/metadata.name != '${var.tailscale_ns}'"
   YAML
 
   depends_on = [kubernetes_namespace.tailscale_ns]

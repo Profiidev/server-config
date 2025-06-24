@@ -244,6 +244,7 @@ kind: GlobalNetworkPolicy
 metadata:
   name: stalwart-egress
 spec:
+  order: 10
   namespaceSelector: kubernetes.io/metadata.name == '${var.stalwart_ns}'
   selector: app == 'stalwart'
   types:

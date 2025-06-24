@@ -4,6 +4,7 @@ metadata:
   name: {{ .Chart.Name }}-vault
   namespace: {{ .Release.Namespace }}
 spec:
+  order: 10
   podSelector:
     matchLabels:
       app: {{ .Chart.Name }}

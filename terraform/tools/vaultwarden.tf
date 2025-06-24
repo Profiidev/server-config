@@ -82,6 +82,7 @@ metadata:
   name: vaultwarden-egress
   namespace: ${var.vaultwarden_ns}
 spec:
+  order: 10
   namespaceSelector: kubernetes.io/metadata.name == '${var.vaultwarden_ns}'
   selector: app.kubernetes.io/name == 'vaultwarden'
   types:

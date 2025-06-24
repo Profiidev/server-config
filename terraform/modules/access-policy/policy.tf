@@ -28,6 +28,7 @@ kind: GlobalNetworkPolicy
 metadata:
   name: ${var.namespace}-access-egress
 spec:
+  order: 10
   namespaceSelector: ${var.namespace_label.key} == '${var.namespace_label.value}'
   selector: ${var.namespace_label.key} == '${var.namespace_label.value}'${var.target_selector != "" ? " || ${var.target_selector}" : ""}
   types:
