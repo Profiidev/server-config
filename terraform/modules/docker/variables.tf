@@ -41,3 +41,8 @@ variable "cloudflare" {
 variable "https" {
   type = bool
 }
+
+variable "annotations" {
+  type    = map(string)
+  default = {}
+}

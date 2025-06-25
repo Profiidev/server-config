@@ -50,6 +50,7 @@ metadata:
   name: tailscale
   namespace: ${var.tailscale_ns}
 spec:
+  order: 10
   namespaceSelector: kubernetes.io/metadata.name == '${var.tailscale_ns}'
   types:
     - Egress
@@ -70,6 +71,7 @@ kind: GlobalNetworkPolicy
 metadata:
   name: tailscale-ingress
 spec:
+  order: 100000
   types:
     - Ingress
     - Egress

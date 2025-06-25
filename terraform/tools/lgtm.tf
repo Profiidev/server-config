@@ -209,6 +209,7 @@ kind: GlobalNetworkPolicy
 metadata:
   name: alert-egress
 spec:
+  order: 10
   namespaceSelector: kubernetes.io/metadata.name == '${var.metrics_ns}'
   selector: app.kubernetes.io/name == 'alertmanager' || app.kubernetes.io/name == 'alertmanager-discord'
   types:

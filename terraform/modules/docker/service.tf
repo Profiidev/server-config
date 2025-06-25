@@ -9,7 +9,7 @@ resource "kubernetes_ingress_v1" "ingress" {
       "cert-manager.io/cluster-issuer" = var.cert_issuer
       }, var.https ? {
       "nginx.ingress.kubernetes.io/backend-protocol" = "HTTPS"
-    } : {})
+    } : {}, var.annotations)
   }
 
   spec {

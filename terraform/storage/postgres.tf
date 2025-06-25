@@ -31,6 +31,7 @@ metadata:
   name: everest-egress
   namespace: ${var.everest_system_ns}
 spec:
+  order: 10
   namespaceSelector: kubernetes.io/metadata.name == '${var.everest_system_ns}'
   types:
     - Egress

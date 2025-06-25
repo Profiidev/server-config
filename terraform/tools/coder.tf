@@ -55,6 +55,7 @@ metadata:
   name: coder-egress
   namespace: ${var.coder_ns}
 spec:
+  order: 10
   namespaceSelector: kubernetes.io/metadata.name == '${var.coder_ns}'
   selector: app.kubernetes.io/instance == 'coder'
   types:
@@ -93,6 +94,7 @@ kind: GlobalNetworkPolicy
 metadata:
   name: coder-workspace-egress
 spec:
+  order: 10
   namespaceSelector: kubernetes.io/metadata.name == '${var.coder_ns}'
   selector: app.kubernetes.io/name == 'coder-workspace'
   types:

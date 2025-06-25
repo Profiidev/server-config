@@ -22,6 +22,9 @@ module "seafile" {
   ingress_class          = var.ingress_class
   namespace              = var.docker_ns
   https                  = false
+  annotations = {
+    "nginx.ingress.kubernetes.io/proxy-body-size" = "10m"
+  }
 
   depends_on = [kubernetes_namespace.docker_ns]
 }
