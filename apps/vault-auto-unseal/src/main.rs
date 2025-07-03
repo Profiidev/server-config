@@ -26,7 +26,7 @@ fn main() {
 
   loop {
     if let Err(err) = unseal() {
-      println!("Unseal error: {}", err);
+      println!("Unseal error: {err}");
     }
     sleep(Duration::from_secs(15));
   }
@@ -45,7 +45,7 @@ fn unseal() -> Result<()> {
   let agent = Agent::new_with_config(config);
 
   let vault_url = std::env::var("VAULT_URL")?;
-  let res = agent.get(format!("{}/v1/sys/health", vault_url)).call()?;
+  let res = agent.get(format!("{vault_url}/v1/sys/health")).call()?;
 
   if res.status() != StatusCode::SERVICE_UNAVAILABLE {
     return Ok(());
@@ -58,7 +58,7 @@ fn unseal() -> Result<()> {
 
   for key in keys {
     agent
-      .post(format!("{}/v1/sys/unseal", vault_url))
+      .post(format!("{vault_url}/v1/sys/unseal"))
       .send_json(&UnsealReq { key })?;
   }
 
