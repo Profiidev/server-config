@@ -21,7 +21,7 @@ spec:
         app: {{ .Chart.Name }}-frontend
     spec:
       containers:
-        - image: ghcr.io/profiidev/${{ .Chart.Name }}/{{ .Chart.Name }}-frontend:{{ .Chart.Version }}
+        - image: ghcr.io/profiidev/{{ .Chart.Name }}/{{ .Chart.Name }}-frontend:{{ .Chart.Version }}
           imagePullPolicy: Always
           name: {{ .Chart.Name }}-frontend
           resources:
