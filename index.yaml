@@ -47,6 +47,16 @@ entries:
     urls:
     - https://github.com/Profiidev/server-config/releases/download/charm-v0.1.0/charm-v0.1.0.tgz
     version: v0.1.0
+  higgs:
+  - apiVersion: v2
+    created: "2025-07-19T09:39:00.320688913Z"
+    description: A Portfolio Website
+    digest: efeb62ca0ed3fe464865e8290255490f57522bf9fa7599cd97338cc431d68950
+    name: higgs
+    type: application
+    urls:
+    - https://github.com/Profiidev/server-config/releases/download/higgs-v0.1.0/higgs-v0.1.0.tgz
+    version: v0.1.0
   positron:
   - apiVersion: v2
     created: "2025-07-03T11:22:47.189151859Z"
@@ -447,4 +457,4 @@ entries:
     urls:
     - https://github.com/Profiidev/server-config/releases/download/vault-auto-unseal-0.1.0/vault-auto-unseal-0.1.0.tgz
     version: 0.1.0
-generated: "2025-07-03T11:22:47.397118481Z"
+generated: "2025-07-19T09:39:00.320795494Z"
