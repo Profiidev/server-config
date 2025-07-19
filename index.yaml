@@ -49,6 +49,15 @@ entries:
     version: v0.1.0
   higgs:
   - apiVersion: v2
+    created: "2025-07-19T09:45:06.186966271Z"
+    description: A Portfolio Website
+    digest: f5c649a4054c9514619b9dcb0b360363162ed12d2e50ee11cc26ed1e2b91122e
+    name: higgs
+    type: application
+    urls:
+    - https://github.com/Profiidev/server-config/releases/download/higgs-v0.1.1/higgs-v0.1.1.tgz
+    version: v0.1.1
+  - apiVersion: v2
     created: "2025-07-19T09:39:00.320688913Z"
     description: A Portfolio Website
     digest: efeb62ca0ed3fe464865e8290255490f57522bf9fa7599cd97338cc431d68950
@@ -457,4 +466,4 @@ entries:
     urls:
     - https://github.com/Profiidev/server-config/releases/download/vault-auto-unseal-0.1.0/vault-auto-unseal-0.1.0.tgz
     version: 0.1.0
-generated: "2025-07-19T09:39:00.320795494Z"
+generated: "2025-07-19T09:45:06.187090926Z"
