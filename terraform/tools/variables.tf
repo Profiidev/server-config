@@ -176,3 +176,8 @@ variable "tailscale_ns" {
   type    = string
   default = "tailscale"
 }
+
+variable "higgs_ns" {
+  type    = string
+  default = "higgs"
+}
