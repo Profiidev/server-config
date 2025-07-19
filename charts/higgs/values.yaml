@@ -1,0 +1,14 @@
+frontend:
+  replicaCount: 1
+
+  ingress:
+    className: ingress-nginx
+    annotations:
+      nginx.ingress.kubernetes.io/auth-tls-secret: higgs/cloudflare-ca-cert
+      nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+    host: higgs.profidev.io
+    tls:
+      - hosts:
+          - profidev.io
+          - "*.profi.dev"
+        secretName: cloudflare-cert
