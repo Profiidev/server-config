@@ -3,6 +3,7 @@ resource "kubernetes_namespace" "higgs_ns" {
     name = var.higgs_ns
     labels = {
       "${var.cloudflare_cert_label.key}" = var.cloudflare_cert_label.value
+      "${var.secret_store_label.key}"    = var.secret_store_label.value
     }
   }
 }
