@@ -12,7 +12,7 @@ resource "helm_release" "vaultwarden" {
   name       = "vaultwarden"
   repository = "https://guerzon.github.io/vaultwarden"
   chart      = "vaultwarden"
-  version    = "0.31.8"
+  version    = "0.32.3"
   namespace  = var.vaultwarden_ns
 
   values = [templatefile("${path.module}/templates/vaultwarden.values.tftpl", {
