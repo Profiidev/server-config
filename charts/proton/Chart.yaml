@@ -2,4 +2,4 @@ apiVersion: v2
 name: proton
 description: A Minecraft Launcher
 type: application
-version: v0.1.8
+version: v0.1.9
