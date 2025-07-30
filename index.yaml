@@ -244,6 +244,15 @@ entries:
     version: v0.1.0
   proton:
   - apiVersion: v2
+    created: "2025-07-30T11:41:04.865602654Z"
+    description: A Minecraft Launcher
+    digest: c008c8f092fb32b06f0ff4603a7fad527b05f592fd8e1b740ce3dea354278208
+    name: proton
+    type: application
+    urls:
+    - https://github.com/Profiidev/server-config/releases/download/proton-v0.1.10/proton-v0.1.10.tgz
+    version: v0.1.10
+  - apiVersion: v2
     created: "2025-07-29T20:42:01.084074819Z"
     description: A Minecraft Launcher
     digest: 00210046e2e7466e4ae2c2cdd5eeba4bed7c7005b42edcf5e5d36d1b7c121990
@@ -502,4 +511,4 @@ entries:
     urls:
     - https://github.com/Profiidev/server-config/releases/download/vault-auto-unseal-0.1.0/vault-auto-unseal-0.1.0.tgz
     version: 0.1.0
-generated: "2025-07-29T20:42:01.084224436Z"
+generated: "2025-07-30T11:41:04.86575263Z"
