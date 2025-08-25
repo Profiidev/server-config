@@ -1,0 +1,98 @@
+ingress:
+  className: "${ingress_class}"
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: "${cert_issuer}"
+    nginx.ingress.kubernetes.io/affinity: cookie
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
+    nginx.ingress.kubernetes.io/proxy-set-headers: "true"
+    nginx.ingress.kubernetes.io/custom-response-headers: |
+      Strict-Transport-Security: "max-age=15552000; includeSubDomains"
+  tls:
+    - secretName: "nextcloud-tls"
+      hosts:
+        - "buerger-ts.com"
+
+podLabels:
+  ${postgres_access_label_key}: "${postgres_access_label_value}"
+
+nextcloud:
+  host: "buerger-ts.com"
+  extraEnv:
+    - name: PGSSLCERT
+      value: "/tmp/postgresql.crt"
+  extraVolumes:
+    - name: cluster-ca-cert
+      secret:
+        defaultMode: 420
+        secretName: cluster-ca-cert
+  extraVolumeMounts:
+    - name: cluster-ca-cert
+      readOnly: true
+      subPath: ${ca_hash}.0
+      mountPath: /etc/ssl/certs/${ca_hash}.0
+  existingSecret:
+    enabled: true
+    secretName: "nextcloud"
+    usernameKey: "username"
+    passwordKey: "password"
+    smtpUsernameKey: "smtp-username"
+    smtpPasswordKey: "smtp-password"
+    smtpHostKey: "smtp-host"
+  mail:
+    enabled: true
+    fromAddress: "no-reply@buerger-ts.com"
+    domain: "buerger-ts.com"
+    smtp:
+      secure: "ssl"
+  configs:
+    proxy.config.php: |-
+      <?php
+      $CONFIG = array (
+        'trusted_proxies' => array(
+          0 => '127.0.0.1',
+          1 => '10.0.0.0/8',
+          2 => '194.164.200.60',
+          3 => '::1',
+        ),
+        'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
+        'overwriteprotocol' => 'https',
+        'overwrite.cli.url' => 'https://buerger-ts.com',
+      );
+    maintainance.config.php: |-
+      <?php
+      $CONFIG = array (
+        'maintenance_window_start' => 1,
+      );
+    phone.config.php: |-
+      <?php
+      $CONFIG = array (
+        'default_phone_region' => 'DE',
+      );
+
+rbac:
+  enabled: true
+
+internalDatabase:
+  enabled: false
+
+externalDatabase:
+  enabled: true
+  type: "postgresql"
+  existingSecret:
+    enabled: true
+    secretName: "nextcloud"
+    usernameKey: "db-username"
+    passwordKey: "db-password"
+    hostKey: "db-host"
+    databaseKey: "db-name"
+
+persistence:
+  enabled: true
+  storageClass: "${storage_class}"
+  size: "10Gi"
+  nextcloudData:
+    enabled: true
+    storageClass: "${storage_class}"
+    size: "10Gi"
