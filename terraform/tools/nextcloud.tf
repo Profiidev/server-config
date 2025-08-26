@@ -68,6 +68,7 @@ spec:
       destination:
         ports:
           - 443
+          - 587
           - 465
   YAML
 

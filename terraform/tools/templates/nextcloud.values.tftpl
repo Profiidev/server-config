@@ -8,7 +8,7 @@ ingress:
     nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
     nginx.ingress.kubernetes.io/proxy-set-headers: "true"
     nginx.ingress.kubernetes.io/custom-response-headers: |
-      Strict-Transport-Security: "max-age=15552000; includeSubDomains"
+      Strict-Transport-Security: "max-age=15552000; includeSubDomains; preload"
   tls:
     - secretName: "nextcloud-tls"
       hosts:
@@ -42,9 +42,10 @@ nextcloud:
     smtpHostKey: "smtp-host"
   mail:
     enabled: true
-    fromAddress: "no-reply@buerger-ts.com"
+    fromAddress: "no-reply"
     domain: "buerger-ts.com"
     smtp:
+      port: 465
       secure: "ssl"
   configs:
     proxy.config.php: |-
@@ -64,6 +65,11 @@ nextcloud:
       <?php
       $CONFIG = array (
         'maintenance_window_start' => 1,
+      );
+    db.config.php: |-
+      <?php
+      $CONFIG = array (
+        'setup_create_db_user' => false,
       );
     phone.config.php: |-
       <?php
