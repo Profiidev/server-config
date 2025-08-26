@@ -181,3 +181,8 @@ variable "higgs_ns" {
   type    = string
   default = "higgs"
 }
+
+variable "nextcloud_ns" {
+  type    = string
+  default = "nextcloud"
+}
