@@ -102,3 +102,35 @@ persistence:
     enabled: true
     storageClass: "${storage_class}"
     size: "10Gi"
+
+collabora:
+  enabled: true
+  collabora:
+    aliasgroups:
+      - host: https://buerger-ts.com
+        aliases: []
+    server_name: collabora.buerger-ts.com
+    extra_params: --o:ssl.enable=false --o:ssl.termination=true
+    existingSecret:
+      enabled: true
+      secretName: "nextcloud"
+      usernameKey: "collabora-username"
+      passwordKey: "collabora-password"
+  ingress:
+    enabled: true
+    className: "${ingress_class}"
+    annotations:
+      cert-manager.io/cluster-issuer: "${cert_issuer}"
+    hosts:
+      - host: collabora.buerger-ts.com
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - secretName: "collabora-tls"
+        hosts:
+          - collabora.buerger-ts.com
+  autoscaling:
+    enabled: false
+  networkPolicy:
+    enabled: true
