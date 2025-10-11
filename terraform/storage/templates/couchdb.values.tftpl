@@ -1,0 +1,42 @@
+createAdminSecret: false
+extraSecretName: "couchdb"
+adminUsernameKey: "username"
+adminPasswordKey: "password"
+cookieAuthSecretKey: "cookie_auth"
+erlangCookieKey: "erlang_cookie"
+
+persistentVolume:
+  enabled: true
+
+clusterSize: 1
+
+ingress:
+  enabled: true
+  hosts:
+    - couchdb.profidev.io
+  path: /
+  annotations:
+    cert-manager.io/cluster-issuer: ${cert_issuer}
+    nginx.ingress.kubernetes.io/proxy-body-size: "4096m"
+  tls:
+    - hosts:
+        - "couchdb.profidev.io"
+      secretName: couchdb-tls
+
+couchdbConfig:
+  couchdb:
+    uuid: ${uuid}
+    max_document_size: 50000000
+  chttpd:
+    require_valid_user: true
+    require_valid_user_except_for_up: false
+    enable_cors: true
+    max_http_request_size: 4294967296
+  chttpd_auth:
+    require_valid_user: true
+  httpd:
+    WWW-Authenticate: 'Basic realm="couchdb"'
+    enable_cors: true
+  cors:
+    credentials: true
+    origins: "app://obsidian.md,capacitor://localhost,http://localhost"

@@ -67,7 +67,7 @@ alertmanager:
       routes:
         - receiver: "null"
           matchers:
-            - 'alertname="Watchdog"'
+            - 'alertname =~ "Watchdog|InfoInhibitor"'
     receivers:
       - name: "null"
       - name: "discord"

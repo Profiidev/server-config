@@ -117,3 +117,15 @@ variable "cert_issuer_prod" {
 variable "metrics_ns" {
   type = string
 }
+
+variable "couchdb_ns" {
+  type    = string
+  default = "couchdb"
+}
+
+variable "cluster_ca_cert_label" {
+  type = object({
+    key   = string
+    value = string
+  })
+}
