@@ -16,13 +16,12 @@ ingress:
     - couchdb.profidev.io
   path: /
   annotations:
-    nginx.ingress.kubernetes.io/auth-tls-secret: couchdb/cloudflare-ca-cert
-    nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+    cert-manager.io/cluster-issuer: ${cert_issuer}
+    nginx.ingress.kubernetes.io/proxy-body-size: "4096m"
   tls:
     - hosts:
-        - profidev.io
-        - "*.profidev.io"
-      secretName: cloudflare-cert
+        - "couchdb.profidev.io"
+      secretName: couchdb-tls
 
 couchdbConfig:
   couchdb:

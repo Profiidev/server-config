@@ -19,7 +19,8 @@ resource "helm_release" "couchdb" {
   namespace  = var.couchdb_ns
 
   values = [templatefile("${path.module}/templates/couchdb.values.tftpl", {
-    uuid = random_uuid.couchdb_uuid.result
+    uuid        = random_uuid.couchdb_uuid.result
+    cert_issuer = var.cert_issuer_prod
   })]
 
   depends_on = [kubernetes_namespace.couchdb_ns]
