@@ -1,0 +1,29 @@
+createAdminUser: false
+extraSecretName: "couchdb"
+adminUsernameKey: "username"
+adminPasswordKey: "password"
+cookieAuthSecretKey: "cookie_auth"
+erlangCookieKey: "erlang_cookie"
+
+persistentVolume:
+  enabled: true
+
+clusterSize: 1
+
+ingress:
+  enabled: true
+  hosts:
+    - couchdb.profidev.io
+  path: /
+  annotations:
+    nginx.ingress.kubernetes.io/auth-tls-secret: couchdb/cloudflare-ca-cert
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+  tls:
+    - hosts:
+        - profidev.io
+        - "*.profidev.io"
+      secretName: cloudflare-cert
+
+couchdbConfig:
+  couchdb:
+    uuid: ${uuid}

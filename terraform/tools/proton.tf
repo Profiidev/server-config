@@ -49,7 +49,7 @@ spec:
             tls:
               - hosts:
                   - profidev.io
-                  - "*.profi.dev"
+                  - "*.profidev.io"
                 secretName: ${var.cloudflare_cert_var}
   destination:
     server: https://kubernetes.default.svc

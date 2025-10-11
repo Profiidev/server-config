@@ -41,6 +41,7 @@ module "storage" {
   cloudflare_ca_cert_var = var.cloudflare_ca_cert_var
   cloudflare_cert_label  = var.cloudflare_cert_label
   cloudflare_cert_var    = var.cloudflare_cert_var
+  cluster_ca_cert_label  = var.cluster_ca_cert_label
   secret_store_label     = var.secret_store_label
   cluster_secret_store   = var.cluster_secret_store
   minio_access_label     = var.minio_access_label
