@@ -1,0 +1,22 @@
+container_runtime: containerd
+agent:
+  acquisition:
+    - namespace: kube-system
+      podName: rke2-ingress-nginx-controller-*
+      program: nginx
+  env:
+    - name: COLLECTIONS
+      value: "crowdsecurity/nginx"
+
+lapi:
+  env:
+    - name: ENROLL_KEY
+      valueFrom:
+        secretKeyRef:
+          name: crowdsec
+          key: API_KEY
+    - name: ENROLL_INSTANCE_NAME
+      value: "own-cluster"
+    - name: ENROLL_TAGS
+      value: "k8s linux rke2"
+
