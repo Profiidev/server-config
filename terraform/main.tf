@@ -68,6 +68,7 @@ module "network" {
   cert_ns              = var.cert_ns
   cluster_secret_store = var.cluster_secret_store
   secret_store_label   = var.secret_store_label
+  crowdsec_ns          = var.crowdsec_ns
 }
 
 module "secrets" {
@@ -130,4 +131,5 @@ module "tools" {
   nats_access_label      = var.nats_access_label
   ghcr_profidev          = var.ghcr_profidev
   ghcr_profidev_label    = var.ghcr_profidev_label
+  crowdsec_ns            = var.crowdsec_ns
 }

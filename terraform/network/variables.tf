@@ -42,5 +42,4 @@ variable "secret_store_label" {
 
 variable "crowdsec_ns" {
   type    = string
-  default = "crowdsec"
 }
