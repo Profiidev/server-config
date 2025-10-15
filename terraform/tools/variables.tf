@@ -186,3 +186,7 @@ variable "nextcloud_ns" {
   type    = string
   default = "nextcloud"
 }
+
+variable "crowdsec_ns" {
+  type    = string
+}

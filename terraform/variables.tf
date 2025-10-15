@@ -175,3 +175,8 @@ variable "ghcr_profidev_label" {
     value = "true"
   }
 }
+
+variable "crowdsec_ns" {
+  type    = string
+  default = "crowdsec"
+}

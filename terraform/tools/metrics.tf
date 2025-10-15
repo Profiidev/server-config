@@ -149,6 +149,18 @@ module "argocd_metrics" {
   depends_on = [kubernetes_namespace.metrics_ns]
 }
 
+module "crowdsec_metrics" {
+  source = "../modules/metrics-np"
+
+  namespace  = var.crowdsec_ns
+  port       = 6060
+  name       = "crowdsec"
+  metrics_ns = var.metrics_ns
+  selector   = "k8s-app == 'crowdsec'"
+
+  depends_on = [kubernetes_namespace.metrics_ns]
+}
+
 module "dashboards" {
   for_each = toset([
     "ingress-nginx",
@@ -165,6 +177,10 @@ module "dashboards" {
     "coderd",
     "coder-workspaces",
     "coder-workspace-detail",
+    "crowdsec-details",
+    "crowdsec-insight",
+    "crowdsec-lapi",
+    "crowdsec-overview",
     "pod-logs",
     "tempo-block-builder",
     "tempo-operational",
