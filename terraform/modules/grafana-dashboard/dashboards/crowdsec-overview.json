@@ -1,46 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    }
-  ],
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "8.1.2"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph (old)",
-      "version": ""
-    },
-    {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "stat",
-      "name": "Stat",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "timeseries",
-      "name": "Time series",
-      "version": ""
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -64,14 +22,13 @@
     ]
   },
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
+  "id": 1075,
   "links": [],
   "panels": [
     {
       "collapsed": false,
-      "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -84,8 +41,10 @@
       "type": "row"
     },
     {
-      "cacheTimeout": null,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -106,8 +65,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#E02F44",
-                "value": null
+                "color": "#E02F44"
               },
               {
                 "color": "#E02F44",
@@ -130,14 +88,13 @@
         "y": 1
       },
       "id": 2,
-      "interval": null,
-      "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "background",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -145,12 +102,18 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {},
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "8.1.2",
+      "pluginVersion": "11.6.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
           "exemplar": true,
           "expr": "count(cs_info)",
           "interval": "",
@@ -158,65 +121,101 @@
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Running Crowdsec",
       "transparent": true,
       "type": "stat"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
-      "decimals": 1,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
       "fieldConfig": {
         "defaults": {
-          "links": []
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
         },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 18,
         "x": 6,
         "y": 1
       },
-      "hiddenSeries": false,
       "id": 8,
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sort": "total",
-        "sortDesc": true,
-        "total": true,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "alertThreshold": true,
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "8.1.2",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "11.6.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
           "exemplar": true,
           "expr": "sum(increase(cs_filesource_hits_total[$__interval])) by (instance)",
           "interval": "",
@@ -225,6 +224,10 @@
           "refId": "A"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
           "exemplar": true,
           "expr": "sum(increase(cs_journalctlsource_hits_total[$__interval])) by (instance)",
           "hide": false,
@@ -233,6 +236,10 @@
           "refId": "B"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
           "exemplar": true,
           "expr": "sum(increase(cs_cloudwatch_stream_hits_total[$__interval])) by (instance)",
           "hide": false,
@@ -241,6 +248,10 @@
           "refId": "C"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
           "exemplar": true,
           "expr": "sum(increase(cs_syslogsource_hits_total[$__interval])) by (instance)",
           "hide": false,
@@ -249,101 +260,101 @@
           "refId": "D"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "Acquisitions",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
       "transparent": true,
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
-      "decimals": 1,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
       "fieldConfig": {
         "defaults": {
-          "links": []
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
         },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
         "y": 9
       },
-      "hiddenSeries": false,
       "id": 10,
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sort": "total",
-        "sortDesc": true,
-        "total": true,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "alertThreshold": true,
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "8.1.2",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "11.6.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
           "expr": "sum(increase(cs_parser_hits_total[$__interval])) by (instance)",
           "interval": "",
           "intervalFactor": 2,
@@ -351,101 +362,101 @@
           "refId": "A"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "Parsers",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
       "transparent": true,
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
-      "decimals": 1,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
       "fieldConfig": {
         "defaults": {
-          "links": []
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
         },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 12,
         "y": 9
       },
-      "hiddenSeries": false,
       "id": 12,
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sort": "total",
-        "sortDesc": true,
-        "total": true,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "alertThreshold": true,
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "8.1.2",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "11.6.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
           "expr": "sum(increase(cs_bucket_overflowed_total[$__interval])) by (instance)",
           "interval": "",
           "intervalFactor": 2,
@@ -453,51 +464,12 @@
           "refId": "A"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "Buckets overflow",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
       "transparent": true,
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
       "collapsed": false,
-      "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -510,7 +482,10 @@
       "type": "row"
     },
     {
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -521,8 +496,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -545,6 +519,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -552,12 +527,18 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {},
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "8.1.2",
+      "pluginVersion": "11.6.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
           "exemplar": true,
           "expr": "sum(cs_active_decisions)",
           "interval": "",
@@ -569,7 +550,10 @@
       "type": "stat"
     },
     {
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -580,8 +564,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -604,6 +587,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -611,12 +595,18 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {},
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "8.1.2",
+      "pluginVersion": "11.6.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
           "exemplar": true,
           "expr": "sum(cs_alerts)",
           "interval": "",
@@ -628,16 +618,23 @@
       "type": "stat"
     },
     {
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -646,6 +643,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -667,8 +665,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -690,14 +687,22 @@
         "legend": {
           "calcs": [],
           "displayMode": "table",
-          "placement": "right"
+          "placement": "right",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
+      "pluginVersion": "11.6.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
           "exemplar": true,
           "expr": "sum(cs_active_decisions) by (reason)",
           "interval": "",
@@ -709,7 +714,10 @@
       "type": "timeseries"
     },
     {
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -748,8 +756,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -771,7 +778,8 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "single"
@@ -779,6 +787,10 @@
       },
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
           "exemplar": true,
           "expr": "sum(cs_active_decisions) by (action)",
           "interval": "",
@@ -791,7 +803,6 @@
     },
     {
       "collapsed": true,
-      "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -801,59 +812,33 @@
       "id": 26,
       "panels": [
         {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_PROMETHEUS}",
-          "decimals": 1,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
           "fieldConfig": {
             "defaults": {
               "links": []
             },
             "overrides": []
           },
-          "fill": 1,
-          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 12,
             "x": 0,
             "y": 3
           },
-          "hiddenSeries": false,
           "id": 4,
-          "interval": "",
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sort": "total",
-            "sortDesc": true,
-            "total": true,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "nullPointMode": "null",
           "options": {
             "alertThreshold": true
           },
-          "percentage": false,
           "pluginVersion": "8.1.2",
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prom"
+              },
               "expr": "sum(increase(cs_node_hits_ok_total[$__interval])) by (name)",
               "format": "time_series",
               "instant": false,
@@ -863,102 +848,38 @@
               "refId": "A"
             }
           ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
           "title": "Parsers ok",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
           "transparent": true,
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          "type": "timeseries"
         },
         {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_PROMETHEUS}",
-          "decimals": 1,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
           "fieldConfig": {
             "defaults": {
               "links": []
             },
             "overrides": []
           },
-          "fill": 1,
-          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 12,
             "x": 12,
             "y": 3
           },
-          "hiddenSeries": false,
           "id": 6,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sideWidth": null,
-            "sort": "total",
-            "sortDesc": true,
-            "total": true,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "nullPointMode": "null",
           "options": {
             "alertThreshold": true
           },
-          "percentage": false,
           "pluginVersion": "8.1.2",
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prom"
+              },
               "expr": "sum(increase(cs_node_hits_ko_total[$__interval])) by (name)",
               "interval": "",
               "intervalFactor": 2,
@@ -966,47 +887,9 @@
               "refId": "A"
             }
           ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
           "title": "Parsers nok",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
           "transparent": true,
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          "type": "timeseries"
         }
       ],
       "title": "Parsers",
@@ -1014,7 +897,6 @@
     },
     {
       "collapsed": true,
-      "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1024,58 +906,33 @@
       "id": 28,
       "panels": [
         {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_PROMETHEUS}",
-          "decimals": 1,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
           "fieldConfig": {
             "defaults": {
               "links": []
             },
             "overrides": []
           },
-          "fill": 1,
-          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 12,
             "x": 0,
             "y": 3
           },
-          "hiddenSeries": false,
           "id": 18,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sort": "total",
-            "sortDesc": true,
-            "total": true,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "nullPointMode": "null",
           "options": {
             "alertThreshold": true
           },
-          "percentage": false,
           "pluginVersion": "8.1.2",
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prom"
+              },
               "expr": "sum(increase(cs_bucket_created_total[$__interval])) by (name)",
               "interval": "",
               "intervalFactor": 2,
@@ -1083,101 +940,38 @@
               "refId": "A"
             }
           ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
           "title": "Buckets created",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
           "transparent": true,
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          "type": "timeseries"
         },
         {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_PROMETHEUS}",
-          "decimals": 1,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
           "fieldConfig": {
             "defaults": {
               "links": []
             },
             "overrides": []
           },
-          "fill": 1,
-          "fillGradient": 0,
           "gridPos": {
             "h": 8,
             "w": 12,
             "x": 12,
             "y": 3
           },
-          "hiddenSeries": false,
           "id": 20,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sort": "total",
-            "sortDesc": true,
-            "total": true,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "nullPointMode": "null",
           "options": {
             "alertThreshold": true
           },
-          "percentage": false,
           "pluginVersion": "8.1.2",
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prom"
+              },
               "expr": "sum(increase(cs_bucket_overflowed_total[$__interval])) by (name)",
               "interval": "",
               "intervalFactor": 2,
@@ -1185,101 +979,38 @@
               "refId": "A"
             }
           ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
           "title": "Buckets overflow",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
           "transparent": true,
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          "type": "timeseries"
         },
         {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_PROMETHEUS}",
-          "decimals": 1,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
           "fieldConfig": {
             "defaults": {
               "links": []
             },
             "overrides": []
           },
-          "fill": 1,
-          "fillGradient": 0,
           "gridPos": {
             "h": 9,
             "w": 24,
             "x": 0,
             "y": 12
           },
-          "hiddenSeries": false,
           "id": 22,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sort": "total",
-            "sortDesc": true,
-            "total": true,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "nullPointMode": "null",
           "options": {
             "alertThreshold": true
           },
-          "percentage": false,
           "pluginVersion": "8.1.2",
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prom"
+              },
               "expr": "sum(cs_buckets) by (name)",
               "interval": "",
               "intervalFactor": 1,
@@ -1287,56 +1018,18 @@
               "refId": "A"
             }
           ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
           "title": "Buckets Timeline",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
           "transparent": true,
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          "type": "timeseries"
         }
       ],
       "title": "Buckets",
       "type": "row"
     }
   ],
-  "refresh": false,
-  "schemaVersion": 30,
-  "style": "dark",
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 41,
   "tags": [
     "crowdsec"
   ],
@@ -1347,22 +1040,9 @@
     "from": "now-24h",
     "to": "now"
   },
-  "timepicker": {
-    "refresh_intervals": [
-      "5s",
-      "10s",
-      "30s",
-      "1m",
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "2h",
-      "1d"
-    ]
-  },
+  "timepicker": {},
   "timezone": "",
   "title": "Crowdsec Overview",
-  "uid": "hjmZdB4nk",
-  "version": 7
+  "uid": "hjmZdB4nke",
+  "version": 1
 }

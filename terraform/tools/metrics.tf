@@ -179,7 +179,6 @@ module "dashboards" {
     "coder-workspace-detail",
     "crowdsec-details",
     "crowdsec-insight",
-    "crowdsec-lapi",
     "crowdsec-overview",
     "pod-logs",
     "tempo-block-builder",
