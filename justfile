@@ -1,6 +1,9 @@
 pwd := source_dir()
 config_path := "terraform"
 vars_path := pwd + "/vars.tfvars"
+kubeconfig_path := pwd + "/terraform/rke2/data/kubeconfig"
+
+export KUBECONFIG := kubeconfig_path
 
 init CONFIG:
   terraform -chdir={{config_path}}/{{CONFIG}} init
