@@ -12,3 +12,8 @@ variable "rke2_id" {
   description = "RKE2 node identifier"
   type        = string
 }
+
+variable "ssh_user_pw" {
+  description = "SSH password for the nodes"
+  type        = string
+}
