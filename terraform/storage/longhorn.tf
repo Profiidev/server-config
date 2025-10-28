@@ -1,11 +1,6 @@
-resource "kubernetes_namespace" "storage_ns" {
+resource "kubernetes_namespace" "storage" {
   metadata {
     name = var.storage_ns
-    labels = {
-      "${var.secret_store_label.key}"    = var.secret_store_label.value
-      "${var.minio_access_label.key}"    = var.minio_access_label.value
-      "${var.cloudflare_cert_label.key}" = var.cloudflare_cert_label.value
-    }
   }
 }
 
@@ -13,137 +8,38 @@ resource "helm_release" "longhorn" {
   name       = "longhorn"
   repository = "https://charts.longhorn.io"
   chart      = "longhorn"
-  version    = "1.8.1"
+  version    = "1.10.0"
   namespace  = var.storage_ns
 
   values = [templatefile("${path.module}/templates/longhorn.values.tftpl", {
     #! Affinity
-    count         = 1,
-    ingress_class = var.ingress_class
+    count = 1,
   })]
 
-  depends_on = [kubernetes_namespace.storage_ns]
+  depends_on = [kubernetes_namespace.storage]
 }
 
-resource "helm_release" "longhorn_oauth2_proxy" {
-  name       = "longhorn-oauth2-proxy"
-  repository = "https://oauth2-proxy.github.io/manifests"
-  chart      = "oauth2-proxy"
-  version    = "7.12.9"
-  namespace  = var.storage_ns
+module "k8s_api_np_longhorn" {
+  source = "../modules/k8s-api-np"
 
-  values = [templatefile("${path.module}/templates/longhorn-oauth2-proxy.values.tftpl", {
-    namespace              = var.storage_ns
-    ingress_class          = var.ingress_class
-    cloudflare_ca_cert_var = var.cloudflare_ca_cert_var
-    cloudflare_cert_var    = var.cloudflare_cert_var
-  })]
+  namespace = var.storage_ns
+  k8s_api   = var.k8s_api
 
-  depends_on = [kubernetes_namespace.storage_ns]
+  depends_on = [kubernetes_namespace.storage]
 }
 
-resource "kubectl_manifest" "longhorn_proxy_secrets" {
-  yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
-metadata:
-  name: longhorn-proxy
-  namespace: ${var.storage_ns}
-spec:
-  refreshInterval: 15s
-  secretStoreRef:
-    name: ${var.cluster_secret_store}
-    kind: ClusterSecretStore
-  target:
-    name: longhorn-proxy
-  dataFrom:
-  - extract:
-      key: apps/longhorn-proxy
-  YAML
+module "external_np_longhorn" {
+  source = "../modules/external-np"
 
-  depends_on = [kubernetes_namespace.storage_ns]
+  namespace = var.storage_ns
+
+  depends_on = [kubernetes_namespace.storage]
 }
 
-resource "kubectl_manifest" "longhorn_k8s_api_egress" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: k8s-api-egress
-  namespace: ${var.storage_ns}
-spec:
-  order: 10
-  selector: all()
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        nets:
-          - 194.164.200.60/32
-        ports:
-          - 6443
-    - action: Allow
-      protocol: TCP
-      destination:
-        notNets:
-          - 10.0.0.0/8
-          - 172.16.0.0/12
-          - 192.168.0.0/16
-        ports:
-          - 443
-  YAML
+module "ns_np_longhorn" {
+  source = "../modules/ns-np"
 
-  depends_on = [kubernetes_namespace.storage_ns]
-}
+  namespace = var.storage_ns
 
-resource "kubectl_manifest" "longhorn_ns" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: longhorn-namespace
-  namespace: ${var.storage_ns}
-spec:
-  order: 10
-  namespaceSelector: kubernetes.io/metadata.name == '${var.storage_ns}'
-  types:
-    - Ingress
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.storage_ns}'
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.storage_ns}'
-  YAML
-
-  depends_on = [kubernetes_namespace.storage_ns]
-}
-
-resource "kubectl_manifest" "longhorn_secret" {
-  yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
-metadata:
-  name: longhorn-secret
-  namespace: ${var.storage_ns}
-spec:
-  refreshInterval: 15s
-  secretStoreRef:
-    name: ${var.cluster_secret_store}
-    kind: ClusterSecretStore
-  target:
-    name: longhorn-secret
-  dataFrom:
-  - extract:
-      key: apps/longhorn
-  YAML
-
-  depends_on = [kubernetes_namespace.storage_ns]
+  depends_on = [kubernetes_namespace.storage]
 }

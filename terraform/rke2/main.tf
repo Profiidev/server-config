@@ -52,6 +52,7 @@ module "config" {
   kube-proxy-arg = [
     "metrics-bind-address=0.0.0.0"
   ]
+  pod-security-admission-config-file = "/etc/rancher/rke2/config.yaml.d/pss-custom.yaml"
 }
 
 module "rke2-install" {
