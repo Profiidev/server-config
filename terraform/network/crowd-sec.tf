@@ -48,12 +48,3 @@ module "external_np_crowdsec" {
 
   depends_on = [kubernetes_namespace.crowdsec]
 }
-
-
-module "ns_np_crowdsec" {
-  source = "../modules/ns-np"
-
-  namespace = var.crowdsec_ns
-
-  depends_on = [kubernetes_namespace.crowdsec]
-}

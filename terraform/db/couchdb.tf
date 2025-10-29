@@ -1,11 +1,6 @@
-resource "kubernetes_namespace" "couchdb_ns" {
+resource "kubernetes_namespace" "couchdb" {
   metadata {
     name = var.couchdb_ns
-    labels = {
-      "${var.cloudflare_cert_label.key}" = var.cloudflare_cert_label.value
-      "${var.secret_store_label.key}"    = var.secret_store_label.value
-      "${var.cluster_ca_cert_label.key}" = var.cluster_ca_cert_label.value
-    }
   }
 }
 
@@ -23,7 +18,7 @@ resource "helm_release" "couchdb" {
     cert_issuer = var.cert_issuer_prod
   })]
 
-  depends_on = [kubernetes_namespace.couchdb_ns]
+  depends_on = [kubernetes_namespace.couchdb]
 }
 
 resource "kubectl_manifest" "couchdb_secrets" {
@@ -42,8 +37,8 @@ spec:
     name: couchdb
   dataFrom:
   - extract:
-      key: apps/couchdb
+      key: db/couchdb
   YAML
 
-  depends_on = [kubernetes_namespace.couchdb_ns]
+  depends_on = [kubernetes_namespace.couchdb]
 }

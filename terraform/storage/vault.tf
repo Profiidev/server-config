@@ -126,15 +126,6 @@ module "k8s_api_np_vault" {
   depends_on = [kubernetes_namespace.secrets]
 }
 
-module "vault_ingress_np" {
-  source = "../modules/ingress-np"
-
-  namespace = var.secrets_ns
-  selector  = "app.kubernetes.io/name == 'vault'"
-
-  depends_on = [kubernetes_namespace.secrets]
-}
-
 /*
 Role
 vault write auth/oidc/role/default \

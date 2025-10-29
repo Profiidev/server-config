@@ -24,7 +24,7 @@ spec:
       selector: 'k8s-app == "kube-dns"'
       ports:
       - 53
-  # allow all namespaces egress where the destination is not another pod (this does nothing as long as there is no rule for allowing ingress to a pod)
+  # allow all pods to communicate within private IP ranges
   - action: Allow
     protocol: TCP
     destination:
@@ -35,6 +35,22 @@ spec:
   - action: Allow
     protocol: UDP
     destination:
+      nets:
+        - 10.0.0.0/8
+        - 172.16.0.0/12
+        - 192.168.0.0/16
+ingress:
+  # allow all pods to communicate within private IP ranges
+  - action: Allow
+    protocol: TCP
+    source:
+      nets:
+        - 10.0.0.0/8
+        - 172.16.0.0/12
+        - 192.168.0.0/16 
+  - action: Allow
+    protocol: UDP
+    source:
       nets:
         - 10.0.0.0/8
         - 172.16.0.0/12

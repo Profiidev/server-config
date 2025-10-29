@@ -44,11 +44,3 @@ spec:
 
   depends_on = [helm_release.external_secrets]
 }
-
-module "ns_np_secrets" {
-  source = "../modules/ns-np"
-
-  namespace = var.secrets_ns
-
-  depends_on = [kubernetes_namespace.secrets]
-}

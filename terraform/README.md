@@ -32,3 +32,18 @@ certs/nginx:
 - API_KEY: <CrowdSec API Key>
 - CAPTCHA_KEY: <Captcha Key for NGINX>
 - CAPTCHA_SITE_KEY: <Captcha Site Key for NGINX>
+
+db/minio_config:
+
+- config.env: <MinIO configuration environment variables>
+
+db/minio_metrics:
+
+- token: <MinIO metrics token>
+
+db/couchdb:
+
+- cookie_auth: <CouchDB cookie authentication string>
+- erlang_cookie: <CouchDB Erlang cookie>
+- password: <CouchDB admin password>
+- username: <CouchDB admin username>

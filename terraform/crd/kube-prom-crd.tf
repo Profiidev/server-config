@@ -46,11 +46,3 @@ spec:
 
   depends_on = [kubernetes_namespace.metrics]
 }
-
-module "ns_np_metrics" {
-  source = "../modules/ns-np"
-
-  namespace = var.metrics_ns
-
-  depends_on = [kubernetes_namespace.metrics]
-}
