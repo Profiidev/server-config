@@ -1,15 +1,14 @@
 config:
   cluster:
     enabled: true
-    replicas: 2
+    replicas: 1
   merge:
     accounts:
       $SYS:
         users:
-        - {user: system, password: a}
+          - { user: system, password: a }
 promExporter:
   enabled: true
   podMonitor:
     enabled: true
     interval: 60s
-    

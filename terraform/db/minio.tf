@@ -1,9 +1,6 @@
 resource "kubernetes_namespace" "minio" {
   metadata {
     name = var.minio_ns
-    labels = {
-      "${var.minio_config_label.key}" = var.minio_config_label.value
-    }
   }
 }
 
@@ -94,7 +91,7 @@ spec:
         key: token
   YAML
 
-  depends_on = [kubernetes_namespace.minio_ns]
+  depends_on = [kubernetes_namespace.minio]
 }
 
 resource "kubectl_manifest" "minio_metrics_secret" {
@@ -116,5 +113,5 @@ spec:
       key: db/minio_metrics
   YAML
 
-  depends_on = [kubernetes_namespace.minio_ns]
+  depends_on = [kubernetes_namespace.minio]
 }

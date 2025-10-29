@@ -21,6 +21,14 @@ resource "helm_release" "postgres" {
   depends_on = [kubernetes_namespace.everest_system]
 }
 
+module "everest_system_egress_np" {
+  source = "../modules/external-np"
+
+  namespace = var.everest_system_ns
+
+  depends_on = [kubernetes_namespace.everest_system]
+}
+
 module "k8s_api_np_everest_system" {
   source = "../modules/k8s-api-np"
 
