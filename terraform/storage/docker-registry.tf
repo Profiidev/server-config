@@ -7,8 +7,7 @@ metadata:
 spec:
   externalSecretName: ${var.ghcr_profidev}
   namespaceSelectors:
-    - matchLabels:
-        ${var.ghcr_profidev_label.key}: "${var.ghcr_profidev_label.value}"
+    - matchLabels: {}
   refreshTime: 15s
   externalSecretSpec:
     target:

@@ -28,6 +28,11 @@ variable "cloudflare_cert_var" {
   type        = string
 }
 
+variable "ghcr_profidev" {
+  description = "The name of the GHCR Profidev secret"
+  type        = string
+}
+
 
 
 variable "vault_svc" {
