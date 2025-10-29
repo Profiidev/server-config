@@ -3,7 +3,6 @@
 *.tfstate.backup
 *.lock.info
 *.tfvars
-target/
 
 # Devenv
 .devenv*
