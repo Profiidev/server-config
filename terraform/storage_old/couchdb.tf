@@ -28,7 +28,7 @@ resource "helm_release" "couchdb" {
 
 resource "kubectl_manifest" "couchdb_secrets" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: couchdb

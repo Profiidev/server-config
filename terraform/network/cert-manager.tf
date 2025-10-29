@@ -21,7 +21,7 @@ resource "helm_release" "cert_manager" {
 
 resource "kubectl_manifest" "cert_manager_secrets" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: cert-manager

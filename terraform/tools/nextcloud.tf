@@ -30,7 +30,7 @@ resource "helm_release" "nextcloud" {
 
 resource "kubectl_manifest" "nextcloud_secret" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: nextcloud

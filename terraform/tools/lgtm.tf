@@ -148,7 +148,7 @@ spec:
 
 resource "kubectl_manifest" "discord_webhook" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: discord-webhook
@@ -170,7 +170,7 @@ spec:
 
 resource "kubectl_manifest" "lgtm_secrets" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: lgtm

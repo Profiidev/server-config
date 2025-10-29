@@ -17,7 +17,7 @@ resource "helm_release" "longhorn_oauth2_proxy" {
 
 resource "kubectl_manifest" "longhorn_proxy_secrets" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: longhorn-proxy
@@ -39,7 +39,7 @@ spec:
 
 resource "kubectl_manifest" "longhorn_secret" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: longhorn-secret

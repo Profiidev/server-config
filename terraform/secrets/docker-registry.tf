@@ -1,6 +1,6 @@
 resource "kubectl_manifest" "ghcr_profidev_secret" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ClusterExternalSecret
 metadata:
   name: ${var.ghcr_profidev}

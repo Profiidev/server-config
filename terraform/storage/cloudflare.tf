@@ -5,17 +5,15 @@ resource "kubectl_manifest" "cloudflare_cert" {
   })
 
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ClusterExternalSecret
 metadata:
   name: ${each.key}
 spec:
   externalSecretName: ${each.key}
   namespaceSelectors:
-    - matchLabels:
-        ${var.cloudflare_cert_label.key}: "${var.cloudflare_cert_label.value}"
+    - matchLabels: {}
   refreshTime: 15s
-
   externalSecretSpec:
     target:
       name: ${each.key}
@@ -33,4 +31,8 @@ spec:
           property: ${value}
       %{endfor}
   YAML
+
+  depends_on = [
+    helm_release.external_secrets
+  ]
 }

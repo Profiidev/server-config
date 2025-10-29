@@ -2,17 +2,19 @@ resource "helm_release" "vault" {
   name       = "vault"
   repository = "https://helm.releases.hashicorp.com"
   chart      = "vault"
-  version    = "0.29.1"
+  version    = "0.31.0"
   namespace  = var.secrets_ns
 
   values = [templatefile("${path.module}/templates/vault.values.tftpl", {
-    cert_var      = var.vault_cert_var
-    cert_prop     = var.vault_cert_prop
-    storage_class = var.storage_class
+    cert_var               = var.vault_cert_var
+    cert_prop              = var.vault_cert_prop
+    namespace              = var.secrets_ns
+    cloudflare_ca_cert_var = var.cloudflare_ca_cert_var
+    cloudflare_cert_var    = var.cloudflare_cert_var
   })]
 
   depends_on = [
-    kubernetes_namespace.secrets_ns,
+    kubernetes_namespace.secrets,
     kubernetes_secret_v1.vault_tls_secret,
   ]
 }
@@ -21,19 +23,18 @@ resource "helm_release" "vault_auto_unseal" {
   name       = "vault-auto-unseal"
   repository = "https://profiidev.github.io/server-config"
   chart      = "vault-auto-unseal"
-  version    = "0.1.9"
+  version    = "0.1.12"
   namespace  = var.secrets_ns
 
   values = [templatefile("${path.module}/templates/vault-auto-unseal.values.tftpl", {
-    key_1_var   = "vault-unseal-key-1"
-    key_2_var   = "vault-unseal-key-2"
-    key_3_var   = "vault-unseal-key-3"
-    ca_cert_var = var.cluster_ca_cert_var
-    secrets_ns  = var.secrets_ns
+    key_1_var  = "vault-unseal-key-1"
+    key_2_var  = "vault-unseal-key-2"
+    key_3_var  = "vault-unseal-key-3"
+    secrets_ns = var.secrets_ns
   })]
 
   depends_on = [
-    kubernetes_namespace.secrets_ns,
+    kubernetes_namespace.secrets,
     kubernetes_secret_v1.cluster_ca_cert_secret,
     kubernetes_secret_v1.vault_unseal_key
   ]
@@ -116,104 +117,22 @@ resource "null_resource" "vault_init_kv" {
   depends_on = [null_resource.vault_initial_unseal]
 }
 
-resource "kubectl_manifest" "vault_k8s_api_egress" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: k8s-api-egress
-  namespace: ${var.secrets_ns}
-spec:
-  order: 10
-  selector: app.kubernetes.io/name == 'vault-agent-injector' || app.kubernetes.io/name == 'vault'
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        nets:
-          - 194.164.200.60/32
-        ports:
-          - 6443
-    - action: Allow
-      protocol: TCP
-      destination:
-        notNets:
-          - 10.0.0.0/8
-          - 172.16.0.0/12
-          - 192.168.0.0/16
-        ports:
-          - 443
-  YAML
+module "k8s_api_np_vault" {
+  source = "../modules/k8s-api-np"
 
-  depends_on = [kubernetes_namespace.secrets_ns]
+  namespace = var.secrets_ns
+  k8s_api   = var.k8s_api
+
+  depends_on = [kubernetes_namespace.secrets]
 }
 
-resource "kubernetes_ingress_v1" "vault_ui_ingress" {
-  metadata {
-    name      = "vault-ui-ingress"
-    namespace = var.secrets_ns
-    annotations = {
-      "nginx.ingress.kubernetes.io/auth-tls-secret"        = "${var.secrets_ns}/${var.cloudflare_ca_cert_var}",
-      "nginx.ingress.kubernetes.io/auth-tls-verify-client" = "on"
-      "nginx.ingress.kubernetes.io/backend-protocol"       = "HTTPS"
-    }
-  }
+module "vault_ingress_np" {
+  source = "../modules/ingress-np"
 
-  spec {
-    ingress_class_name = var.ingress_class
-    rule {
-      host = "vault.profidev.io"
-      http {
-        path {
-          backend {
-            service {
-              name = "vault-ui"
-              port {
-                number = 8200
-              }
-            }
-          }
-          path      = "/"
-          path_type = "Prefix"
-        }
-      }
-    }
+  namespace = var.secrets_ns
+  selector  = "app.kubernetes.io/name == 'vault'"
 
-    tls {
-      hosts       = ["*.profidev.io", "profidev.io"]
-      secret_name = var.cloudflare_cert_var
-    }
-  }
-
-  depends_on = [kubernetes_namespace.secrets_ns]
-}
-
-resource "kubectl_manifest" "vault_io_ingress" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: vault-ui-ingress
-  namespace: ${var.secrets_ns}
-spec:
-  order: 10
-  selector: app.kubernetes.io/name == 'vault'
-  types:
-    - Ingress
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: kubernetes.io/metadata.name == 'kube-system'
-        selector: app.kubernetes.io/name == 'rke2-ingress-nginx'
-      destination:
-        ports:
-          - 8200
-  YAML
-
-  depends_on = [kubernetes_namespace.secrets_ns]
+  depends_on = [kubernetes_namespace.secrets]
 }
 
 /*

@@ -28,14 +28,6 @@ module "k8s_api_np_longhorn" {
   depends_on = [kubernetes_namespace.storage]
 }
 
-module "external_np_longhorn" {
-  source = "../modules/external-np"
-
-  namespace = var.storage_ns
-
-  depends_on = [kubernetes_namespace.storage]
-}
-
 module "ns_np_longhorn" {
   source = "../modules/ns-np"
 

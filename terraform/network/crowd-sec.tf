@@ -24,7 +24,7 @@ resource "helm_release" "crowdsec" {
 
 resource "kubectl_manifest" "crowdsec_secrets" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: crowdsec

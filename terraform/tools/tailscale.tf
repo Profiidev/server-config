@@ -22,7 +22,7 @@ resource "helm_release" "tailscale" {
 
 resource "kubectl_manifest" "tailscale_secrets" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: operator-oauth

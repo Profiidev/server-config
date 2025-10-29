@@ -125,7 +125,7 @@ spec:
 
 resource "kubectl_manifest" "minio_config" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ClusterExternalSecret
 metadata:
   name: ${var.minio_config}
@@ -191,7 +191,7 @@ spec:
 
 resource "kubectl_manifest" "minio_metrics_secret" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: minio-metrics

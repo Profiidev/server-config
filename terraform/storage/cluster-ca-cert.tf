@@ -9,20 +9,18 @@ data "external" "cluster_ca_cert" {
 
 resource "kubectl_manifest" "cluster_ca_cert" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ClusterExternalSecret
 metadata:
-  name: ${var.cluster_ca_cert_var}
+  name: kube-root-ca.crt
 spec:
-  externalSecretName: ${var.cluster_ca_cert_var}
+  externalSecretName: cluster-ca-cert
   namespaceSelectors:
-    - matchLabels:
-        ${var.cluster_ca_cert_label.key}: "${var.cluster_ca_cert_label.value}"
+    - matchLabels: {}
   refreshTime: 15s
-
   externalSecretSpec:
     target:
-      name: ${var.cluster_ca_cert_var}
+      name: kube-root-ca.crt
     refreshInterval: 15s
     secretStoreRef:
       name: ${var.cluster_secret_store}
@@ -37,7 +35,7 @@ spec:
 
 resource "kubernetes_secret_v1" "cluster_ca_cert_secret" {
   metadata {
-    name      = var.cluster_ca_cert_var
+    name      = "kube-root-ca.crt"
     namespace = var.secrets_ns
   }
   type = "Opaque"

@@ -9,7 +9,7 @@ secrets:
     name: ${key_3_var}
     key: key
   ca_cert:
-    name: ${ca_cert_var}
+    name: kube-root-ca.crt
     key: ca.crt
 
 vault_url: https://vault.${secrets_ns}.svc:8200

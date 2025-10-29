@@ -122,7 +122,7 @@ resource "null_resource" "everest_labels" {
 
 resource "kubectl_manifest" "nginx_secrets" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: nginx
