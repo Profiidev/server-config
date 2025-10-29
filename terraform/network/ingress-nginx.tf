@@ -112,14 +112,6 @@ spec:
   YAML
 }
 
-resource "null_resource" "everest_labels" {
-  provisioner "local-exec" {
-    command = <<EOT
-      kubectl label ns kube-system ${var.secret_store_label.key}=${var.secret_store_label.value}
-    EOT
-  }
-}
-
 resource "kubectl_manifest" "nginx_secrets" {
   yaml_body = <<YAML
 apiVersion: external-secrets.io/v1
@@ -137,25 +129,5 @@ spec:
   dataFrom:
   - extract:
       key: certs/nginx
-  YAML
-}
-
-resource "kubectl_manifest" "acme_allow" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: GlobalNetworkPolicy
-metadata:
-  name: acme-allow
-spec:
-  order: 90
-  selector: acme.cert-manager.io/http01-solver == 'true'
-  types:
-  - Ingress
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: kubernetes.io/metadata.name == 'kube-system'
-        selector: app.kubernetes.io/name == 'rke2-ingress-nginx'
   YAML
 }
