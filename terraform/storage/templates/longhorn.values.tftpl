@@ -10,7 +10,7 @@ csi:
 defaultSettings:
   # temp
   replicaSoftAntiAffinity: true
-  defaultReplicaCount: ${count}
+  defaultReplicaCount: "${count}"
   # temp
   replicaZoneSoftAntiAffinity: true
   guaranteedInstanceManagerCPU: "3"
@@ -21,9 +21,11 @@ networkPolicies:
 
 ingress:
   enabled: false
-  ingressClassName: ${ingress_class}
 
 metrics:
   serviceMonitor:
     enabled: true
     interval: 60s
+
+longhornUI:
+  replicas: 1

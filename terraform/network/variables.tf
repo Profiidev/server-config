@@ -1,45 +1,50 @@
 variable "lb_address_pool" {
-  type    = string
-  default = "lb-pool"
+  description = "Load Balancer Address Pool Name"
+  type        = string
+  default     = "lb-pool"
 }
 
 variable "lb_ns" {
   description = "Load Balancer Namespace"
   type        = string
-  default     = "metallb-system"
 }
 
 variable "ingress_class" {
-  type = string
+  description = "Ingress Class"
+  type        = string
 }
 
 variable "cert_ns" {
-  type = string
+  description = "Certificate Manager Namespace"
+  type        = string
 }
 
 variable "cert_issuer_staging" {
-  type = string
+  description = "Certificate Issuer for Staging"
+  type        = string
 }
 
 variable "cert_issuer_prod" {
-  type = string
+  description = "Certificate Issuer for Production"
+  type        = string
 }
 
 variable "email" {
-  type = string
+  description = "Email for Let's Encrypt"
+  type        = string
 }
 
 variable "cluster_secret_store" {
-  type = string
-}
-
-variable "secret_store_label" {
-  type = object({
-    key   = string
-    value = string
-  })
+  description = "Cluster Secret Store"
+  type        = string
 }
 
 variable "crowdsec_ns" {
-  type    = string
+  description = "CrowdSec Namespace"
+  type        = string
+}
+
+variable "k8s_api" {
+  description = "The Kubernetes API server address"
+  type        = string
 }

@@ -27,7 +27,7 @@ resource "helm_release" "coder" {
 
 resource "kubectl_manifest" "coder_secrets" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: coder

@@ -271,7 +271,7 @@ resource "helm_release" "pgbouncer_exporter" {
 
 resource "kubectl_manifest" "postgres_exporter_secret" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: postgres-exporter
@@ -291,7 +291,7 @@ spec:
 
 resource "kubectl_manifest" "pgbouncer_exporter_secret" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: pgbouncer-exporter

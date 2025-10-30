@@ -112,17 +112,9 @@ spec:
   YAML
 }
 
-resource "null_resource" "everest_labels" {
-  provisioner "local-exec" {
-    command = <<EOT
-      kubectl label ns kube-system ${var.secret_store_label.key}=${var.secret_store_label.value}
-    EOT
-  }
-}
-
 resource "kubectl_manifest" "nginx_secrets" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: nginx

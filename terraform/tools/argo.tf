@@ -86,7 +86,7 @@ spec:
 
 resource "kubectl_manifest" "argo_secret" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: argo

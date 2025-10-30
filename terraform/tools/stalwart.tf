@@ -23,7 +23,7 @@ resource "kubernetes_deployment_v1" "stalwart" {
     template {
       metadata {
         labels = {
-          app = "stalwart"
+          app                                = "stalwart"
           "${var.postgres_access_label.key}" = var.postgres_access_label.value
         }
       }
@@ -147,7 +147,7 @@ resource "kubernetes_ingress_v1" "stalwart" {
   metadata {
     name = "stalwart"
     annotations = {
-      "cert-manager.io/cluster-issuer" = var.cert_issuer_prod
+      "cert-manager.io/cluster-issuer"           = var.cert_issuer_prod
       "nginx.ingress.kubernetes.io/ssl-redirect" = "false"
     }
     namespace = var.stalwart_ns
@@ -294,7 +294,7 @@ spec:
 
 resource "kubectl_manifest" "stalwart_secret" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: stalwart

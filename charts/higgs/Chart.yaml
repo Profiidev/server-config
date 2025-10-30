@@ -1,5 +1,0 @@
-apiVersion: v2
-name: higgs
-description: A Portfolio Website
-type: application
-version: v0.1.1
