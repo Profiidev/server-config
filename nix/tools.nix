@@ -5,6 +5,8 @@
     kubectl
     k9s
     helm
+    btop
+    fastfetch
   ];
 
   programs.neovim = {

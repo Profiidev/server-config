@@ -20,6 +20,7 @@
     ./nix.nix
     ./rke2.nix
     ./services.nix
+    ./starship.nix
     ./tools.nix
     ./user.nix
 

@@ -23,11 +23,11 @@
     "nix-config": {
       "flake": false,
       "locked": {
-        "lastModified": 1763745348,
-        "narHash": "sha256-FwxiYKQo6/mUG74x7GWizH8GlD9dt3Bf7JssbA6Z6EM=",
+        "lastModified": 1763821135,
+        "narHash": "sha256-8BaXmalRskJgpsVh/gIef1GXxpUeG3Z5huHesyiwOMQ=",
         "owner": "ProfiiDev",
         "repo": "nix",
-        "rev": "e29e68aa162018e143eb866bc5cd4fe967ffca0a",
+        "rev": "294da482461b59a64611efe559ffa61b99ce225d",
         "type": "github"
       },
       "original": {
