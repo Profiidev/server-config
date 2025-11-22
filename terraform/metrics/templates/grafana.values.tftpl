@@ -35,7 +35,7 @@ datasources:
       - name: Loki
         uid: loki
         type: loki
-        url: http://loki-gateway
+        url: http://loki:3100
         jsonData:
           httpHeaderName1: X-Scope-OrgID
         secureJsonData:
@@ -53,7 +53,7 @@ datasources:
       - name: Tempo
         uid: tempo
         type: tempo
-        url: http://tempo-query-frontend:3100
+        url: http://tempo:3200
         isDefault: false
         jsonData:
           tracesToLogsV2:

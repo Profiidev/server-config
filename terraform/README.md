@@ -5,9 +5,12 @@
 1. crd: Install Custom Resource Definitions (CRDs) and monitoring tools.
 2. storage: Set up storage solutions required for the cluster. (add cloudflare cert to vault)
 3. network: Configure networking components and services.
-4. db: Deploy database services.
+4. db: Deploy database services. (create buckets and access keys after this)
+5. metrics: Set up monitoring and metrics collection services.
 
 ## Required secrets in Vault
+
+### After Storage setup (step 2)
 
 docker/ghcr:
 
@@ -47,6 +50,8 @@ db/postgres:
 - password: <PostgreSQL admin password>
 - username: <PostgreSQL admin username>
 
+### After DB setup (step 4)
+
 apps/lgtm:
 
 - GRAFANA_LOKI_S3_ACCESS_KEY: <MinIO access key for Grafana Loki>
@@ -61,3 +66,21 @@ apps/metrics:
 
 - proxy: <Alertmanager Discord webhook proxy URL>
 - url: <Alertmanager Discord webhook URL>
+
+## S3 resources to create
+
+### Buckets
+
+- loki-admin
+- loki-chunk
+- loki-ruler
+- mimir-alert
+- mimir-blocks
+- mimir-ruler
+- tempo
+
+### Access keys
+
+- loki: Access to loki-admin, loki-chunk, loki-ruler buckets
+- mimir: Access to mimir-alert, mimir-blocks, mimir-ruler buckets
+- tempo: Access to tempo bucket

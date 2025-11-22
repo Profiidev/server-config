@@ -59,6 +59,7 @@ loki:
       endpoint: "$${GRAFANA_S3_ENDPOINT}"
       accessKeyId: "$${GRAFANA_LOKI_S3_ACCESS_KEY}"
       secretAccessKey: "$${GRAFANA_LOKI_S3_SECRET_KEY}"
+      insecure: true
       s3ForcePathStyle: true
 
 deploymentMode: SingleBinary
@@ -66,5 +67,18 @@ deploymentMode: SingleBinary
 gateway:
   enabled: false
 
-singleBinary:
-  replicas: 1
+resultsCache:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 1229Mi
+    limits:
+      memory: 1229Mi
+
+chunksCache:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 1229Mi
+    limits:
+      memory: 1500Mi
