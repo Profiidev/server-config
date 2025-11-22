@@ -2,10 +2,9 @@
 
 ## Initial deployment order
 
-1. rke2: Deploy RKE2 Kubernetes cluster on the target machine.
-2. crd: Install Custom Resource Definitions (CRDs) and monitoring tools.
-3. storage: Set up storage solutions required for the cluster. (add cloudflare cert to vault)
-4. network: Configure networking components and services.
+1. crd: Install Custom Resource Definitions (CRDs) and monitoring tools.
+2. storage: Set up storage solutions required for the cluster. (add cloudflare cert to vault)
+3. network: Configure networking components and services.
 
 ## Required secrets in Vault
 

@@ -1,7 +1,7 @@
 pwd := source_dir()
 config_path := "terraform"
 vars_path := pwd + "/vars.tfvars"
-kubeconfig_path := pwd + "/terraform/rke2/data/kubeconfig"
+kubeconfig_path := pwd + "/kubeconfig"
 nix_path := pwd + "/nix"
 
 export KUBECONFIG := kubeconfig_path
@@ -28,3 +28,7 @@ rebuild CONFIG IP USER="root":
   nixos-rebuild switch --flake {{nix_path}}#{{CONFIG}} \
     --target-host {{USER}}@{{IP}} \
     --build-host {{USER}}@{{IP}}
+
+copy-kubeconfig IP USER="root":
+  scp {{USER}}@{{IP}}:/etc/rancher/rke2/rke2.yaml {{kubeconfig_path}}
+  sed -i 's/127.0.0.1/{{IP}}/g' {{kubeconfig_path}}

@@ -4,9 +4,7 @@
 *.lock.info
 *.tfvars
 
-# Devenv
-.devenv*
-devenv.local.nix
-
 # direnv
 .direnv
+
+/kubeconfig

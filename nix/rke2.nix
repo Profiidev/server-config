@@ -31,6 +31,7 @@ let
       - metrics-bind-address=0.0.0.0
     kubelet-arg:
       - max-pods=200
+    ingress-controller: traefik
   '';
 in
 {

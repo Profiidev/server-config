@@ -6,7 +6,13 @@
 
   networking.hostName = host;
   networking.networkmanager.enable = true;
-  networking.firewall.enable = true;
+
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [
+      6443 # Kubernetes API server
+    ];
+  };
 
   services.timesyncd.enable = true;
   services.openssh = {
