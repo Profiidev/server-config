@@ -7,7 +7,7 @@ global:
     - name: cluster-ca-cert
       secret:
         defaultMode: 420
-        secretName: cluster-ca-cert
+        secretName: kube-root-ca.crt
   extraVolumeMounts:
     - mountPath: /etc/ssl/certs/${ca_hash}.0
       subPath: ${ca_hash}.0
@@ -61,70 +61,10 @@ loki:
       secretAccessKey: "$${GRAFANA_LOKI_S3_SECRET_KEY}"
       s3ForcePathStyle: true
 
-deploymentMode: Distributed
+deploymentMode: SingleBinary
 
-ingester:
-  replicas: 1
-  affinity: null
-  zoneAwareReplication:
-    enabled: false
-
-distributor:
-  replicas: 1
-  affinity: null
-
-querier:
-  replicas: 1
-  affinity: null
-
-queryFrontend:
-  replicas: 1
-  affinity: null
-
-queryScheduler:
-  replicas: 1
-  affinity: null
-
-indexGateway:
-  replicas: 1
-  affinity: null
-
-compactor:
-  replicas: 1
-  affinity: null
-
-patternIngester:
-  replicas: 1
-  affinity: null
-
-ruler:
-  replicas: 1
-  affinity: null
-
-backend:
-  replicas: 0
-
-read:
-  replicas: 0
-
-write:
-  replicas: 0
-
-minio:
+gateway:
   enabled: false
 
-resultsCache:
-  resources:
-    requests:
-      cpu: 100m
-      memory: 1229Mi
-    limits:
-      memory: 1229Mi
-
-chunksCache:
-  resources:
-    requests:
-      cpu: 100m
-      memory: 1229Mi
-    limits:
-      memory: 1500Mi
+singleBinary:
+  replicas: 1

@@ -4,7 +4,7 @@ global:
     - name: cluster-ca-cert
       secret:
         defaultMode: 420
-        secretName: cluster-ca-cert
+        secretName: kube-root-ca.crt
   extraVolumeMounts:
     - mountPath: /etc/ssl/certs/${ca_hash}.0
       subPath: ${ca_hash}.0

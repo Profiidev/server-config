@@ -45,3 +45,18 @@ db/postgres:
 
 - password: <PostgreSQL admin password>
 - username: <PostgreSQL admin username>
+
+apps/lgtm:
+
+- GRAFANA_LOKI_S3_ACCESS_KEY: <MinIO access key for Grafana Loki>
+- GRAFANA_LOKI_S3_SECRET_KEY: <MinIO secret key for Grafana Loki>
+- GRAFANA_MIMIR_S3_ACCESS_KEY: <MinIO access key for Grafana Mimir>
+- GRAFANA_MIMIR_S3_SECRET_KEY: <MinIO secret key for Grafana Mimir>
+- GRAFANA_S3_ENDPOINT: <MinIO service endpoint>
+- GRAFANA_TEMPO_S3_ACCESS_KEY: <MinIO access key for Grafana Tempo>
+- GRAFANA_TEMPO_S3_SECRET_KEY: <MinIO secret key for Grafana Tempo>
+
+apps/metrics:
+
+- proxy: <Alertmanager Discord webhook proxy URL>
+- url: <Alertmanager Discord webhook URL>

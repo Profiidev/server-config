@@ -72,3 +72,13 @@ resource "null_resource" "vault_cluster_ca_cert" {
 output "ca_hash" {
   value = data.external.ca_hash.result["hash"]
 }
+
+resource "null_resource" "ca_hash" {
+  provisioner "local-exec" {
+    command = <<-EOT
+      echo -n "${data.external.ca_hash.result["hash"]}" > ${path.module}/certs/ca.hash
+    EOT
+  }
+
+  depends_on = [data.external.ca_hash]
+}
