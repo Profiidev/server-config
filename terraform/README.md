@@ -40,3 +40,8 @@ db/couchdb:
 - erlang_cookie: <CouchDB Erlang cookie>
 - password: <CouchDB admin password>
 - username: <CouchDB admin username>
+
+db/postgres:
+
+- password: <PostgreSQL admin password>
+- username: <PostgreSQL admin username>

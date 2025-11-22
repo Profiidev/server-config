@@ -54,13 +54,7 @@ variable "nats_ns" {
   type        = string
 }
 
-variable "everest_system_ns" {
-  description = "The namespace for Everest system components"
+variable "pg_ns" {
+  description = "The namespace where PostgreSQL will be deployed"
   type        = string
-}
-
-variable "everest_ns" {
-  description = "The namespace for Everest components"
-  type        = string
-  default     = "everest"
 }

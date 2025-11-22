@@ -1,1 +1,17 @@
-disableTelemetry: true
+postgresql:
+  auth:
+    username: "postgres"
+    existingSecret: postgres-credentials
+    secretKeys:
+      adminPasswordKey: password
+      userPasswordKey: password
+
+rbac:
+  create: true
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+  prometheusRule:
+    enabled: true
