@@ -13,7 +13,7 @@ variable "cluster_secret_store" {
   type        = string
 }
 
-variable "minio_ns" {
+variable "rustfs_ns" {
   description = "The namespace where MinIO will be deployed"
   type        = string
 }

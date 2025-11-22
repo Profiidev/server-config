@@ -5,6 +5,7 @@
 1. crd: Install Custom Resource Definitions (CRDs) and monitoring tools.
 2. storage: Set up storage solutions required for the cluster. (add cloudflare cert to vault)
 3. network: Configure networking components and services.
+4. db: Deploy database services.
 
 ## Required secrets in Vault
 

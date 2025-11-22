@@ -1,0 +1,14 @@
+replicaCount: 1
+
+mode:
+  standalone:
+    enabled: true
+  distributed:
+    enabled: false
+
+ingress:
+  className: "nginx"
+
+storageclass:
+  name: ${storage_class}
+  size: 20Gi
