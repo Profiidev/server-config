@@ -15,4 +15,9 @@ terraform {
       version = "~> 1.0"
     }
   }
+
+  backend "kubernetes" {
+    namespace     = "kube-system"
+    secret_suffix = "crd"
+  }
 }

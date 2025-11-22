@@ -26,12 +26,6 @@ certs/crowdsec:
 
 - API_KEY: <CrowdSec API Key>
 
-certs/nginx:
-
-- API_KEY: <CrowdSec API Key>
-- CAPTCHA_KEY: <Captcha Key for NGINX>
-- CAPTCHA_SITE_KEY: <Captcha Site Key for NGINX>
-
 db/minio_config:
 
 - config.env: <MinIO configuration environment variables>

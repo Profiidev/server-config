@@ -1,5 +1,5 @@
 pwd := source_dir()
-config_path := "terraform"
+config_path := pwd + "/terraform"
 vars_path := pwd + "/vars.tfvars"
 kubeconfig_path := pwd + "/kubeconfig"
 nix_path := pwd + "/nix"

@@ -39,7 +39,7 @@ spec:
         - 10.0.0.0/8
         - 172.16.0.0/12
         - 192.168.0.0/16
-ingress:
+  ingress:
   # allow all pods to communicate within private IP ranges
   - action: Allow
     protocol: TCP

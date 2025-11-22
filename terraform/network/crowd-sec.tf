@@ -4,6 +4,14 @@ resource "kubernetes_namespace" "crowdsec" {
   }
 }
 
+resource "random_password" "bouncer_key" {
+  min_lower   = 1
+  min_upper   = 1
+  min_numeric = 1
+  min_special = 1
+  length      = 32
+}
+
 resource "helm_release" "crowdsec" {
   name       = "crowdsec"
   repository = "https://crowdsecurity.github.io/helm-charts"
@@ -13,6 +21,7 @@ resource "helm_release" "crowdsec" {
 
   values = [
     templatefile("${path.module}/templates/crowdsec.values.tftpl", {
+      traefik_bouncer_key = random_password.bouncer_key.result
     })
   ]
 

@@ -35,6 +35,11 @@ let
   '';
 in
 {
+  services.openiscsi = {
+    enable = true;
+    name = "iqn.2020-08.org.linux-iscsi.initiatorhost:example";
+  };
+
   services.rke2 = {
     enable = true;
 
