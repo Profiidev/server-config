@@ -4,7 +4,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: auto-clean-bot
-  namespace: ${var.metrics_ns}
+  namespace: ${var.argo_ns}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -27,8 +27,8 @@ spec:
           extraVolumeMounts:
             - name: cluster-ca-cert
               readOnly: true
-              subPath: ${var.ca_hash}.0
-              mountPath: /etc/ssl/certs/${var.ca_hash}.0
+              subPath: ${local.ca_hash}.0
+              mountPath: /etc/ssl/certs/${local.ca_hash}.0
 
   destination:
     server: https://kubernetes.default.svc

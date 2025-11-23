@@ -10,7 +10,7 @@
     ./disko-config.nix
     {
       _module.args = {
-        disk = "/dev/sda";
+        disk = "/dev/vda";
         withSwap = true;
         swapSize = "2";
       };

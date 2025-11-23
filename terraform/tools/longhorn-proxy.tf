@@ -2,17 +2,21 @@ resource "helm_release" "longhorn_oauth2_proxy" {
   name       = "longhorn-oauth2-proxy"
   repository = "https://oauth2-proxy.github.io/manifests"
   chart      = "oauth2-proxy"
-  version    = "7.12.9"
+  version    = "8.5.1"
   namespace  = var.storage_ns
 
   values = [templatefile("${path.module}/templates/longhorn-oauth2-proxy.values.tftpl", {
     namespace              = var.storage_ns
     ingress_class          = var.ingress_class
-    cloudflare_ca_cert_var = var.cloudflare_ca_cert_var
     cloudflare_cert_var    = var.cloudflare_cert_var
+    cloudflare_ca_cert_var = var.cloudflare_ca_cert_var
   })]
+}
 
-  depends_on = [kubernetes_namespace.storage_ns]
+module "external_np_alert_bot" {
+  source = "../modules/external-np"
+
+  namespace = var.storage_ns
 }
 
 resource "kubectl_manifest" "longhorn_proxy_secrets" {
@@ -31,10 +35,8 @@ spec:
     name: longhorn-proxy
   dataFrom:
   - extract:
-      key: apps/longhorn-proxy
+      key: tools/longhorn-proxy
   YAML
-
-  depends_on = [kubernetes_namespace.storage_ns]
 }
 
 resource "kubectl_manifest" "longhorn_secret" {
@@ -53,8 +55,6 @@ spec:
     name: longhorn-secret
   dataFrom:
   - extract:
-      key: apps/longhorn
+      key: tools/longhorn
   YAML
-
-  depends_on = [kubernetes_namespace.storage_ns]
 }

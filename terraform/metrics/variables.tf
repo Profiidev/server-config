@@ -28,6 +28,11 @@ variable "cloudflare_ca_cert_var" {
   type        = string
 }
 
+variable "argo_ns" {
+  description = "The namespace where ArgoCD is deployed"
+  type        = string
+}
+
 data "local_file" "ca_hash" {
   filename = "${path.module}/../storage/certs/ca.hash"
 }

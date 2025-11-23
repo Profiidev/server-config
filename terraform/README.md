@@ -6,7 +6,8 @@
 2. storage: Set up storage solutions required for the cluster. (add cloudflare cert to vault)
 3. network: Configure networking components and services.
 4. db: Deploy database services. (create buckets and access keys after this)
-5. metrics: Set up monitoring and metrics collection services.
+5. tools: Install auxiliary tools and services.
+6. metrics: Set up monitoring and metrics collection services.
 
 ## Required secrets in Vault
 
@@ -49,6 +50,42 @@ db/postgres:
 
 - password: <PostgreSQL admin password>
 - username: <PostgreSQL admin username>
+
+tools/argo:
+
+- oidc.positron.clientSecret: <Positron OIDC client secret>
+- webhook.github.secret: <GitHub webhook secret>
+
+tools/coder:
+
+- CODER_OIDC_CLIENT_ID: <Coder OIDC client ID>
+- CODER_OIDC_CLIENT_SECRET: <Coder OIDC client secret>
+- CODER_OIDC_EMAIL_DOMAIN: <Coder OIDC email domain>
+- CODER_OIDC_ISSUER_URL: <Coder OIDC issuer URL>
+- CODER_PG_CONNECTION_URL: <Coder PostgreSQL connection URL>
+
+tools/tailscale:
+
+- client_id: <Tailscale OAuth client ID>
+- client_secret: <Tailscale OAuth client secret>
+
+tools/longhorn:
+
+- AWS_ACCESS_KEY_ID: <MinIO access key for Longhorn>
+- AWS_ENDPOINTS: <MinIO service endpoint for Longhorn>
+- AWS_SECRET_ACCESS_KEY: <MinIO secret key for Longhorn>
+
+tools/longhorn-proxy:
+
+- client-id: <OAuth2 Proxy client ID for Longhorn>
+- client-secret: <OAuth2 Proxy client secret for Longhorn>
+- cookie-secret: <OAuth2 Proxy cookie secret for Longhorn>
+
+tools/auto-clean-bot:
+
+- RUST_LOG: <Logging level for Auto Clean Bot>
+- DISCORD_TOKEN: <Discord bot token for Auto Clean Bot>
+- DB_URL: <Database connection URL for Auto Clean Bot>
 
 ### After DB setup (step 4)
 
