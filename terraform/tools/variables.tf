@@ -26,11 +26,13 @@ variable "k8s_api" {
 variable "coder_ns" {
   description = "The namespace for Coder resources"
   type        = string
+  default     = "coder"
 }
 
 variable "tailscale_ns" {
   description = "The namespace for Tailscale resources"
   type        = string
+  default     = "tailscale"
 }
 
 variable "storage_ns" {

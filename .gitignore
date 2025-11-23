@@ -2,7 +2,6 @@
 *.tfstate
 *.tfstate.backup
 *.lock.info
-*.tfvars
 
 # direnv
 .direnv

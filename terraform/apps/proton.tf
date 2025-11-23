@@ -1,11 +1,6 @@
-resource "kubernetes_namespace" "proton_ns" {
+resource "kubernetes_namespace" "proton" {
   metadata {
     name = var.proton_ns
-    labels = {
-      "${var.cloudflare_cert_label.key}" = var.cloudflare_cert_label.value
-      "${var.secret_store_label.key}"    = var.secret_store_label.value
-      "${var.cluster_ca_cert_label.key}" = var.cluster_ca_cert_label.value
-    }
   }
 }
 
@@ -34,12 +29,12 @@ spec:
             - name: cluster-ca-cert
               secret:
                 defaultMode: 420
-                secretName: cluster-ca-cert
+                secretName: kube-root-ca.crt
           extraVolumeMounts:
             - name: cluster-ca-cert
               readOnly: true
-              subPath: ${var.ca_hash}.0
-              mountPath: /etc/ssl/certs/${var.ca_hash}.0
+              subPath: ${local.ca_hash}.0
+              mountPath: /etc/ssl/certs/${local.ca_hash}.0
           ingress:
             className: ${var.ingress_class}
             annotations:
@@ -66,5 +61,5 @@ spec:
       - PrunePropagationPolicy=foreground
   YAML
 
-  depends_on = [kubernetes_namespace.proton_ns]
+  depends_on = [kubernetes_namespace.proton]
 }

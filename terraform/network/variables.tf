@@ -7,6 +7,7 @@ variable "lb_address_pool" {
 variable "lb_ns" {
   description = "Load Balancer Namespace"
   type        = string
+  default     = "metallb"
 }
 
 variable "ingress_class" {
@@ -17,6 +18,7 @@ variable "ingress_class" {
 variable "cert_ns" {
   description = "Certificate Manager Namespace"
   type        = string
+  default     = "cert-manager"
 }
 
 variable "cert_issuer_staging" {
@@ -42,6 +44,7 @@ variable "cluster_secret_store" {
 variable "crowdsec_ns" {
   description = "CrowdSec Namespace"
   type        = string
+  default     = "crowdsec"
 }
 
 variable "k8s_api" {

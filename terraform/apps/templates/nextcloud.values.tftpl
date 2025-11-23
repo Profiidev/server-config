@@ -14,9 +14,6 @@ ingress:
       hosts:
         - "buerger-ts.com"
 
-podLabels:
-  ${postgres_access_label_key}: "${postgres_access_label_value}"
-
 nextcloud:
   host: "buerger-ts.com"
   extraEnv:
@@ -26,7 +23,7 @@ nextcloud:
     - name: cluster-ca-cert
       secret:
         defaultMode: 420
-        secretName: cluster-ca-cert
+        secretName: kube-root-ca.crt
   extraVolumeMounts:
     - name: cluster-ca-cert
       readOnly: true

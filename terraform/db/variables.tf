@@ -1,6 +1,7 @@
 variable "couchdb_ns" {
   description = "The namespace where CouchDB will be deployed"
   type        = string
+  default     = "couchdb"
 }
 
 variable "cert_issuer_prod" {
@@ -16,6 +17,7 @@ variable "cluster_secret_store" {
 variable "rustfs_ns" {
   description = "The namespace where MinIO will be deployed"
   type        = string
+  default     = "rustfs"
 }
 
 variable "storage_class" {
@@ -52,9 +54,11 @@ variable "minio_config" {
 variable "nats_ns" {
   description = "The namespace where NATS will be deployed"
   type        = string
+  default     = "nats"
 }
 
 variable "pg_ns" {
   description = "The namespace where PostgreSQL will be deployed"
   type        = string
+  default     = "postgres"
 }

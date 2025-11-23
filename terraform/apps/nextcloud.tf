@@ -1,11 +1,6 @@
-resource "kubernetes_namespace" "nextcloud_ns" {
+resource "kubernetes_namespace" "nextcloud" {
   metadata {
     name = var.nextcloud_ns
-    labels = {
-      "${var.postgres_access_label.key}" = var.postgres_access_label.value
-      "${var.secret_store_label.key}"    = var.secret_store_label.value
-      "${var.cluster_ca_cert_label.key}" = var.cluster_ca_cert_label.value
-    }
   }
 }
 
@@ -20,12 +15,10 @@ resource "helm_release" "nextcloud" {
     ingress_class               = var.ingress_class
     cert_issuer                 = var.cert_issuer_prod
     storage_class               = var.storage_class
-    postgres_access_label_key   = var.postgres_access_label.key
-    postgres_access_label_value = var.postgres_access_label.value
-    ca_hash                     = var.ca_hash
+    ca_hash                     = local.ca_hash
   })]
 
-  depends_on = [kubernetes_namespace.nextcloud_ns]
+  depends_on = [kubernetes_namespace.nextcloud]
 }
 
 resource "kubectl_manifest" "nextcloud_secret" {
@@ -47,7 +40,7 @@ spec:
       key: apps/nextcloud
   YAML
 
-  depends_on = [kubernetes_namespace.nextcloud_ns]
+  depends_on = [kubernetes_namespace.nextcloud]
 }
 
 resource "kubectl_manifest" "nextcloud_egress" {
@@ -72,5 +65,5 @@ spec:
           - 465
   YAML
 
-  depends_on = [kubernetes_namespace.nextcloud_ns]
+  depends_on = [kubernetes_namespace.nextcloud]
 }
