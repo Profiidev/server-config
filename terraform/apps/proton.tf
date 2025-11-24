@@ -16,7 +16,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://profiidev.github.io/server-config
+    repoURL: https://profiidev.github.io/helm-charts
     chart: proton
     targetRevision: "*"
     helm:
