@@ -1,7 +1,3 @@
-# general
-k8s_api = "192.168.122.94"
-email = "mail@profidev.io"
-
 # network
 cert_issuer_staging = "letsencrypt-staging"
 cert_issuer_prod = "letsencrypt-prod"

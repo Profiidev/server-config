@@ -1,5 +1,15 @@
 # Terraform Configuration
 
+## Required secrets
+
+secrets.tfvars file with the following variables:
+
+```hcl
+k8s_api = "<Kubernetes API server URL>"
+email = "<Email address letsencrypt notifications will be sent to>"
+smtp_password = "<SMTP server password>"
+```
+
 ## Initial deployment order
 
 1. crd: Install Custom Resource Definitions (CRDs) and monitoring tools.
@@ -182,3 +192,13 @@ apps/metrics:
 - loki: Access to loki-admin, loki-chunk, loki-ruler buckets
 - mimir: Access to mimir-alert, mimir-blocks, mimir-ruler buckets
 - tempo: Access to tempo bucket
+
+## Additional setup steps
+
+### Pterodactyl panel
+
+create user:
+
+```bash
+docker exec -it panel php artisan p:user:make
+```

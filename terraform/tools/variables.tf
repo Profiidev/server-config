@@ -21,6 +21,7 @@ variable "cluster_secret_store" {
 variable "k8s_api" {
   description = "The Kubernetes API server address"
   type        = string
+  sensitive   = true
 }
 
 variable "coder_ns" {

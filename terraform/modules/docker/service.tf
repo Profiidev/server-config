@@ -70,31 +70,3 @@ resource "kubernetes_endpoints_v1" "endpoint" {
     }
   }
 }
-
-resource "kubectl_manifest" "networkpolicy" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: ${var.name}
-  namespace: ${var.namespace}
-spec:
-  order: 10
-  selector: app.kubernetes.io/name == '${var.name}'
-  types:
-    - Ingress
-    - Egress
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: kubernetes.io/metadata.name == 'kube-system'
-        selector: app.kubernetes.io/name == 'rke2-ingress-nginx'
-      destination:
-        ports:
-          - ${var.port}
-  egress:
-    - action: Allow
-      protocol: TCP
-  YAML
-}

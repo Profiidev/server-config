@@ -6,4 +6,5 @@ variable "metrics_ns" {
 variable "k8s_api" {
   description = "Kubernetes API server IP address"
   type        = string
+  sensitive   = true
 }

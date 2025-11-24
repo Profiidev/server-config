@@ -1,32 +1,7 @@
-resource "kubernetes_namespace" "docker_ns" {
+resource "kubernetes_namespace" "docker" {
   metadata {
     name = var.docker_ns
-    labels = {
-      "${var.cloudflare_cert_label.key}" = var.cloudflare_cert_label.value
-      "${var.secret_store_label.key}"    = var.secret_store_label.value
-    }
   }
-}
-
-module "seafile" {
-  source = "../modules/docker"
-
-  name                   = "seafile"
-  port                   = 80
-  cert_issuer            = var.cert_issuer_prod
-  cloudflare             = false
-  cloudflare_ca_cert_var = var.cloudflare_ca_cert_var
-  cloudflare_cert_var    = var.cloudflare_cert_var
-  ip                     = "192.168.200.10"
-  domain                 = "cloud.profidev.io"
-  ingress_class          = var.ingress_class
-  namespace              = var.docker_ns
-  https                  = false
-  annotations = {
-    "nginx.ingress.kubernetes.io/proxy-body-size" = "10m"
-  }
-
-  depends_on = [kubernetes_namespace.docker_ns]
 }
 
 module "wings" {
@@ -44,7 +19,7 @@ module "wings" {
   namespace              = var.docker_ns
   https                  = false
 
-  depends_on = [kubernetes_namespace.docker_ns]
+  depends_on = [kubernetes_namespace.docker]
 }
 
 module "panel" {
@@ -62,5 +37,5 @@ module "panel" {
   namespace              = var.docker_ns
   https                  = false
 
-  depends_on = [kubernetes_namespace.docker_ns]
+  depends_on = [kubernetes_namespace.docker]
 }

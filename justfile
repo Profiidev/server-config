@@ -1,6 +1,7 @@
 pwd := source_dir()
 config_path := pwd + "/terraform"
 vars_path := pwd + "/vars.tfvars"
+secret_path := pwd + "/secrets.tfvars"
 kubeconfig_path := pwd + "/kubeconfig"
 nix_path := pwd + "/nix"
 
@@ -10,13 +11,13 @@ init CONFIG:
   terraform -chdir={{config_path}}/{{CONFIG}} init
 
 apply CONFIG:
-  terraform -chdir={{config_path}}/{{CONFIG}} apply -var-file={{vars_path}} -auto-approve
+  terraform -chdir={{config_path}}/{{CONFIG}} apply -var-file={{vars_path}} -var-file={{secret_path}} -auto-approve
 
 destroy CONFIG:
-  terraform -chdir={{config_path}}/{{CONFIG}} destroy -var-file={{vars_path}}
+  terraform -chdir={{config_path}}/{{CONFIG}} destroy -var-file={{vars_path}} -var-file={{secret_path}}
 
 plan CONFIG:
-  terraform -chdir={{config_path}}/{{CONFIG}} plan -var-file={{vars_path}}
+  terraform -chdir={{config_path}}/{{CONFIG}} plan -var-file={{vars_path}} -var-file={{secret_path}}
 
 install CONFIG IP USER="root":
   nix run github:nix-community/nixos-anywhere -- \

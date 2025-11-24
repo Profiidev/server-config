@@ -6,4 +6,5 @@ variable "namespace" {
 variable "k8s_api" {
   description = "The effective Kubernetes API server address"
   type        = string
+  sensitive   = true
 }

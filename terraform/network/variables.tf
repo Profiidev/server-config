@@ -50,4 +50,5 @@ variable "crowdsec_ns" {
 variable "k8s_api" {
   description = "The Kubernetes API server address"
   type        = string
+  sensitive   = true
 }
