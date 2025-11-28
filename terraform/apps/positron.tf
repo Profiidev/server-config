@@ -24,41 +24,26 @@ spec:
       valuesObject:
         secret:
           storeName: ${var.cluster_secret_store}
-        backend:
-          extraVolumes:
-            - name: cluster-ca-cert
-              secret:
-                defaultMode: 420
-                secretName: kube-root-ca.crt
-          extraVolumeMounts:
-            - name: cluster-ca-cert
-              readOnly: true
-              subPath: ${local.ca_hash}.0
-              mountPath: /etc/ssl/certs/${local.ca_hash}.0
-          ingress:
-            className: ${var.ingress_class}
-            annotations:
-              nginx.ingress.kubernetes.io/auth-tls-secret: ${var.positron_ns}/${var.cloudflare_ca_cert_var}
-              nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
-              nginx.ingress.kubernetes.io/rewrite-target: "/$1"
-            tls:
-              - hosts:
-                  - profidev.io
-                  - "*.profidev.io"
-                secretName: ${var.cloudflare_cert_var}
-
-        frontend:
-          ingress:
-            className: ${var.ingress_class}
-            annotations:
-              nginx.ingress.kubernetes.io/auth-tls-secret: ${var.positron_ns}/${var.cloudflare_ca_cert_var}
-              nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
-            tls:
-              - hosts:
-                  - profidev.io
-                  - "*.profidev.io"
-                secretName: ${var.cloudflare_cert_var}
-
+        extraVolumes:
+          - name: cluster-ca-cert
+            secret:
+              defaultMode: 420
+              secretName: kube-root-ca.crt
+        extraVolumeMounts:
+          - name: cluster-ca-cert
+            readOnly: true
+            subPath: ${local.ca_hash}.0
+            mountPath: /etc/ssl/certs/${local.ca_hash}.0
+        ingress:
+          className: ${var.ingress_class}
+          annotations:
+            nginx.ingress.kubernetes.io/auth-tls-secret: ${var.positron_ns}/${var.cloudflare_ca_cert_var}
+            nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+          tls:
+            - hosts:
+                - profidev.io
+                - "*.profidev.io"
+              secretName: ${var.cloudflare_cert_var}
   destination:
     server: https://kubernetes.default.svc
     namespace: ${var.positron_ns}

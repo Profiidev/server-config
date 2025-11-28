@@ -1,7 +1,7 @@
 # network
 cert_issuer_staging = "letsencrypt-staging"
 cert_issuer_prod = "letsencrypt-prod"
-ingress_class = "nginx"
+ingress_class = "traefik"
 cloudflare_ca_cert_var = "cloudflare-ca-cert"
 cloudflare_cert_var = "cloudflare-cert"
 

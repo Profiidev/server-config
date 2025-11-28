@@ -7,7 +7,7 @@ mode:
     enabled: false
 
 ingress:
-  className: "nginx"
+  className: "${ingress_class}"
   hosts:
     - host: "rustfs.profidev.io"
       paths:

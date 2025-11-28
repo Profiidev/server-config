@@ -213,3 +213,5 @@ to migrate:
 nextcloud
 
 longhorn backup
+
+ingress nginx annotations
