@@ -43,5 +43,9 @@
     };
   };
 
+  environment.systemPackages = with pkgs; [
+    eza
+  ];
+
   documentation.man.generateCaches = lib.mkForce false;
 }
