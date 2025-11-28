@@ -18,6 +18,7 @@
     inputs.disko.nixosModules.disko
 
     ./docker.nix
+    ./host-specific.nix
     ./nix.nix
     ./rke2.nix
     ./services.nix
