@@ -58,6 +58,10 @@ server:
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
       cert-manager.io/cluster-issuer: ${cert_issuer}
 
+  service:
+    annotations:
+      traefik.ingress.kubernetes.io/service.serverstransport: ${namespace}@argocd-transport
+
 repoServer:
   metrics:
     enabled: true

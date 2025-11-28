@@ -14,6 +14,7 @@ resource "helm_release" "argocd" {
   values = [templatefile("${path.module}/templates/argocd.values.tftpl", {
     ingress_class = var.ingress_class
     cert_issuer   = var.cert_issuer_prod
+    namespace     = var.argo_ns
   })]
 
   depends_on = [kubernetes_namespace.argo]
@@ -58,6 +59,20 @@ module "external_np_argo" {
   source = "../modules/external-np"
 
   namespace = var.argo_ns
+
+  depends_on = [kubernetes_namespace.argo]
+}
+
+resource "kubectl_manifest" "argocd_transport" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: argocd-transport
+  namespace: ${var.argo_ns}
+spec:
+  insecureSkipVerify: true
+  YAML
 
   depends_on = [kubernetes_namespace.argo]
 }
