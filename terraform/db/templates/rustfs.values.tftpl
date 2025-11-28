@@ -8,6 +8,15 @@ mode:
 
 ingress:
   className: "nginx"
+  hosts:
+    - host: "rustfs.profidev.io"
+      paths:
+        - path: "/"
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: rustfs-tls
+      hosts:
+        - "rustfs.profidev.io"
 
 storageclass:
   name: ${storage_class}

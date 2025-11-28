@@ -46,7 +46,7 @@ spec:
       protocol: TCP
       destination:
         nets:
-          - 194.164.200.60/32
+          - ${var.k8s_api}/32
         ports:
           - 6443
     - action: Allow

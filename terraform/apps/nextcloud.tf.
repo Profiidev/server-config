@@ -12,10 +12,11 @@ resource "helm_release" "nextcloud" {
   namespace  = var.nextcloud_ns
 
   values = [templatefile("${path.module}/templates/nextcloud.values.tftpl", {
-    ingress_class               = var.ingress_class
-    cert_issuer                 = var.cert_issuer_prod
-    storage_class               = var.storage_class
-    ca_hash                     = local.ca_hash
+    ingress_class = var.ingress_class
+    cert_issuer   = var.cert_issuer_prod
+    storage_class = var.storage_class
+    ca_hash       = local.ca_hash
+    k8s_api       = var.k8s_api
   })]
 
   depends_on = [kubernetes_namespace.nextcloud]

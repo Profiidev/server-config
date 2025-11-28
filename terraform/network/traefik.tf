@@ -22,9 +22,6 @@ spec:
       prometheus:
         serviceMonitor:
           enabled: true
-        prometheusRule:
-          enabled: true
-        
   YAML
 }
 

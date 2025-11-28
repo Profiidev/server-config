@@ -56,9 +56,6 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-${each.key}-issuer-account-key
     solvers:
-      - http01:
-          ingress:
-            ingressClassName: ${var.ingress_class}
       - dns01:
           cloudflare:
             apiTokenSecretRef:
@@ -78,7 +75,7 @@ metadata:
   namespace: ${var.cert_ns}
 spec:
   order: 10
-  selector: app.kubernetes.io/name == 'cainjector' || app.kubernetes.io/name == 'cert-manager' || app.kubernetes.io/name == 'webhook'
+  selector: app.kubernetes.io/name == 'cainjector' || app.kubernetes.io/name == 'cert-manager' || app.kubernetes.io/name == 'webhook' || app.kubernetes.io/name == 'startupapicheck'
   types:
     - Egress
   egress:
@@ -86,7 +83,7 @@ spec:
       protocol: TCP
       destination:
         nets:
-          - 194.164.200.60/32
+          - ${var.k8s_api}/32
         ports:
           - 6443
     - action: Allow

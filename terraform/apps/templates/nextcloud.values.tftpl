@@ -51,7 +51,7 @@ nextcloud:
         'trusted_proxies' => array(
           0 => '127.0.0.1',
           1 => '10.0.0.0/8',
-          2 => '194.164.200.60',
+          2 => '${k8s_api}',
           3 => '::1',
         ),
         'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),

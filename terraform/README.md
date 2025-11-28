@@ -15,9 +15,11 @@ smtp_password = "<SMTP server password>"
 1. crd: Install Custom Resource Definitions (CRDs) and monitoring tools.
 2. storage: Set up storage solutions required for the cluster. (add cloudflare cert to vault)
 3. network: Configure networking components and services.
-4. db: Deploy database services. (create buckets and access keys after this)
+4. db: Deploy database services. (create buckets, dbs and access keys after this)
 5. tools: Install auxiliary tools and services.
 6. metrics: Set up monitoring and metrics collection services.
+7. apps: Deploy application services.
+8. docker: Deploy Docker-related services and configurations.
 
 ## Required secrets in Vault
 
@@ -29,7 +31,7 @@ docker/ghcr:
 
 certs/cert-manager:
 
-- cloudflare: <Cloudflare API Token with DNS edit permissions>
+- cloudflare: <Cloudflare API Token with DNS edit permissions> (token requires ip whitelist)
 
 certs/cloudflare:
 
@@ -40,14 +42,6 @@ certs/cloudflare:
 certs/crowdsec:
 
 - API_KEY: <CrowdSec API Key>
-
-db/minio_config:
-
-- config.env: <MinIO configuration environment variables>
-
-db/minio_metrics:
-
-- token: <MinIO metrics token>
 
 db/couchdb:
 
@@ -78,12 +72,6 @@ tools/tailscale:
 
 - client_id: <Tailscale OAuth client ID>
 - client_secret: <Tailscale OAuth client secret>
-
-tools/longhorn:
-
-- AWS_ACCESS_KEY_ID: <MinIO access key for Longhorn>
-- AWS_ENDPOINTS: <MinIO service endpoint for Longhorn>
-- AWS_SECRET_ACCESS_KEY: <MinIO secret key for Longhorn>
 
 tools/longhorn-proxy:
 
@@ -170,10 +158,16 @@ apps/lgtm:
 - GRAFANA_TEMPO_S3_ACCESS_KEY: <MinIO access key for Grafana Tempo>
 - GRAFANA_TEMPO_S3_SECRET_KEY: <MinIO secret key for Grafana Tempo>
 
-apps/metrics:
+apps/alert-bot:
 
 - proxy: <Alertmanager Discord webhook proxy URL>
 - url: <Alertmanager Discord webhook URL>
+
+tools/longhorn:
+
+- AWS_ACCESS_KEY_ID: <MinIO access key for Longhorn>
+- AWS_ENDPOINTS: <MinIO service endpoint for Longhorn>
+- AWS_SECRET_ACCESS_KEY: <MinIO secret key for Longhorn>
 
 ## S3 resources to create
 
@@ -186,12 +180,24 @@ apps/metrics:
 - mimir-blocks
 - mimir-ruler
 - tempo
+- longhorn
+- positron
 
 ### Access keys
 
 - loki: Access to loki-admin, loki-chunk, loki-ruler buckets
 - mimir: Access to mimir-alert, mimir-blocks, mimir-ruler buckets
 - tempo: Access to tempo bucket
+- longhorn: Access to longhorn bucket
+- positron: Access to positron bucket
+
+## Databases to create
+
+- positron
+- nextcloud
+- coder
+- charm
+- auto-clean-bot
 
 ## Additional setup steps
 
@@ -202,3 +208,8 @@ create user:
 ```bash
 docker exec -it panel php artisan p:user:make
 ```
+
+to migrate:
+nextcloud
+
+longhorn backup
