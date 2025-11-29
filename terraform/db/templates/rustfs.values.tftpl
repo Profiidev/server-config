@@ -11,18 +11,7 @@ secret:
     secret_key: "${password}"
 
 ingress:
-  className: "nginx" # must be nginx be cause this chart sucks ass
-  hosts:
-    - host: "rustfs.profidev.io"
-      paths:
-        - path: "/"
-          pathType: ImplementationSpecific
-  tls:
-    - secretName: rustfs-tls
-      hosts:
-        - "rustfs.profidev.io"
-  nginxAnnotations:
-    cert-manager.io/cluster-issuer: "${cert_issuer}"
+  enabled: false
 
 storageclass:
   name: ${storage_class}

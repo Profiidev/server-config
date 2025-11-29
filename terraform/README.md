@@ -215,4 +215,3 @@ vault oidc
 docker
 alerts
 traefik metrics endpoints 80
-rustfs ingress
