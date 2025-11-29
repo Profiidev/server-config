@@ -36,10 +36,6 @@ variable "tailscale_ns" {
   default     = "tailscale"
 }
 
-variable "storage_ns" {
-  description = "The namespace for Storage resources"
-  type        = string
-}
 
 variable "cloudflare_cert_var" {
   description = "The Vault variable name for the Cloudflare certificate"

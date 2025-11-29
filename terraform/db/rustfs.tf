@@ -14,6 +14,8 @@ resource "helm_release" "minio" {
   values = [templatefile("${path.module}/templates/rustfs.values.tftpl", {
     storage_class = var.storage_class
     ingress_class = var.ingress_class
+    cert_issuer   = var.cert_issuer_prod
+    password      = var.rustfs_password
   })]
 
   depends_on = [kubernetes_namespace.rustfs]

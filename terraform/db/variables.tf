@@ -63,3 +63,8 @@ variable "pg_ns" {
   type        = string
   default     = "postgres"
 }
+
+variable "rustfs_password" {
+  description = "Rustfs password"
+  type        = string
+}

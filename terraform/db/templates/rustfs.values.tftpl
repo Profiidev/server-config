@@ -6,8 +6,12 @@ mode:
   distributed:
     enabled: false
 
+secret:
+  rustfs:
+    secret_key: "${password}"
+
 ingress:
-  className: "${ingress_class}"
+  className: "nginx" # must be nginx be cause this chart sucks ass
   hosts:
     - host: "rustfs.profidev.io"
       paths:
@@ -17,6 +21,8 @@ ingress:
     - secretName: rustfs-tls
       hosts:
         - "rustfs.profidev.io"
+  nginxAnnotations:
+    cert-manager.io/cluster-issuer: "${cert_issuer}"
 
 storageclass:
   name: ${storage_class}

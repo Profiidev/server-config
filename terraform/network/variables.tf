@@ -52,3 +52,19 @@ variable "k8s_api" {
   type        = string
   sensitive   = true
 }
+
+variable "storage_ns" {
+  description = "The namespace for Storage resources"
+  type        = string
+}
+
+variable "cloudflare_cert_var" {
+  description = "The Vault variable name for the Cloudflare certificate"
+  type        = string
+}
+
+variable "cloudflare_ca_cert_var" {
+  description = "The Vault variable name for the Cloudflare CA certificate"
+  type        = string
+}
+

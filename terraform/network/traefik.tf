@@ -87,7 +87,6 @@ spec:
   plugin:
     traefik-oidc-auth:
       Secret: "urn:k8s:secret:traefik-proxy:secret"
-      LogLevel: "DEBUG"
       Provider:
         ClientId: "urn:k8s:secret:traefik-proxy:client-id"
         ClientSecret: "urn:k8s:secret:traefik-proxy:client-secret"

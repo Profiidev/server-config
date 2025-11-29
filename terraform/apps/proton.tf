@@ -73,7 +73,6 @@ metadata:
   namespace: ${var.proton_ns}
 spec:
   stripPrefix:
-    forceSlash: false
     prefixes:
       - /backend
   YAML
