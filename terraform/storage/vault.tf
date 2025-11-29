@@ -126,6 +126,12 @@ module "k8s_api_np_vault" {
   depends_on = [kubernetes_namespace.secrets]
 }
 
+module "external_np_vault" {
+  source = "../modules/external-np"
+
+  namespace = var.secrets_ns
+}
+
 resource "kubectl_manifest" "vault_transport" {
   yaml_body = <<YAML
 apiVersion: traefik.io/v1alpha1
