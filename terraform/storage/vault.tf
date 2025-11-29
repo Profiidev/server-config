@@ -126,6 +126,20 @@ module "k8s_api_np_vault" {
   depends_on = [kubernetes_namespace.secrets]
 }
 
+resource "kubectl_manifest" "vault_transport" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: vault-transport
+  namespace: ${var.secrets_ns}
+spec:
+  insecureSkipVerify: true
+  YAML
+
+  depends_on = [kubernetes_namespace.secrets]
+}
+
 /*
 Role
 vault write auth/oidc/role/default \

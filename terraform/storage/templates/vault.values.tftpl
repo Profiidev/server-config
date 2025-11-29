@@ -25,6 +25,10 @@ server:
   auditStorage:
     size: 10Gi
 
+  service:
+    annotations:
+      traefik.ingress.kubernetes.io/service.serverstransport: ${namespace}-vault-transport@kubernetescrd
+
   ingress:
     enabled: true
     annotations:

@@ -40,7 +40,7 @@ spec:
             annotations:
               nginx.ingress.kubernetes.io/auth-tls-secret: ${var.proton_ns}/${var.cloudflare_ca_cert_var}
               nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
-              nginx.ingress.kubernetes.io/rewrite-target: "/$1"
+              traefik.ingress.kubernetes.io/router.middlewares: ${var.proton_ns}-proton@kubernetescrd
             tls:
               - hosts:
                   - profidev.io
@@ -62,4 +62,19 @@ spec:
   YAML
 
   depends_on = [kubernetes_namespace.proton]
+}
+
+resource "kubectl_manifest" "proton_middleware" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: proton
+  namespace: ${var.proton_ns}
+spec:
+  stripPrefix:
+    forceSlash: false
+    prefixes:
+      - /backend
+  YAML
 }

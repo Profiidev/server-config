@@ -60,7 +60,7 @@ server:
 
   service:
     annotations:
-      traefik.ingress.kubernetes.io/service.serverstransport: ${namespace}@argocd-transport
+      traefik.ingress.kubernetes.io/service.serverstransport: ${namespace}-argocd-transport@kubernetescrd
 
 repoServer:
   metrics:
