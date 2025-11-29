@@ -8,7 +8,7 @@ resource "helm_release" "nextcloud" {
   name       = "nextcloud"
   repository = "https://nextcloud.github.io/helm"
   chart      = "nextcloud"
-  version    = "7.0.2"
+  version    = "8.6.0"
   namespace  = var.nextcloud_ns
 
   values = [templatefile("${path.module}/templates/nextcloud.values.tftpl", {
@@ -17,6 +17,7 @@ resource "helm_release" "nextcloud" {
     storage_class = var.storage_class
     ca_hash       = local.ca_hash
     k8s_api       = var.k8s_api
+    namespace     = var.nextcloud_ns
   })]
 
   depends_on = [kubernetes_namespace.nextcloud]
@@ -65,6 +66,22 @@ spec:
           - 587
           - 465
   YAML
+
+  depends_on = [kubernetes_namespace.nextcloud]
+}
+
+resource "kubectl_manifest" "nextcloud_middleware" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: nextcloud
+  namespace: ${var.nextcloud_ns}
+spec:
+  headers:
+    customResponseHeaders:
+      Strict-Transport-Security: "max-age=15552000; includeSubDomains; preload"
+YAML
 
   depends_on = [kubernetes_namespace.nextcloud]
 }

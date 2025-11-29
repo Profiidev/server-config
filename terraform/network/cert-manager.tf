@@ -56,6 +56,9 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-${each.key}-issuer-account-key
     solvers:
+      - http01:
+          ingress:
+            ingressClassName: ${var.ingress_class}
       - dns01:
           cloudflare:
             apiTokenSecretRef:

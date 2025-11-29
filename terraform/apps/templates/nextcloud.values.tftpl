@@ -3,12 +3,10 @@ ingress:
   enabled: true
   annotations:
     cert-manager.io/cluster-issuer: "${cert_issuer}"
-    nginx.ingress.kubernetes.io/affinity: cookie
+    traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
-    nginx.ingress.kubernetes.io/proxy-set-headers: "true"
-    nginx.ingress.kubernetes.io/custom-response-headers: |
-      Strict-Transport-Security: "max-age=15552000; includeSubDomains; preload"
+    traefik.ingress.kubernetes.io/router.middlewares: ${namespace}-nextcloud@kubernetescrd
   tls:
     - secretName: "nextcloud-tls"
       hosts:
@@ -98,8 +96,7 @@ persistence:
   nextcloudData:
     enabled: true
     storageClass: "${storage_class}"
-    size: "10Gi"
-
+    size: "100Gi"
 collabora:
   enabled: true
   collabora:

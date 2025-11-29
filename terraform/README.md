@@ -215,3 +215,11 @@ nextcloud
 longhorn backup
 
 ingress nginx annotations
+
+vault oidc
+proton path
+argocd app process
+docker
+alerts
+argo traefik config
+traefik metrics endpoints 80
