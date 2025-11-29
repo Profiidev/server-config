@@ -33,6 +33,11 @@ variable "argo_ns" {
   type        = string
 }
 
+variable "k8s_api" {
+  description = "The Kubernetes API endpoint"
+  type        = string
+}
+
 data "local_file" "ca_hash" {
   filename = "${path.module}/../storage/certs/ca.hash"
 }

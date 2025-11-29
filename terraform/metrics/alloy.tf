@@ -58,7 +58,7 @@ resource "kubernetes_ingress_v1" "alloy_ingress" {
     namespace = var.metrics_ns
 
     annotations = {
-      "traefik.ingress.kubernetes.io/router.middlewares"   = "${var.metrics_ns}-alloy@kubernetescrd"
+      "traefik.ingress.kubernetes.io/router.middlewares" = "${var.metrics_ns}-alloy@kubernetescrd"
       "traefik.ingress.kubernetes.io/router.tls.options" = "${var.metrics_ns}-alloy-tls-options@kubernetescrd"
     }
   }
@@ -108,3 +108,79 @@ spec:
   YAML
 }
 
+module "k8s_api_np_alloy" {
+  source = "../modules/k8s-api-np"
+
+  namespace = var.metrics_ns
+  k8s_api   = var.k8s_api
+}
+
+resource "kubernetes_service_v1" "kubelet" {
+  metadata {
+    name      = "prometheus-kube-prometheus-kubelet"
+    namespace = "kube-system"
+
+    labels = {
+      "k8s-app"                = "kubelet",
+      "app.kubernetes.io/name" = "kubelet"
+    }
+  }
+
+  spec {
+    internal_traffic_policy = "Cluster"
+    ip_families             = ["IPv4", "IPv6"]
+    ip_family_policy        = "RequireDualStack"
+    port {
+      name        = "https-metrics"
+      port        = 10250
+      protocol    = "TCP"
+      target_port = 10250
+    }
+    port {
+      name        = "http-metrics"
+      port        = 10255
+      protocol    = "TCP"
+      target_port = 10255
+    }
+    port {
+      name        = "cadvisor"
+      port        = 4194
+      protocol    = "TCP"
+      target_port = 4194
+    }
+    type             = "ClusterIP"
+    cluster_ip       = "None"
+    cluster_ips      = ["None"]
+    session_affinity = "None"
+  }
+}
+
+resource "kubectl_manifest" "kubelet_endpoints" {
+  yaml_body = <<YAML
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: prometheus-kube-prometheus-kubelet
+  namespace: kube-system
+  labels:
+    k8s-app: kubelet
+    app.kubernetes.io/name: kubelet
+subsets:
+  - addresses:
+      - ip: ${var.k8s_api}
+        nodeName: node1
+        targetRef:
+          kind: Node
+          name: node1
+    ports:
+      - name: https-metrics
+        port: 10250
+        protocol: TCP
+      - name: http-metrics
+        port: 10255
+        protocol: TCP
+      - name: cadvisor
+        port: 4194
+        protocol: TCP
+  YAML
+}

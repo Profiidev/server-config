@@ -32,6 +32,8 @@ spec:
       prometheus:
         serviceMonitor:
           enabled: true
+        service:
+          enabled: true
 
     ingressRoute:
       dashboard:
@@ -102,4 +104,52 @@ spec:
         - "profile"
         - "email"
   YAML
+}
+
+resource "kubernetes_network_policy_v1" "traefik_metrics" {
+  metadata {
+    name      = "traefik-metrics"
+    namespace = "kube-system"
+  }
+
+  spec {
+    pod_selector {
+      match_labels = {
+        "app.kubernetes.io/name" = "rke2-traefik"
+      }
+    }
+
+    policy_types = ["Ingress"]
+
+    ingress {
+      ports {
+        protocol = "TCP"
+        port     = 9100
+      }
+    }
+  }
+}
+
+resource "kubernetes_network_policy_v1" "coredns_metrics" {
+  metadata {
+    name      = "coredns-metrics"
+    namespace = "kube-system"
+  }
+
+  spec {
+    pod_selector {
+      match_labels = {
+        "k8s-app" = "kube-dns"
+      }
+    }
+
+    policy_types = ["Ingress"]
+
+    ingress {
+      ports {
+        protocol = "TCP"
+        port     = 9153
+      }
+    }
+  }
 }

@@ -209,9 +209,6 @@ create user:
 docker exec -it panel php artisan p:user:make
 ```
 
-longhorn backup
-
 vault oidc
 docker
-alerts
-traefik metrics endpoints 80
+refresh token

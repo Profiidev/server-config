@@ -82,7 +82,6 @@ resource "kubectl_manifest" "alert_configs" {
     "cert-manager",
     "longhorn",
     "postgres",
-    "pgbouncer",
     "coder",
     "tempo",
     "alloy",
