@@ -85,3 +85,18 @@ YAML
 
   depends_on = [kubernetes_namespace.nextcloud]
 }
+
+resource "kubectl_manifest" "nextcloud_middleware_buffering" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: nextcloud-buffering
+  namespace: ${var.nextcloud_ns}
+spec:
+  buffering:
+    maxRequestBodyBytes: 536870912 # 512MB
+YAML
+
+  depends_on = [kubernetes_namespace.nextcloud]
+}

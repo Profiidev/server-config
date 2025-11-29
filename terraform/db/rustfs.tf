@@ -8,7 +8,7 @@ resource "helm_release" "minio" {
   name       = "rustfs"
   repository = "https://charts.rustfs.com"
   chart      = "rustfs"
-  version    = "0.0.69"
+  version    = "0.0.70"
   namespace  = var.rustfs_ns
 
   values = [templatefile("${path.module}/templates/rustfs.values.tftpl", {

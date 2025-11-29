@@ -21,6 +21,7 @@ spec:
         controllerClass: "k8s.io/ingress-nginx"
         watchIngressWithoutClass: false
         ingressClassByName: false
+        allowExternalNameServices: true
 
     metrics:
       prometheus:

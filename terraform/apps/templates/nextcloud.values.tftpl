@@ -6,7 +6,7 @@ ingress:
     traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
-    traefik.ingress.kubernetes.io/router.middlewares: ${namespace}-nextcloud@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: ${namespace}-nextcloud@kubernetescrd, ${namespace}-nextcloud-buffering@kubernetescrd
   tls:
     - secretName: "nextcloud-tls"
       hosts:

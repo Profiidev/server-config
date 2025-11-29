@@ -37,6 +37,7 @@ spec:
               mountPath: /etc/ssl/certs/${local.ca_hash}.0
           ingress:
             className: ${var.ingress_class}
+            path: /backend
             annotations:
               traefik.ingress.kubernetes.io/router.tls.options: ${var.proton_ns}-proton-tls-options@kubernetescrd
               traefik.ingress.kubernetes.io/router.middlewares: ${var.proton_ns}-proton@kubernetescrd

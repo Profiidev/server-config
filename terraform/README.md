@@ -211,11 +211,9 @@ docker exec -it panel php artisan p:user:make
 
 longhorn backup
 
-ingress nginx annotations
-
 vault oidc
-proton path
 argocd app process
 docker
 alerts
 traefik metrics endpoints 80
+alloy ingress

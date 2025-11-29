@@ -16,6 +16,7 @@ resource "helm_release" "couchdb" {
   values = [templatefile("${path.module}/templates/couchdb.values.tftpl", {
     uuid        = random_uuid.couchdb_uuid.result
     cert_issuer = var.cert_issuer_prod
+    namespace   = var.couchdb_ns
   })]
 
   depends_on = [kubernetes_namespace.couchdb]
@@ -39,6 +40,21 @@ spec:
   - extract:
       key: db/couchdb
   YAML
+
+  depends_on = [kubernetes_namespace.couchdb]
+}
+
+resource "kubectl_manifest" "couchdb_middleware" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: couchdb
+  namespace: ${var.couchdb_ns}
+spec:
+  buffering:
+    maxRequestBodyBytes: 4294967296 # 4GB
+YAML
 
   depends_on = [kubernetes_namespace.couchdb]
 }
