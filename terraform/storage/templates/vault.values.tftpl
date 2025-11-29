@@ -32,9 +32,8 @@ server:
   ingress:
     enabled: true
     annotations:
-      nginx.ingress.kubernetes.io/auth-tls-secret: "${namespace}/${cloudflare_ca_cert_var}"
-      nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      traefik.ingress.kubernetes.io/router.tls.options: "${namespace}-vault-tls-options@kubernetescrd"
     tls:
       - secretName: ${cloudflare_cert_var}
         hosts:

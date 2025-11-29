@@ -146,6 +146,23 @@ spec:
   depends_on = [kubernetes_namespace.secrets]
 }
 
+resource "kubectl_manifest" "vault_tls_options" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: vault-tls-options
+  namespace: ${var.secrets_ns}
+spec:
+  clientAuth:
+    clientAuthType: RequireAndVerifyClientCert
+    secretNames:
+      - ${var.cloudflare_ca_cert_var}
+  YAML
+
+  depends_on = [kubernetes_namespace.secrets]
+}
+
 /*
 Role
 vault write auth/oidc/role/default \

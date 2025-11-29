@@ -13,6 +13,20 @@ resource "helm_release" "grafana" {
     cloudflare_cert_var    = var.cloudflare_cert_var
   })]
 }
+resource "kubectl_manifest" "grafana_tls_options" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: grafana-tls-options
+  namespace: ${var.metrics_ns}
+spec:
+  clientAuth:
+    clientAuthType: RequireAndVerifyClientCert
+    secretNames:
+      - ${var.cloudflare_ca_cert_var}
+  YAML
+}
 
 module "dashboards" {
   for_each = toset([

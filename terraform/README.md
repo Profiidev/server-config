@@ -209,9 +209,6 @@ create user:
 docker exec -it panel php artisan p:user:make
 ```
 
-to migrate:
-nextcloud
-
 longhorn backup
 
 ingress nginx annotations
@@ -221,5 +218,4 @@ proton path
 argocd app process
 docker
 alerts
-argo traefik config
 traefik metrics endpoints 80

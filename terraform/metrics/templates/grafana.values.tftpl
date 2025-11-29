@@ -14,8 +14,7 @@ ingress:
   enabled: true
   ingressClassname: ${ingress_class}
   annotations:
-    nginx.ingress.kubernetes.io/auth-tls-secret: ${namespace}/${cloudflare_ca_cert_var}
-    nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+    traefik.ingress.kubernetes.io/router.tls.options: ${namespace}-grafana-tls-options@kubernetescrd
   hosts:
     - grafana.profidev.io
   tls:

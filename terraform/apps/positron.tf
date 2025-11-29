@@ -37,8 +37,7 @@ spec:
         ingress:
           className: ${var.ingress_class}
           annotations:
-            nginx.ingress.kubernetes.io/auth-tls-secret: ${var.positron_ns}/${var.cloudflare_ca_cert_var}
-            nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+            traefik.ingress.kubernetes.io/router.tls.options: ${var.positron_ns}-positron-tls-options@kubernetescrd
           tls:
             - hosts:
                 - profidev.io
@@ -57,6 +56,22 @@ spec:
       - Validate=true
       - PruneLast=true
       - PrunePropagationPolicy=foreground
+  YAML
+
+  depends_on = [kubernetes_namespace.positron]
+}
+resource "kubectl_manifest" "positron_tls_options" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: positron-tls-options
+  namespace: ${var.positron_ns}
+spec:
+  clientAuth:
+    clientAuthType: RequireAndVerifyClientCert
+    secretNames:
+      - ${var.cloudflare_ca_cert_var}
   YAML
 
   depends_on = [kubernetes_namespace.positron]

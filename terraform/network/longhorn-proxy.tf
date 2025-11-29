@@ -47,9 +47,8 @@ resource "kubernetes_ingress_v1" "longhorn_ingress" {
     namespace = var.storage_ns
 
     annotations = {
-      "nginx.ingress.kubernetes.io/auth-tls-secret"        = "${var.storage_ns}/${var.cloudflare_ca_cert_var}"
-      "nginx.ingress.kubernetes.io/auth-tls-verify-client" = "on"
       "traefik.ingress.kubernetes.io/router.middlewares"   = "${var.storage_ns}-longhorn@kubernetescrd"
+      "traefik.ingress.kubernetes.io/router.tls.options" = "${var.storage_ns}-longhorn-tls-options@kubernetescrd"
     }
   }
 
@@ -81,4 +80,19 @@ resource "kubernetes_ingress_v1" "longhorn_ingress" {
       ]
     }
   }
+}
+
+resource "kubectl_manifest" "longhorn_tls_options" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: longhorn-tls-options
+  namespace: ${var.storage_ns}
+spec:
+  clientAuth:
+    clientAuthType: RequireAndVerifyClientCert
+    secretNames:
+      - ${var.cloudflare_ca_cert_var}
+  YAML
 }

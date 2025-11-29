@@ -3,8 +3,7 @@ resource "kubernetes_ingress_v1" "ingress" {
     name      = var.name
     namespace = var.namespace
     annotations = merge(var.cloudflare ? {
-      "nginx.ingress.kubernetes.io/auth-tls-secret"        = "${var.namespace}/${var.cloudflare_ca_cert_var}",
-      "nginx.ingress.kubernetes.io/auth-tls-verify-client" = "on"
+      "traefik.ingress.kubernetes.io/router.tls.options" = "${var.namespace}-${var.name}-tls-options@kubernetescrd"
       } : {
       "cert-manager.io/cluster-issuer" = var.cert_issuer
       }, var.https ? {
@@ -37,6 +36,21 @@ resource "kubernetes_ingress_v1" "ingress" {
       secret_name = var.cloudflare ? var.cloudflare_cert_var : "${var.name}-tls"
     }
   }
+}
+
+resource "kubectl_manifest" "tls_options" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: ${var.name}-tls-options
+  namespace: ${var.namespace}
+spec:
+  clientAuth:
+    clientAuthType: RequireAndVerifyClientCert
+    secretNames:
+      - ${var.cloudflare_ca_cert_var}
+  YAML
 }
 
 resource "kubernetes_service_v1" "service" {

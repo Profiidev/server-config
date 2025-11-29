@@ -38,8 +38,7 @@ spec:
           ingress:
             className: ${var.ingress_class}
             annotations:
-              nginx.ingress.kubernetes.io/auth-tls-secret: ${var.proton_ns}/${var.cloudflare_ca_cert_var}
-              nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+              traefik.ingress.kubernetes.io/router.tls.options: ${var.proton_ns}-proton-tls-options@kubernetescrd
               traefik.ingress.kubernetes.io/router.middlewares: ${var.proton_ns}-proton@kubernetescrd
             tls:
               - hosts:
@@ -76,4 +75,21 @@ spec:
     prefixes:
       - /backend
   YAML
+}
+
+resource "kubectl_manifest" "proton_tls_options" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: proton-tls-options
+  namespace: ${var.proton_ns}
+spec:
+  clientAuth:
+    clientAuthType: RequireAndVerifyClientCert
+    secretNames:
+      - ${var.cloudflare_ca_cert_var}
+  YAML
+
+  depends_on = [kubernetes_namespace.proton]
 }
