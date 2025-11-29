@@ -27,3 +27,11 @@ ingress:
 storageclass:
   name: ${storage_class}
   size: 20Gi
+
+containerSecurityContext:
+  readOnlyRootFilesystem: false
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1024Mi

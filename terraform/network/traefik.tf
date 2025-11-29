@@ -16,12 +16,17 @@ spec:
           version: "v0.17.0"
 
     providers:
+      kubernetesCRD:
+        allowCrossNamespace: true
+        allowExternalNameServices: true
       kubernetesIngressNginx:
         ingressClass: ${var.ingress_class}
         controllerClass: "k8s.io/ingress-nginx"
         watchIngressWithoutClass: false
         ingressClassByName: false
         allowExternalNameServices: true
+        publishedService:
+          enabled: true
 
     metrics:
       prometheus:
