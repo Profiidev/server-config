@@ -249,8 +249,3 @@ name: Vault Admin
 type: external
 policies: admin
 add alias: Vault Admin
-
-docker
-refresh token
-positron restore
-close port

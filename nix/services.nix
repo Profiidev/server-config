@@ -10,7 +10,7 @@
   networking.firewall = {
     enable = true;
     allowedTCPPorts = [
-      6443 # Kubernetes API server
+      #6443 # Kubernetes API server
       593
       594
     ];
