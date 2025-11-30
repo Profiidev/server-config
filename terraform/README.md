@@ -151,6 +151,11 @@ apps/proton:
 - CORS_ORIGIN: <CORS allowed origins>
 - RUST_LOG: <Rust logging configuration>
 
+db/rustfs:
+
+- RUSTFS_ACCESS_KEY: <RustFS access key>
+- RUSTFS_SECRET_KEY: <RustFS secret key>
+
 ### After DB setup (step 4)
 
 apps/lgtm:
@@ -245,6 +250,4 @@ add alias: Vault Admin
 
 docker
 refresh token
-rustfs custom
-
-look at everything
+positron restore
