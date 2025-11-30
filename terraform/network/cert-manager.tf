@@ -1,9 +1,6 @@
-resource "kubernetes_namespace" "cert_ns" {
+resource "kubernetes_namespace" "cert" {
   metadata {
     name = var.cert_ns
-    labels = {
-      "${var.secret_store_label.key}" = var.secret_store_label.value
-    }
   }
 }
 
@@ -11,17 +8,17 @@ resource "helm_release" "cert_manager" {
   name       = "cert-manager"
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
-  version    = "1.17.0"
+  version    = "1.19.1"
   namespace  = var.cert_ns
 
   values = [templatefile("${path.module}/templates/cert-manager.values.tftpl", {})]
 
-  depends_on = [kubernetes_namespace.cert_ns]
+  depends_on = [kubernetes_namespace.cert]
 }
 
 resource "kubectl_manifest" "cert_manager_secrets" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: cert-manager
@@ -38,7 +35,7 @@ spec:
       key: certs/cert-manager
   YAML
 
-  depends_on = [kubernetes_namespace.cert_ns]
+  depends_on = [kubernetes_namespace.cert]
 }
 
 resource "kubectl_manifest" "cert_issuer" {
@@ -81,7 +78,7 @@ metadata:
   namespace: ${var.cert_ns}
 spec:
   order: 10
-  selector: app.kubernetes.io/name == 'cainjector' || app.kubernetes.io/name == 'cert-manager' || app.kubernetes.io/name == 'webhook'
+  selector: app.kubernetes.io/name == 'cainjector' || app.kubernetes.io/name == 'cert-manager' || app.kubernetes.io/name == 'webhook' || app.kubernetes.io/name == 'startupapicheck'
   types:
     - Egress
   egress:
@@ -89,7 +86,7 @@ spec:
       protocol: TCP
       destination:
         nets:
-          - 194.164.200.60/32
+          - ${var.k8s_api}/32
         ports:
           - 6443
     - action: Allow
@@ -105,7 +102,7 @@ spec:
           - 53
   YAML
 
-  depends_on = [kubernetes_namespace.cert_ns]
+  depends_on = [kubernetes_namespace.cert]
 }
 
 resource "kubernetes_network_policy_v1" "cert_ns" {
@@ -125,4 +122,26 @@ resource "kubernetes_network_policy_v1" "cert_ns" {
     }
     policy_types = ["Ingress"]
   }
+
+  depends_on = [kubernetes_namespace.cert]
+}
+
+resource "kubectl_manifest" "acme_allow" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: GlobalNetworkPolicy
+metadata:
+  name: acme-allow
+spec:
+  order: 90
+  selector: acme.cert-manager.io/http01-solver == 'true'
+  types:
+  - Ingress
+  ingress:
+    - action: Allow
+      protocol: TCP
+      source:
+        namespaceSelector: kubernetes.io/metadata.name == 'kube-system'
+        selector: app.kubernetes.io/name == 'rke2-ingress-nginx'
+  YAML
 }

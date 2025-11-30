@@ -1,10 +1,15 @@
 resource "kubernetes_namespace" "crowdsec" {
   metadata {
     name = var.crowdsec_ns
-    labels = {
-      "${var.secret_store_label.key}" = var.secret_store_label.value
-    }
   }
+}
+
+resource "random_password" "bouncer_key" {
+  min_lower   = 1
+  min_upper   = 1
+  min_numeric = 1
+  min_special = 1
+  length      = 32
 }
 
 resource "helm_release" "crowdsec" {
@@ -16,6 +21,7 @@ resource "helm_release" "crowdsec" {
 
   values = [
     templatefile("${path.module}/templates/crowdsec.values.tftpl", {
+      traefik_bouncer_key = random_password.bouncer_key.result
     })
   ]
 
@@ -24,7 +30,7 @@ resource "helm_release" "crowdsec" {
 
 resource "kubectl_manifest" "crowdsec_secrets" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: crowdsec
@@ -44,68 +50,10 @@ spec:
   depends_on = [kubernetes_namespace.crowdsec]
 }
 
-resource "kubectl_manifest" "crowdsec_egress" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: crowdsec-egress
-  namespace: ${var.crowdsec_ns}
-spec:
-  order: 10
-  namespaceSelector: kubernetes.io/metadata.name == '${var.crowdsec_ns}'
-  selector: k8s-app == 'crowdsec'
-  types:
-    - Egress
-    - Ingress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        notNets:
-          - 10.0.0.0/8
-          - 172.16.0.0/12
-          - 192.168.0.0/16
-        ports:
-          - 443
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: kubernetes.io/metadata.name == 'kube-system'
-        selector: app.kubernetes.io/name == 'rke2-ingress-nginx'
-      destination:
-        ports:
-          - 8080
-  YAML
+module "external_np_crowdsec" {
+  source = "../modules/external-np"
 
-  depends_on = [kubernetes_namespace.crowdsec]
-}
-
-resource "kubectl_manifest" "crowdsec_ns" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: crowdsec-namespace
-  namespace: ${var.crowdsec_ns}
-spec:
-  order: 10
-  namespaceSelector: kubernetes.io/metadata.name == '${var.crowdsec_ns}'
-  types:
-    - Egress
-    - Ingress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.crowdsec_ns}'
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.crowdsec_ns}'
-  YAML
+  namespace = var.crowdsec_ns
 
   depends_on = [kubernetes_namespace.crowdsec]
 }

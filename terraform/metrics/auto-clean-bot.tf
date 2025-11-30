@@ -1,0 +1,47 @@
+resource "kubectl_manifest" "auto_clean_bot_app" {
+  yaml_body = <<YAML
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: auto-clean-bot
+  namespace: ${var.argo_ns}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://profiidev.github.io/helm-charts
+    chart: auto-clean-bot
+    targetRevision: "*"
+    helm:
+      releaseName: auto-clean-bot
+      valuesObject:
+        secret:
+          storeName: ${var.cluster_secret_store}
+        bot:
+          extraVolumes:
+            - name: cluster-ca-cert
+              secret:
+                defaultMode: 420
+                secretName: kube-root-ca.crt
+          extraVolumeMounts:
+            - name: cluster-ca-cert
+              readOnly: true
+              subPath: ${local.ca_hash}.0
+              mountPath: /etc/ssl/certs/${local.ca_hash}.0
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ${var.metrics_ns}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=false
+      - Validate=true
+      - PruneLast=true
+      - PrunePropagationPolicy=foreground
+  YAML
+}

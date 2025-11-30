@@ -17,6 +17,13 @@ configs:
         - openid
         - profile
         - email
+    resource.customizations: |
+      networking.k8s.io/Ingress:
+        health.lua: |
+          hs = {}
+          hs.status = "Healthy"
+          hs.message = "Probably just fine"
+          return hs
 
   rbac:
     policy.csv: |
@@ -57,6 +64,10 @@ server:
     annotations:
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
       cert-manager.io/cluster-issuer: ${cert_issuer}
+
+  service:
+    annotations:
+      traefik.ingress.kubernetes.io/service.serverstransport: ${namespace}-argocd-transport@kubernetescrd
 
 repoServer:
   metrics:

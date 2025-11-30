@@ -2,11 +2,11 @@ container_runtime: containerd
 agent:
   acquisition:
     - namespace: kube-system
-      podName: rke2-ingress-nginx-controller-*
-      program: nginx
+      podName: rke2-traefik-*
+      program: traefik
   env:
     - name: COLLECTIONS
-      value: "crowdsecurity/nginx"
+      value: "crowdsecurity/traefik"
   metrics:
     serviceMonitor:
       enabled: true
@@ -24,6 +24,8 @@ lapi:
       value: "own-cluster"
     - name: ENROLL_TAGS
       value: "k8s linux rke2"
+    - name: BOUNCER_KEY_traefik
+      value: ${traefik_bouncer_key}
   metrics:
     serviceMonitor:
       enabled: true

@@ -1,0 +1,6 @@
+*.csr
+*.key
+*.conf
+*.crt
+*.json
+*.hash

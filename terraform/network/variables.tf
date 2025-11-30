@@ -1,45 +1,70 @@
 variable "lb_address_pool" {
-  type    = string
-  default = "lb-pool"
+  description = "Load Balancer Address Pool Name"
+  type        = string
+  default     = "lb-pool"
 }
 
 variable "lb_ns" {
   description = "Load Balancer Namespace"
   type        = string
-  default     = "metallb-system"
+  default     = "metallb"
 }
 
 variable "ingress_class" {
-  type = string
+  description = "Ingress Class"
+  type        = string
 }
 
 variable "cert_ns" {
-  type = string
+  description = "Certificate Manager Namespace"
+  type        = string
+  default     = "cert-manager"
 }
 
 variable "cert_issuer_staging" {
-  type = string
+  description = "Certificate Issuer for Staging"
+  type        = string
 }
 
 variable "cert_issuer_prod" {
-  type = string
+  description = "Certificate Issuer for Production"
+  type        = string
 }
 
 variable "email" {
-  type = string
+  description = "Email for Let's Encrypt"
+  type        = string
 }
 
 variable "cluster_secret_store" {
-  type = string
-}
-
-variable "secret_store_label" {
-  type = object({
-    key   = string
-    value = string
-  })
+  description = "Cluster Secret Store"
+  type        = string
 }
 
 variable "crowdsec_ns" {
-  type    = string
+  description = "CrowdSec Namespace"
+  type        = string
+  default     = "crowdsec"
 }
+
+variable "k8s_api" {
+  description = "The Kubernetes API server address"
+  type        = string
+  sensitive   = true
+}
+
+variable "storage_ns" {
+  description = "The namespace for Storage resources"
+  type        = string
+}
+
+variable "cloudflare_cert_var" {
+  description = "The Vault variable name for the Cloudflare certificate"
+  type        = string
+}
+
+variable "cloudflare_ca_cert_var" {
+  description = "The Vault variable name for the Cloudflare CA certificate"
+  type        = string
+}
+

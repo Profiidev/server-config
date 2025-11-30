@@ -1,4 +1,4 @@
-resource "kubernetes_namespace" "lb_ns" {
+resource "kubernetes_namespace" "lb" {
   metadata {
     name = var.lb_ns
   }
@@ -8,10 +8,10 @@ resource "helm_release" "metallb" {
   name       = "metallb"
   repository = "https://metallb.github.io/metallb"
   chart      = "metallb"
-  version    = "0.14.9"
+  version    = "0.15.2"
   namespace  = var.lb_ns
 
-  depends_on = [kubernetes_namespace.lb_ns]
+  depends_on = [kubernetes_namespace.lb]
 }
 
 resource "kubectl_manifest" "lb_ip_pool" {
@@ -23,7 +23,7 @@ metadata:
   namespace: ${var.lb_ns}
 spec:
   addresses:
-    - "194.164.200.60/32"
+    - "${var.k8s_api}/32"
   YAML
 
   depends_on = [helm_release.metallb]
@@ -44,37 +44,19 @@ spec:
   depends_on = [helm_release.metallb]
 }
 
-resource "kubectl_manifest" "metallb_k8s_api_egress" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: k8s-api-egress
-  namespace: ${var.lb_ns}
-spec:
-  order: 10
-  types:
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        nets:
-          - 194.164.200.60/32
-          - 172.17.0.0/16
-        ports:
-          - 6443
-          - 9001
-    - action: Allow
-      protocol: TCP
-      destination:
-        notNets:
-          - 10.0.0.0/8
-          - 172.16.0.0/12
-          - 192.168.0.0/16
-        ports:
-          - 443
-  YAML
+module "k8s_api_np_metallb" {
+  source = "../modules/k8s-api-np"
 
-  depends_on = [kubernetes_namespace.lb_ns]
+  namespace = var.lb_ns
+  k8s_api   = var.k8s_api
+
+  depends_on = [kubernetes_namespace.lb]
+}
+
+module "egress_np_metallb" {
+  source = "../modules/external-np"
+
+  namespace = var.lb_ns
+
+  depends_on = [kubernetes_namespace.lb]
 }

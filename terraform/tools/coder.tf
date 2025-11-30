@@ -1,10 +1,6 @@
-resource "kubernetes_namespace" "coder_ns" {
+resource "kubernetes_namespace" "coder" {
   metadata {
     name = var.coder_ns
-    labels = {
-      "${var.secret_store_label.key}"    = var.secret_store_label.value
-      "${var.postgres_access_label.key}" = var.postgres_access_label.value
-    }
   }
 }
 
@@ -12,39 +8,15 @@ resource "helm_release" "coder" {
   name       = "coder"
   repository = "https://helm.coder.com/v2"
   chart      = "coder"
-  version    = "2.21.0"
+  version    = "2.28.3"
   namespace  = var.coder_ns
 
   values = [templatefile("${path.module}/templates/coder.values.tftpl", {
-    ingress_class               = var.ingress_class
-    cert_issuer                 = var.cert_issuer_prod
-    postgres_access_label       = var.postgres_access_label.key
-    postgres_access_label_value = var.postgres_access_label.value
+    ingress_class = var.ingress_class
+    cert_issuer   = var.cert_issuer_prod
   })]
 
-  depends_on = [kubernetes_namespace.coder_ns]
-}
-
-resource "kubectl_manifest" "coder_secrets" {
-  yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
-metadata:
-  name: coder
-  namespace: ${var.coder_ns}
-spec:
-  refreshInterval: 15s
-  secretStoreRef:
-    name: ${var.cluster_secret_store}
-    kind: ClusterSecretStore
-  target:
-    name: coder
-  dataFrom:
-  - extract:
-      key: apps/coder
-  YAML
-
-  depends_on = [kubernetes_namespace.coder_ns]
+  depends_on = [kubernetes_namespace.coder]
 }
 
 resource "kubectl_manifest" "coder_egress" {
@@ -74,7 +46,7 @@ spec:
       protocol: TCP
       destination:
         nets:
-          - 194.164.200.60/32
+          - ${var.k8s_api}/32
         ports:
           - 6443
     - action: Allow
@@ -84,7 +56,7 @@ spec:
           - 19302
   YAML
 
-  depends_on = [kubernetes_namespace.positron_ns]
+  depends_on = [kubernetes_namespace.coder]
 }
 
 resource "kubectl_manifest" "coder_workspace_egress" {
@@ -106,35 +78,29 @@ spec:
       protocol: UDP
   YAML
 
-  depends_on = [kubernetes_namespace.positron_ns]
+  depends_on = [kubernetes_namespace.coder]
 }
 
-resource "kubectl_manifest" "coder_ns" {
+resource "kubectl_manifest" "coder_secrets" {
   yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
 metadata:
-  name: coder-namespace
+  name: coder
   namespace: ${var.coder_ns}
 spec:
-  order: 10
-  namespaceSelector: kubernetes.io/metadata.name == '${var.coder_ns}'
-  types:
-    - Ingress
-    - Egress
-  egress:
-    - action: Allow
-      protocol: TCP
-      destination:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.coder_ns}'
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: kubernetes.io/metadata.name == '${var.coder_ns}'
+  refreshInterval: 15s
+  secretStoreRef:
+    name: ${var.cluster_secret_store}
+    kind: ClusterSecretStore
+  target:
+    name: coder
+  dataFrom:
+  - extract:
+      key: tools/coder
   YAML
 
-  depends_on = [kubernetes_namespace.coder_ns]
+  depends_on = [kubernetes_namespace.coder]
 }
 
 resource "kubectl_manifest" "coder_pod_monitor" {
@@ -154,5 +120,5 @@ spec:
       scrapeTimeout: 10s
   YAML
 
-  depends_on = [kubernetes_namespace.coder_ns]
+  depends_on = [kubernetes_namespace.coder]
 }

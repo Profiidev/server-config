@@ -1,0 +1,31 @@
+serviceMonitor:
+  enabled: true
+  interval: 60s
+
+tempo:
+  storage:
+    trace:
+      backend: s3
+      s3:
+        bucket: tempo
+        endpoint: "$${GRAFANA_S3_ENDPOINT}"
+        access_key: "$${GRAFANA_TEMPO_S3_ACCESS_KEY}"
+        secret_key: "$${GRAFANA_TEMPO_S3_SECRET_KEY}"
+        insecure: true
+        forcepathstyle: true
+  extraVolumeMounts:
+    - mountPath: /etc/ssl/certs/${ca_hash}.0
+      subPath: ${ca_hash}.0
+      name: cluster-ca-cert
+      readOnly: true
+  extraArgs:
+    "config.expand-env": "true"
+  extraEnvFrom:
+    - secretRef:
+        name: lgtm
+
+extraVolumes:
+  - name: cluster-ca-cert
+    secret:
+      defaultMode: 420
+      secretName: kube-root-ca.crt

@@ -3,8 +3,7 @@ resource "kubernetes_ingress_v1" "ingress" {
     name      = var.name
     namespace = var.namespace
     annotations = merge(var.cloudflare ? {
-      "nginx.ingress.kubernetes.io/auth-tls-secret"        = "${var.namespace}/${var.cloudflare_ca_cert_var}",
-      "nginx.ingress.kubernetes.io/auth-tls-verify-client" = "on"
+      "traefik.ingress.kubernetes.io/router.tls.options" = "${var.namespace}-${var.name}-tls-options@kubernetescrd"
       } : {
       "cert-manager.io/cluster-issuer" = var.cert_issuer
       }, var.https ? {
@@ -39,6 +38,23 @@ resource "kubernetes_ingress_v1" "ingress" {
   }
 }
 
+resource "kubectl_manifest" "tls_options" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: ${var.name}-tls-options
+  namespace: ${var.namespace}
+spec:
+  clientAuth:
+    clientAuthType: RequireAndVerifyClientCert
+    secretNames:
+      - ${var.cloudflare_ca_cert_var}
+  YAML
+
+  count = var.cloudflare ? 1 : 0
+}
+
 resource "kubernetes_service_v1" "service" {
   metadata {
     name      = var.name
@@ -69,32 +85,4 @@ resource "kubernetes_endpoints_v1" "endpoint" {
       port = var.port
     }
   }
-}
-
-resource "kubectl_manifest" "networkpolicy" {
-  yaml_body = <<YAML
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: ${var.name}
-  namespace: ${var.namespace}
-spec:
-  order: 10
-  selector: app.kubernetes.io/name == '${var.name}'
-  types:
-    - Ingress
-    - Egress
-  ingress:
-    - action: Allow
-      protocol: TCP
-      source:
-        namespaceSelector: kubernetes.io/metadata.name == 'kube-system'
-        selector: app.kubernetes.io/name == 'rke2-ingress-nginx'
-      destination:
-        ports:
-          - ${var.port}
-  egress:
-    - action: Allow
-      protocol: TCP
-  YAML
 }

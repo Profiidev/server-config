@@ -1,131 +1,73 @@
-variable "storage_class" {
-  type = string
-}
-
-variable "minio_ns" {
-  type = string
-}
-
-variable "everest_ns" {
-  type = string
-}
-
-variable "everest_system_ns" {
-  type = string
-}
-
-variable "everest_olm_ns" {
-  type    = string
-  default = "everest-olm"
-}
-
-variable "everest_monitoring_ns" {
-  type    = string
-  default = "everest-monitoring"
-}
-
 variable "storage_ns" {
-  type = string
+  description = "The namespace for storage resources"
+  type        = string
 }
 
-variable "nats_ns" {
-  type = string
+variable "secrets_ns" {
+  description = "The namespace for secrets management resources"
+  type        = string
 }
 
-variable "ingress_class" {
-  type = string
-}
-
-variable "cloudflare_cert_label" {
-  type = object({
-    key   = string
-    value = string
-  })
-}
-
-variable "cloudflare_ca_cert_var" {
-  type = string
-}
-
-variable "cloudflare_cert_var" {
-  type = string
-}
-
-variable "secret_store_label" {
-  type = object({
-    key   = string
-    value = string
-  })
-}
-
-variable "minio_config" {
-  type    = string
-  default = "minio-config"
-}
-
-variable "minio_config_label" {
-  type = object({
-    key   = string
-    value = string
-  })
-  default = {
-    key   = "minio-admin"
-    value = "true"
-  }
+variable "k8s_api" {
+  description = "The Kubernetes API server address"
+  type        = string
+  sensitive   = true
 }
 
 variable "cluster_secret_store" {
-  type = string
+  description = "The name of the cluster secret store"
+  type        = string
 }
 
-variable "minio_access_label" {
-  type = object({
-    key   = string
-    value = string
-  })
+variable "cloudflare_ca_cert_var" {
+  description = "The name of the Cloudflare CA certificate secret"
+  type        = string
 }
 
-variable "postgres_access_label" {
-  type = object({
-    key   = string
-    value = string
-  })
+variable "cloudflare_cert_var" {
+  description = "The name of the Cloudflare certificate secret"
+  type        = string
 }
 
-variable "nats_access_label" {
-  type = object({
-    key   = string
-    value = string
-  })
+variable "ghcr_profidev" {
+  description = "The name of the GHCR Profidev secret"
+  type        = string
 }
 
-variable "oidc_access_label" {
-  type = object({
-    key   = string
-    value = string
-  })
+
+
+variable "vault_svc" {
+  description = "The name of the Vault service"
+  type        = string
+  default     = "vault"
 }
 
-variable "positron_ns" {
-  type = string
+variable "vault_cert_var" {
+  description = "The name of the Vault TLS secret"
+  type        = string
+  default     = "vault-server-tls"
 }
 
-variable "cert_issuer_prod" {
-  type = string
+variable "vault_cert_prop" {
+  description = "The property name for the Vault TLS certificate"
+  type        = string
+  default     = "vault"
 }
 
-variable "metrics_ns" {
-  type = string
+variable "vault_csr" {
+  description = "The name of the Vault CSR"
+  type        = string
+  default     = "vault-csr"
 }
 
-variable "couchdb_ns" {
-  type    = string
-  default = "couchdb"
+variable "vault_global_token" {
+  description = "The name of the Vault global token secret"
+  type        = string
+  default     = "vault-global-token"
 }
 
-variable "cluster_ca_cert_label" {
-  type = object({
-    key   = string
-    value = string
-  })
+variable "vault_global_token_prop" {
+  description = "The property name for the Vault global token"
+  type        = string
+  default     = "token"
 }

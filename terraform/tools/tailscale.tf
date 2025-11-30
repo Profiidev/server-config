@@ -1,9 +1,6 @@
-resource "kubernetes_namespace" "tailscale_ns" {
+resource "kubernetes_namespace" "tailscale" {
   metadata {
     name = var.tailscale_ns
-    labels = {
-      "${var.secret_store_label.key}" = var.secret_store_label.value
-    }
   }
 }
 
@@ -11,18 +8,18 @@ resource "helm_release" "tailscale" {
   name       = "tailscale"
   repository = "https://pkgs.tailscale.com/helmcharts"
   chart      = "tailscale-operator"
-  version    = "1.84.2"
+  version    = "1.90.8"
   namespace  = var.tailscale_ns
 
   values = [templatefile("${path.module}/templates/tailscale.values.tftpl", {
   })]
 
-  depends_on = [kubernetes_namespace.tailscale_ns]
+  depends_on = [kubernetes_namespace.tailscale]
 }
 
 resource "kubectl_manifest" "tailscale_secrets" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: operator-oauth
@@ -36,10 +33,10 @@ spec:
     name: operator-oauth
   dataFrom:
   - extract:
-      key: apps/tailscale
+      key: tools/tailscale
   YAML
 
-  depends_on = [kubernetes_namespace.tailscale_ns]
+  depends_on = [kubernetes_namespace.tailscale]
 }
 
 resource "kubectl_manifest" "tailscale_egress" {
@@ -61,7 +58,7 @@ spec:
     - action: Allow
   YAML
 
-  depends_on = [kubernetes_namespace.tailscale_ns]
+  depends_on = [kubernetes_namespace.tailscale]
 }
 
 resource "kubectl_manifest" "tailscale_ingress" {
@@ -80,7 +77,7 @@ spec:
         namespaceSelector: kubernetes.io/metadata.name == '${var.tailscale_ns}'
   YAML
 
-  depends_on = [kubernetes_namespace.tailscale_ns]
+  depends_on = [kubernetes_namespace.tailscale]
 }
 
 resource "kubectl_manifest" "tailscale_crd" {
@@ -99,5 +96,5 @@ spec:
       - "10.43.0.0/16"
   YAML
 
-  depends_on = [kubernetes_namespace.tailscale_ns, helm_release.tailscale]
+  depends_on = [kubernetes_namespace.tailscale, helm_release.tailscale]
 }

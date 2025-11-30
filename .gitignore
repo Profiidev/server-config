@@ -2,5 +2,9 @@
 *.tfstate
 *.tfstate.backup
 *.lock.info
-*.tfvars
-target/
+secrets.tfvars
+
+# direnv
+.direnv
+
+/kubeconfig

@@ -1,0 +1,122 @@
+global:
+  dnsService: "rke2-coredns-rke2-coredns"
+  extraVolumes:
+    - name: cluster-ca-cert
+      secret:
+        defaultMode: 420
+        secretName: kube-root-ca.crt
+  extraVolumeMounts:
+    - mountPath: /etc/ssl/certs/${ca_hash}.0
+      subPath: ${ca_hash}.0
+      name: cluster-ca-cert
+      readOnly: true
+  extraArgs:
+    - "-config.expand-env=true"
+  extraEnvFrom:
+    - secretRef:
+        name: lgtm
+
+mimir:
+  structuredConfig:
+    common:
+      storage:
+        backend: s3
+        s3:
+          endpoint: "$${GRAFANA_S3_ENDPOINT}"
+          access_key_id: "$${GRAFANA_MIMIR_S3_ACCESS_KEY}"
+          secret_access_key: "$${GRAFANA_MIMIR_S3_SECRET_KEY}"
+          insecure: true
+
+    alertmanager:
+      sharding_ring:
+        replication_factor: 2
+      external_url: "http://mimir-nginx.${namespace}.svc.cluster.local/alertmanager"
+
+    ingester:
+      ring:
+        replication_factor: 1
+
+    store_gateway:
+      sharding_ring:
+        replication_factor: 1
+
+    blocks_storage:
+      s3:
+        bucket_name: mimir-blocks
+    alertmanager_storage:
+      s3:
+        bucket_name: mimir-alert
+    ruler_storage:
+      s3:
+        bucket_name: mimir-ruler
+    memberlist:
+      cluster_label: "mimir"
+      cluster_label_verification_disabled: true
+    limits:
+      max_global_series_per_user: 0
+      ruler_max_rules_per_rule_group: 0
+      ruler_max_rule_groups_per_tenant: 0
+
+alertmanager:
+  fallbackConfig: |
+    route:
+      group_by: ["job"]
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: "discord"
+      routes:
+        - receiver: "null"
+          matchers:
+            - 'alertname =~ "Watchdog|InfoInhibitor"'
+    receivers:
+      - name: "null"
+      - name: "discord"
+        webhook_configs:
+          - url_file: "/etc/alertmanager/config/discord_webhook_url"
+            send_resolved: true
+  extraVolumes:
+    - name: discord-webhook
+      secret:
+        defaultMode: 420
+        secretName: discord-webhook
+  extraVolumeMounts:
+    - mountPath: /etc/alertmanager/config/discord_webhook_url
+      subPath: proxy
+      name: discord-webhook
+      readOnly: true
+
+ingester:
+  replicas: 1
+  zoneAwareReplication:
+    enabled: false
+  persistentVolume:
+    size: 50Gi
+
+store_gateway:
+  zoneAwareReplication:
+    enabled: false
+
+querier:
+  replicas: 1
+
+query_scheduler:
+  replicas: 1
+
+compactor:
+  persistentVolume:
+    size: 50Gi
+
+minio:
+  enabled: false
+
+metaMonitoring:
+  dashboards:
+    enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 60s
+  prometheusRule:
+    enabled: true
+    mimirAlerts: true
+    mimirRules: true
