@@ -51,6 +51,8 @@ spec:
     secretNames:
       - ${var.cloudflare_ca_cert_var}
   YAML
+
+  count = var.cloudflare ? 1 : 0
 }
 
 resource "kubernetes_service_v1" "service" {

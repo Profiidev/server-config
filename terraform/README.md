@@ -219,6 +219,8 @@ create user:
 docker exec -it panel php artisan p:user:make
 ```
 
+copy ssl ca bundles to /mnt/ssl for wings because of symlinks
+
 ### Vault OIDC setup
 
 role
@@ -251,3 +253,4 @@ add alias: Vault Admin
 docker
 refresh token
 positron restore
+close port

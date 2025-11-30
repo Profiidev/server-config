@@ -21,7 +21,6 @@ resource "docker_container" "wings" {
   ports {
     external = 594
     internal = 443
-    ip       = "127.0.0.1"
   }
   tty = true
   env = [
@@ -55,7 +54,7 @@ resource "docker_container" "wings" {
     container_path = "/tmp/pterodactyl/"
   }
   volumes {
-    host_path      = "/etc/ssl/certs"
+    host_path      = "/mnt/ssl"
     container_path = "/etc/ssl/certs"
     read_only      = true
   }

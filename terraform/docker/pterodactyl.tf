@@ -75,7 +75,6 @@ resource "docker_container" "pt_panel" {
   ports {
     internal = 80
     external = 593
-    ip       = "127.0.0.1"
   }
   volumes {
     volume_name    = docker_volume.pt_var.name
