@@ -77,7 +77,19 @@ tools/longhorn-proxy:
 
 - client-id: <OAuth2 Proxy client ID for Longhorn>
 - client-secret: <OAuth2 Proxy client secret for Longhorn>
-- cookie-secret: <OAuth2 Proxy cookie secret for Longhorn>
+- secret: <OAuth2 Proxy cookie secret for Longhorn>
+
+apps/alloy-proxy:
+
+- client-id: <OAuth2 Proxy client ID for Alloy>
+- client-secret: <OAuth2 Proxy client secret for Alloy>
+- secret: <OAuth2 Proxy cookie secret for Alloy>
+
+tools/traefik-proxy:
+
+- client-id: <OAuth2 Proxy client ID for Traefik>
+- client-secret: <OAuth2 Proxy client secret for Traefik>
+- secret: <OAuth2 Proxy cookie secret for Traefik>
 
 tools/auto-clean-bot:
 
@@ -138,13 +150,6 @@ apps/proton:
 
 - CORS_ORIGIN: <CORS allowed origins>
 - RUST_LOG: <Rust logging configuration>
-
-apps/charm:
-
-- CORS_ORIGIN: <CORS allowed origins>
-- DB_URL: <Database connection URL>
-- RUST_LOG: <Rust logging configuration>
-- DB_LOGGING: <Database logging level>
 
 ### After DB setup (step 4)
 
@@ -209,6 +214,37 @@ create user:
 docker exec -it panel php artisan p:user:make
 ```
 
-vault oidc
+### Vault OIDC setup
+
+role
+
+```bash
+vault write auth/oidc/role/default \
+  bound_audiences="7f25d29e-ff95-4161-b95a-ad5d918bd85f" \
+  allowed_redirect_uris="https://vault.profidev.io/ui/vault/auth/oidc/oidc/callback" \
+  user_claim="email" \
+  groups_claim="groups" \
+  token_policies="default" \
+  oidc_scopes="email,profile"
+```
+
+policy
+
+```hcl
+path "*" {
+    capabilities = ["create", "read", "update", "delete", "list"]
+}
+```
+
+group:
+
+name: Vault Admin
+type: external
+policies: admin
+add alias: Vault Admin
+
 docker
 refresh token
+rustfs custom
+
+look at everything

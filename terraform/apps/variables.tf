@@ -10,12 +10,6 @@ variable "positron_ns" {
   default     = "positron"
 }
 
-variable "charm_ns" {
-  description = "The namespace where Charm is deployed"
-  type        = string
-  default     = "charm"
-}
-
 variable "nextcloud_ns" {
   description = "The namespace where Nextcloud is deployed"
   type        = string

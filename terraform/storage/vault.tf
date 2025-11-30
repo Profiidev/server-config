@@ -162,14 +162,3 @@ spec:
 
   depends_on = [kubernetes_namespace.secrets]
 }
-
-/*
-Role
-vault write auth/oidc/role/default \
-  bound_audiences="7f25d29e-ff95-4161-b95a-ad5d918bd85f" \
-  allowed_redirect_uris="https://vault.profidev.io/ui/vault/auth/oidc/oidc/callback" \
-  user_claim="email" \
-  groups_claim="groups" \
-  token_policies="default" \
-  oidc_scopes="email,profile"
-*/

@@ -27,3 +27,25 @@ module "k8s_api_np_longhorn" {
 
   depends_on = [kubernetes_namespace.storage]
 }
+
+resource "kubectl_manifest" "longhorn_secret" {
+  yaml_body = <<YAML
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: longhorn-secret
+  namespace: ${var.storage_ns}
+spec:
+  refreshInterval: 15s
+  secretStoreRef:
+    name: ${var.cluster_secret_store}
+    kind: ClusterSecretStore
+  target:
+    name: longhorn-secret
+  dataFrom:
+  - extract:
+      key: tools/longhorn
+  YAML
+
+  depends_on = [kubernetes_namespace.storage]
+}

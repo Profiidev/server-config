@@ -67,6 +67,23 @@ deploymentMode: SingleBinary
 gateway:
   enabled: false
 
+singleBinary:
+  extraVolumes:
+    - name: cluster-ca-cert
+      secret:
+        defaultMode: 420
+        secretName: kube-root-ca.crt
+  extraVolumeMounts:
+    - mountPath: /etc/ssl/certs/${ca_hash}.0
+      subPath: ${ca_hash}.0
+      name: cluster-ca-cert
+      readOnly: true
+  extraArgs:
+    - "-config.expand-env=true"
+  extraEnvFrom:
+    - secretRef:
+        name: lgtm
+
 resultsCache:
   resources:
     requests:
