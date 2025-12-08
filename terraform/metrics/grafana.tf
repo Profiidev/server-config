@@ -30,8 +30,6 @@ spec:
 
 module "dashboards" {
   for_each = toset([
-    "ingress-nginx",
-    "ingress-nginx-request",
     "cert-manager",
     "external-secrets",
     "vault", "longhorn",
@@ -69,6 +67,7 @@ module "dashboards" {
     "argo-cd-application",
     "argo-cd-notifications",
     "argo-cd-operational",
+    "traefik",
   ])
 
   source = "../modules/grafana-dashboard"
