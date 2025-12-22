@@ -7,7 +7,7 @@ metadata:
   name: longhorn-proxy
   namespace: ${var.storage_ns}
 spec:
-  refreshInterval: 15s
+  refreshInterval: 5m
   secretStoreRef:
     name: ${var.cluster_secret_store}
     kind: ClusterSecretStore
@@ -47,7 +47,7 @@ resource "kubernetes_ingress_v1" "longhorn_ingress" {
     namespace = var.storage_ns
 
     annotations = {
-      "traefik.ingress.kubernetes.io/router.middlewares"   = "${var.storage_ns}-longhorn@kubernetescrd"
+      "traefik.ingress.kubernetes.io/router.middlewares" = "${var.storage_ns}-longhorn@kubernetescrd"
       "traefik.ingress.kubernetes.io/router.tls.options" = "${var.storage_ns}-longhorn-tls-options@kubernetescrd"
     }
   }

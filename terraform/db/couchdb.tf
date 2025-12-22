@@ -30,7 +30,7 @@ metadata:
   name: couchdb
   namespace: ${var.couchdb_ns}
 spec:
-  refreshInterval: 15s
+  refreshInterval: 5m
   secretStoreRef:
     name: ${var.cluster_secret_store}
     kind: ClusterSecretStore
