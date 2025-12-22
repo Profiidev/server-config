@@ -18,7 +18,7 @@ metadata:
   name: alloy-proxy
   namespace: ${var.metrics_ns}
 spec:
-  refreshInterval: 15s
+  refreshInterval: 5m
   secretStoreRef:
     name: ${var.cluster_secret_store}
     kind: ClusterSecretStore

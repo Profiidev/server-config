@@ -8,7 +8,7 @@ spec:
   externalSecretName: ${var.ghcr_profidev}
   namespaceSelectors:
     - matchLabels: {}
-  refreshTime: 15s
+  refreshTime: 5m
   externalSecretSpec:
     target:
       name: ${var.ghcr_profidev}
@@ -16,7 +16,7 @@ spec:
         type: kubernetes.io/dockerconfigjson
         data:
           .dockerconfigjson: '{"auths":{"https://ghcr.io":{"username":"profiidev","password":"{{ .token }}","auth":"{{ printf "profiidev:%s" .token | b64enc }}"}}}'
-    refreshInterval: 15s
+    refreshInterval: 5m
     secretStoreRef:
       name: ${var.cluster_secret_store}
       kind: ClusterSecretStore

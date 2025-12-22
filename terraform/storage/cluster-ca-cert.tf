@@ -17,11 +17,11 @@ spec:
   externalSecretName: cluster-ca-cert
   namespaceSelectors:
     - matchLabels: {}
-  refreshTime: 15s
+  refreshTime: 5m
   externalSecretSpec:
     target:
       name: kube-root-ca.crt
-    refreshInterval: 15s
+    refreshInterval: 5m
     secretStoreRef:
       name: ${var.cluster_secret_store}
       kind: ClusterSecretStore
