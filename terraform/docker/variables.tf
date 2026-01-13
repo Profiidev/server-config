@@ -10,6 +10,12 @@ variable "smtp_password" {
   sensitive   = true
 }
 
+variable "email" {
+  description = "Administrator email address"
+  type        = string
+  sensitive   = true
+}
+
 variable "cert_issuer_prod" {
   description = "Certificate issuer for production environment"
   type        = string
