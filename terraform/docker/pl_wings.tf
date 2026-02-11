@@ -24,7 +24,7 @@ resource "docker_container" "pl_wings" {
   }
   tty = true
   env = [
-    "TZ=UTC",
+    "TZ=Europe/Berlin",
     "WINGS_UID=988",
     "WINGS_GID=988",
     "WINGS_USERNAME=pelican",

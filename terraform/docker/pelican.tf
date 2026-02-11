@@ -66,6 +66,7 @@ resource "docker_container" "pl_panel" {
   env = [
     "XDG_DATA_HOME=/pelican-data",
     "APP_URL=https://pelican.profidev.io",
+    "APP_TIMEZONE=Europe/Berlin",
     "ADMIN_EMAIL=${var.email}",
   ]
 
