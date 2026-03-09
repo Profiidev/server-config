@@ -336,3 +336,9 @@ resource "kubernetes_ingress_v1" "rustfs" {
   }
   depends_on = [kubernetes_namespace.rustfs]
 }
+
+module "external_np_rustfs" {
+  source = "../modules/external-np"
+
+  namespace = var.rustfs_ns
+}
