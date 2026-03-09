@@ -127,7 +127,7 @@ resource "kubernetes_deployment_v1" "rustfs" {
               name = "rustfs-secret"
             }
           }
-          image             = "rustfs/rustfs:1.0.0-alpha.70"
+          image             = "rustfs/rustfs:1.0.0-alpha.85"
           image_pull_policy = "IfNotPresent"
           liveness_probe {
             failure_threshold = 3
@@ -335,4 +335,10 @@ resource "kubernetes_ingress_v1" "rustfs" {
     }
   }
   depends_on = [kubernetes_namespace.rustfs]
+}
+
+module "external_np_rustfs" {
+  source = "../modules/external-np"
+
+  namespace = var.rustfs_ns
 }
