@@ -25,8 +25,22 @@ let
     etcd-expose-metrics: true
     kube-controller-manager-arg:
       - bind-address=0.0.0.0
+      - leader-elect-lease-duration=60s
+      - leader-elect-renew-deadline=40s
+      - leader-elect-retry-period=15s
     kube-scheduler-arg:
       - bind-address=0.0.0.0
+      - leader-elect-lease-duration=60s
+      - leader-elect-renew-deadline=40s
+      - leader-elect-retry-period=15s
+    etcd-arg:
+      - leader-elect-lease-duration=60s
+      - leader-elect-renew-deadline=40s
+      - leader-elect-retry-period=15s
+    kube-cloud-controller-manager-arg:
+      - leader-elect-lease-duration=60s
+      - leader-elect-renew-deadline=40s
+      - leader-elect-retry-period=15s
     kube-proxy-arg:
       - metrics-bind-address=0.0.0.0
     kubelet-arg:
