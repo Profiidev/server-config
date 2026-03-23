@@ -67,4 +67,10 @@ in
     description = "etcd user";
     group = "etcd";
   };
+
+  systemd.tmpfiles.rules = [
+    # Type | Path                                  | Mode | UID | GID | Age | Argument
+    "d      /var/lib/rancher/rke2/server/db/etcd  0700   root  root  -     -"
+    "h      /var/lib/rancher/rke2/server/db/etcd  -      -     -     -     +C"
+  ];
 }
