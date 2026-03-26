@@ -61,6 +61,12 @@ variable "k8s_api" {
   type        = string
 }
 
+variable "hibernation_ns" {
+  description = "The namespace where hibernation resources will be deployed"
+  type        = string
+  default     = "hibernation"
+}
+
 data "local_file" "ca_hash" {
   filename = "${path.module}/../storage/certs/ca.hash"
 }

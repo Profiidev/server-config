@@ -1,15 +1,15 @@
-resource "kubernetes_namespace" "positron" {
+resource "kubernetes_namespace" "hibernation" {
   metadata {
-    name = var.positron_ns
+    name = var.hibernation_ns
   }
 }
 
-resource "kubectl_manifest" "positron_app" {
+resource "kubectl_manifest" "hibernation_cache" {
   yaml_body = <<YAML
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: positron
+  name: hibernation
   namespace: ${var.argo_ns}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -17,10 +17,10 @@ spec:
   project: default
   source:
     repoURL: https://profiidev.github.io/helm-charts
-    chart: positron
+    chart: hibernation
     targetRevision: "*"
     helm:
-      releaseName: positron
+      releaseName: hibernation
       valuesObject:
         secret:
           storeName: ${var.cluster_secret_store}
@@ -36,8 +36,9 @@ spec:
             mountPath: /etc/ssl/certs/${local.ca_hash}.0
         ingress:
           className: ${var.ingress_class}
+          host: cache.profidev.io
           annotations:
-            traefik.ingress.kubernetes.io/router.tls.options: ${var.positron_ns}-positron-tls-options@kubernetescrd
+            traefik.ingress.kubernetes.io/router.tls.options: ${var.hibernation_ns}-hibernation-tls-options@kubernetescrd
           tls:
             - hosts:
                 - profidev.io
@@ -45,7 +46,7 @@ spec:
               secretName: ${var.cloudflare_cert_var}
   destination:
     server: https://kubernetes.default.svc
-    namespace: ${var.positron_ns}
+    namespace: ${var.hibernation_ns}
   syncPolicy:
     automated:
       prune: true
@@ -58,15 +59,15 @@ spec:
       - PrunePropagationPolicy=foreground
   YAML
 
-  depends_on = [kubernetes_namespace.positron]
+  depends_on = [kubernetes_namespace.hibernation]
 }
-resource "kubectl_manifest" "positron_tls_options" {
+resource "kubectl_manifest" "hibernation_tls_options" {
   yaml_body = <<YAML
 apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
-  name: positron-tls-options
-  namespace: ${var.positron_ns}
+  name: hibernation-tls-options
+  namespace: ${var.hibernation_ns}
 spec:
   clientAuth:
     clientAuthType: RequireAndVerifyClientCert
@@ -74,19 +75,19 @@ spec:
       - ${var.cloudflare_ca_cert_var}
   YAML
 
-  depends_on = [kubernetes_namespace.positron]
+  depends_on = [kubernetes_namespace.hibernation]
 }
 
-resource "kubectl_manifest" "positron_egress" {
+resource "kubectl_manifest" "hibernation_egress" {
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1
 kind: GlobalNetworkPolicy
 metadata:
-  name: positron-egress
+  name: hibernation-egress
 spec:
   order: 10
-  namespaceSelector: kubernetes.io/metadata.name == '${var.positron_ns}'
-  selector: app == 'positron'
+  namespaceSelector: kubernetes.io/metadata.name == '${var.hibernation_ns}'
+  selector: app == 'hibernation'
   types:
     - Egress
   egress:
@@ -99,5 +100,5 @@ spec:
           - 465
   YAML
 
-  depends_on = [kubernetes_namespace.positron]
+  depends_on = [kubernetes_namespace.hibernation]
 }
