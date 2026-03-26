@@ -38,12 +38,11 @@ spec:
           className: ${var.ingress_class}
           host: cache.profidev.io
           annotations:
-            traefik.ingress.kubernetes.io/router.tls.options: ${var.hibernation_ns}-hibernation-tls-options@kubernetescrd
+            cert-manager.io/cluster-issuer: ${var.cert_issuer_prod}
           tls:
             - hosts:
-                - profidev.io
-                - "*.profidev.io"
-              secretName: ${var.cloudflare_cert_var}
+                - cache.profidev.io
+              secretName: cache-tls
   destination:
     server: https://kubernetes.default.svc
     namespace: ${var.hibernation_ns}
@@ -57,22 +56,6 @@ spec:
       - Validate=true
       - PruneLast=true
       - PrunePropagationPolicy=foreground
-  YAML
-
-  depends_on = [kubernetes_namespace.hibernation]
-}
-resource "kubectl_manifest" "hibernation_tls_options" {
-  yaml_body = <<YAML
-apiVersion: traefik.io/v1alpha1
-kind: TLSOption
-metadata:
-  name: hibernation-tls-options
-  namespace: ${var.hibernation_ns}
-spec:
-  clientAuth:
-    clientAuthType: RequireAndVerifyClientCert
-    secretNames:
-      - ${var.cloudflare_ca_cert_var}
   YAML
 
   depends_on = [kubernetes_namespace.hibernation]
