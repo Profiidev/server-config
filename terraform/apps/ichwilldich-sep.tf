@@ -17,7 +17,7 @@ spec:
   project: default
   source:
     repoURL: https://profiidev.github.io/helm-charts
-    chart: ichwilldich_sep
+    chart: ichwilldich-sep
     targetRevision: "*"
     helm:
       releaseName: ichwilldich-sep
