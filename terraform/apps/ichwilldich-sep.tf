@@ -1,15 +1,15 @@
-resource "kubernetes_namespace" "hibernation" {
+resource "kubernetes_namespace" "ichwilldich_sep" {
   metadata {
-    name = var.hibernation_ns
+    name = var.ichwilldich_sep_ns
   }
 }
 
-resource "kubectl_manifest" "hibernation_cache" {
+resource "kubectl_manifest" "ichwilldich_sep_app" {
   yaml_body = <<YAML
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: hibernation
+  name: ichwilldich-sep
   namespace: ${var.argo_ns}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -17,10 +17,10 @@ spec:
   project: default
   source:
     repoURL: https://profiidev.github.io/helm-charts
-    chart: hibernation
+    chart: ichwilldich_sep
     targetRevision: "*"
     helm:
-      releaseName: hibernation
+      releaseName: ichwilldich-sep
       valuesObject:
         secret:
           storeName: ${var.cluster_secret_store}
@@ -36,17 +36,17 @@ spec:
             mountPath: /etc/ssl/certs/${local.ca_hash}.0
         ingress:
           className: ${var.ingress_class}
-          host: cache.profidev.io
+          host: sap.profidev.io
           annotations:
-            cert-manager.io/cluster-issuer: ${var.cert_issuer_prod}
+            traefik.ingress.kubernetes.io/router.tls.options: ${var.ichwilldich_sep_ns}-ichwilldich-sep-tls-options@kubernetescrd
           tls:
             - hosts:
-                - "cache.profidev.io"
-                - "*.cache.profidev.io"
-              secretName: cache-tls
+                - profidev.io
+                - "*.profidev.io"
+              secretName: ${var.cloudflare_cert_var}
   destination:
     server: https://kubernetes.default.svc
-    namespace: ${var.hibernation_ns}
+    namespace: ${var.ichwilldich_sep_ns}
   syncPolicy:
     automated:
       prune: true
@@ -59,19 +59,35 @@ spec:
       - PrunePropagationPolicy=foreground
   YAML
 
-  depends_on = [kubernetes_namespace.hibernation]
+  depends_on = [kubernetes_namespace.ichwilldich_sep]
+}
+resource "kubectl_manifest" "ichwilldich_sep_tls_options" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: ichwilldich-sep-tls-options
+  namespace: ${var.ichwilldich_sep_ns}
+spec:
+  clientAuth:
+    clientAuthType: RequireAndVerifyClientCert
+    secretNames:
+      - ${var.cloudflare_ca_cert_var}
+  YAML
+
+  depends_on = [kubernetes_namespace.ichwilldich_sep]
 }
 
-resource "kubectl_manifest" "hibernation_egress" {
+resource "kubectl_manifest" "ichwilldich_sep_egress" {
   yaml_body = <<YAML
 apiVersion: crd.projectcalico.org/v1
 kind: GlobalNetworkPolicy
 metadata:
-  name: hibernation-egress
+  name: ichwilldich-sep-egress
 spec:
   order: 10
-  namespaceSelector: kubernetes.io/metadata.name == '${var.hibernation_ns}'
-  selector: app == 'hibernation'
+  namespaceSelector: kubernetes.io/metadata.name == '${var.ichwilldich_sep_ns}'
+  selector: app == 'ichwilldich-sep'
   types:
     - Egress
   egress:
@@ -84,5 +100,5 @@ spec:
           - 465
   YAML
 
-  depends_on = [kubernetes_namespace.hibernation]
+  depends_on = [kubernetes_namespace.ichwilldich_sep]
 }
