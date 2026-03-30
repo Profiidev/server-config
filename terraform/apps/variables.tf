@@ -67,6 +67,12 @@ variable "hibernation_ns" {
   default     = "hibernation"
 }
 
+variable "ichwilldich_sep_ns" {
+  description = "The namespace where ichwilldich sep resources will be deployed"
+  type        = string
+  default     = "ichwilldich-sep"
+}
+
 data "local_file" "ca_hash" {
   filename = "${path.module}/../storage/certs/ca.hash"
 }
