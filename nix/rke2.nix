@@ -71,6 +71,8 @@ in
   systemd.tmpfiles.rules = [
     # Type | Path                                  | Mode | UID | GID | Age | Argument
     "d      /var/lib/rancher/rke2/server/db/etcd  0700   root  root  -     -"
+    "d      /var/lib/longhorn                     0700   root  root  -     -"
     "h      /var/lib/rancher/rke2/server/db/etcd  -      -     -     -     +C"
+    "h      /var/lib/longhorn                     0700   root  root  -     +C"
   ];
 }
