@@ -36,6 +36,11 @@ variable "tailscale_ns" {
   default     = "tailscale"
 }
 
+variable "radar_ns" {
+  description = "The namespace for Radar resources"
+  type        = string
+  default     = "radar"
+}
 
 variable "cloudflare_cert_var" {
   description = "The Vault variable name for the Cloudflare certificate"
