@@ -20,17 +20,23 @@ resource "helm_release" "radar" {
   depends_on = [kubernetes_namespace.radar]
 }
 
+resource "kubernetes_namespace" "caretta" {
+  metadata {
+    name = var.caretta_ns
+  }
+}
+
 resource "helm_release" "caretta" {
   name       = "caretta"
   repository = "https://helm.groundcover.com"
   chart      = "caretta"
   version    = "0.0.16"
-  namespace  = var.radar_ns
+  namespace  = var.caretta_ns
 
   values = [templatefile("${path.module}/templates/caretta.values.tftpl", {
   })]
 
-  depends_on = [kubernetes_namespace.radar]
+  depends_on = [kubernetes_namespace.caretta]
 }
 
 module "k8s_api_np_radar" {
@@ -60,6 +66,8 @@ spec:
   - extract:
       key: tools/radar
   YAML
+  
+  depends_on = [kubernetes_namespace.radar]
 }
 
 resource "kubectl_manifest" "radar_oidc_middleware" {
@@ -82,6 +90,8 @@ spec:
         - "profile"
         - "email"
   YAML
+  
+  depends_on = [kubernetes_namespace.radar]
 }
 
 resource "kubectl_manifest" "radar_tls_options" {
@@ -97,12 +107,14 @@ spec:
     secretNames:
       - ${var.cloudflare_ca_cert_var}
   YAML
+  
+  depends_on = [kubernetes_namespace.radar]
 }
 
 resource "kubernetes_service" "caretta" {
   metadata {
     name      = "caretta"
-    namespace = var.radar_ns
+    namespace = var.caretta_ns
     labels = {
       app = "caretta"
       "app.kubernetes.io/name"    = "caretta"
@@ -126,6 +138,8 @@ resource "kubernetes_service" "caretta" {
 
     type = "ClusterIP"
   }
+  
+  depends_on = [kubernetes_namespace.caretta]
 }
 
 resource "kubectl_manifest" "caretta_service_monitor" {
@@ -149,5 +163,5 @@ spec:
       interval: 60s
   YAML
 
-  depends_on = [kubernetes_namespace.radar]
+  depends_on = [kubernetes_namespace.caretta]
 }

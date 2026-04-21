@@ -42,6 +42,12 @@ variable "radar_ns" {
   default     = "radar"
 }
 
+variable "caretta_ns" {
+  description = "The namespace for Caretta resources"
+  type        = string
+  default     = "caretta"
+}
+
 variable "cloudflare_cert_var" {
   description = "The Vault variable name for the Cloudflare certificate"
   type        = string
