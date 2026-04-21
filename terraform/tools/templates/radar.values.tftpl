@@ -1,0 +1,35 @@
+rbac:
+  secrets: true
+  podExec: true
+  portForward: true
+  crdGroups:
+    all: true
+
+ingress:
+  enabled: true
+  className: ${ingress_class}
+  hosts:
+    - host: radar.profidev.io
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: ${cloudflare_cert_var}
+      hosts:
+        - "*.profidev.io"
+        - profidev.io
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: ${namespace}-radar@kubernetescrd
+    traefik.ingress.kubernetes.io/router.tls.options: ${namespace}-radar-tls-options@kubernetescrd
+
+timeline:
+  storage: sqlite
+
+mcp:
+  enabled: false
+
+traffic:
+  prometheusUrl: http://mimir-nginx.metrics.svc/prometheus
+
+persistence:
+  enabled: true

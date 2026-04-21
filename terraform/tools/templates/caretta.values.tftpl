@@ -1,0 +1,16 @@
+victoria-metrics-single:
+  enabled: false
+
+resources:
+  limits:
+    memory: 800Mi
+  requests:
+    memory: 250Mi
+
+grafana:
+  enabled: false
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
