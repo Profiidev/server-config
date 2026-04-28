@@ -49,3 +49,37 @@ spec:
 
   depends_on = [kubernetes_namespace.storage]
 }
+
+resource "kubectl_manifest" "longhorn_db_backup" {
+  yaml_body = <<YAML
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: longhorn-db-backup
+  namespace: ${var.storage_ns}
+spec:
+  cron: "0 0 * * *"
+  task: backup-force-create
+  retain: 3
+  concurrency: 1
+YAML
+
+  depends_on = [kubernetes_namespace.storage]
+}
+
+resource "kubectl_manifest" "longhorn_fs_trim" {
+  yaml_body = <<YAML
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: longhorn-fs-trim
+  namespace: ${var.storage_ns}
+spec:
+  cron: "0 0 * * *"
+  task: filesystem-trim
+  retain: 0
+  concurrency: 1
+  groups:
+  - default
+YAML
+}
