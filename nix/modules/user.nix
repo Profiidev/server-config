@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ ... }:
 
 {
   users = {
@@ -7,12 +7,8 @@
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBz5wvNTdRAnh/sHFKlanUuY0n6+fLeNkzjtNTRguBdI profidev@laptop"
       ];
-
-      shell = lib.mkForce pkgs.fish;
     };
 
     mutableUsers = false;
   };
-
-
 }

@@ -21,13 +21,26 @@ plan CONFIG:
   terraform -chdir={{config_path}}/{{CONFIG}} plan -var-file={{vars_path}} -var-file={{secret_path}}
 
 install CONFIG IP USER="root":
+  #!/usr/bin/env bash
+  set -euo pipefail
+  
   nix run github:nix-community/nixos-anywhere -- \
     --flake {{nix_path}}#{{CONFIG}}-minimal \
     --target-host {{USER}}@{{IP}} \
     --build-on remote
 
+  just update-keys {{CONFIG}} {{IP}} {{USER}}
+
+  # only if config is node1 (master)
+  if [[ "{{CONFIG}}" == "node1" ]]; then
+    just update-token {{CONFIG}} {{IP}} {{USER}}
+  fi
+
+  just rebuild {{CONFIG}} {{IP}} {{USER}}
+
+update-token CONFIG IP USER="root":
   echo "Installation complete. Fetching RKE2 token..."
-  TOKEN=$(ssh {{USER}}@{{IP}} "sudo cat /var/lib/rancher/rke2/server/node-token")
+  export TOKEN=$(ssh {{USER}}@{{IP}} "sudo cat /var/lib/rancher/rke2/server/node-token")
   echo "RKE2 token: $TOKEN"
 
   echo "Run 'just set-rke2-token $TOKEN' to set the token in sops.yaml"
@@ -35,7 +48,30 @@ install CONFIG IP USER="root":
   git add {{secrets_path}}
   git commit -m "chore: update RKE2 token"
 
-  just rebuild {{CONFIG}} {{IP}} {{USER}}
+update-keys CONFIG IP USER="root":
+  #!/usr/bin/env bash
+  set -euo pipefail
+  
+  echo "Generating age key based on ssh host key..."
+  export SSH_KEY=$(ssh-keyscan -p 22 -t ssh-ed25519 {{IP}} 2>&1 | grep ssh-ed25519 | cut -f2- -d" ")
+  export AGE_KEY=$(echo $SSH_KEY | ssh-to-age)
+  echo "Generated age key: $AGE_KEY"
+
+  echo "Updating .sops.yaml with the new age key..."
+  if [[ -n $(yq ".keys.hosts[] | select(anchor == \"{{CONFIG}}\")" "{{nix_path}}/.sops.yaml") ]]; then
+    yq -i "(.keys.hosts[] | select(anchor == \"{{CONFIG}}\")) = \"$AGE_KEY\"" "{{nix_path}}/.sops.yaml"
+  else
+    yq -i ".keys.hosts += [\"$AGE_KEY\"] | .keys.hosts[-1] anchor = \"{{CONFIG}}\"" "{{nix_path}}/.sops.yaml"
+  fi
+
+  if [[ -z $(yq ".creation_rules[0].key_groups[0].age[] | select(alias == \"{{CONFIG}}\")" "{{nix_path}}/.sops.yaml") ]]; then
+    yq -i '.creation_rules[0].key_groups[0].age += ["'"{{CONFIG}}"'"]' {{nix_path}}/.sops.yaml
+    yq -i '.creation_rules[0].key_groups[0].age[-1] alias = "'"{{CONFIG}}"'"' {{nix_path}}/.sops.yaml
+  fi
+  echo "Updated .sops.yaml with new age key for host {{IP}}"
+
+  git add {{nix_path}}/.sops.yaml
+  git commit -m "chore: update age key for {{CONFIG}}"
 
 rebuild CONFIG IP USER="root":
   nixos-rebuild switch --flake {{nix_path}}#{{CONFIG}} \

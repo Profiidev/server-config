@@ -1,6 +1,8 @@
 { pkgs, lib, ... }:
 
 {
+  users.users.root.shell = pkgs.fish;
+  
   programs.fish = {
     enable = true;
     generateCompletions = true;

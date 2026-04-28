@@ -67,7 +67,7 @@
             };
           }) hosts
         ))
-        ++ (builtins.listToAttrs (
+        // (builtins.listToAttrs (
           map (host: {
             name = "${host.name}-minimal";
             value = nixpkgs-unstable.lib.nixosSystem {
