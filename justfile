@@ -36,7 +36,13 @@ install CONFIG IP USER="root":
     just update-token {{CONFIG}} {{IP}} {{USER}}
   fi
 
+  echo "Installation complete. Rebuilding configuration on {{IP}}..."
   just rebuild {{CONFIG}} {{IP}} {{USER}}
+  echo "Rebuild complete. Copying kubeconfig from {{IP}}..."
+  
+  if [[ "{{CONFIG}}" == "node1" ]]; then
+    just copy-kubeconfig {{IP}} {{USER}}
+  fi
 
 update-token CONFIG IP USER="root":
   echo "Installation complete. Fetching RKE2 token..."
@@ -69,6 +75,8 @@ update-keys CONFIG IP USER="root":
     yq -i '.creation_rules[0].key_groups[0].age[-1] alias = "'"{{CONFIG}}"'"' {{nix_path}}/.sops.yaml
   fi
   echo "Updated .sops.yaml with new age key for host {{IP}}"
+  
+  just rekey
 
   git add {{nix_path}}/.sops.yaml
   git commit -m "chore: update age key for {{CONFIG}}"
