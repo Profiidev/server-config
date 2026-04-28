@@ -6,8 +6,8 @@
 
 {
   imports = [
-    ./hardware-configuration.nix
-    ./disko-config.nix
+    ./modules/hardware-configuration.nix
+    ./modules/disko-config.nix
     {
       _module.args = {
         disk = "/dev/vda";
@@ -17,14 +17,13 @@
     }
     inputs.disko.nixosModules.disko
 
-    ./docker.nix
-    ./host-specific.nix
-    ./nix.nix
-    ./rke2.nix
-    ./services.nix
-    ./starship.nix
-    ./tools.nix
-    ./user.nix
+    ./modules/docker.nix
+    ./modules/nix.nix
+    ./modules/rke2.nix
+    ./modules/services.nix
+    ./modules/starship.nix
+    ./modules/tools.nix
+    ./modules/user.nix
 
     "${nix-config}/modules/general.nix"
     "${nix-config}/modules/locale.nix"
