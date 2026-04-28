@@ -5,7 +5,7 @@ keys:
   hosts:
     - &home age1n5e38zqazrzdaahaj6lvxuvve2lqq6hv08smfpew75m6ycarh9gqrfn3ur
     - &laptop age1e3wtf94uusd6g20c6pmgwz2he8hnr252yfa2nmz3epwuwx62v5jsma63zh
-    - &node2 age1m2arteg6g34x27cpd7lj5am9emz7nwmscly84z9gp7cp2e5wru8s44m035
+    - &node2 ""
 creation_rules:
   - path_regex: sops\.yaml$
     key_groups:

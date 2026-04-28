@@ -78,6 +78,7 @@ update-keys CONFIG IP USER="root":
   
   just rekey
 
+  git add {{secrets_path}}
   git add {{nix_path}}/.sops.yaml
   git commit -m "chore: update age key for {{CONFIG}}"
 
