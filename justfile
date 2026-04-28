@@ -36,22 +36,20 @@ install CONFIG IP USER="root":
 
   just update-keys {{CONFIG}} {{IP}} {{USER}}
 
-  # only if config is node1 (master)
-  if [[ "{{CONFIG}}" == "node1" ]]; then
-    just update-token {{CONFIG}} {{IP}} {{USER}}
-  fi
-
   echo "Installation complete. Rebuilding configuration on {{IP}}..."
   just rebuild {{CONFIG}} {{IP}} {{USER}} true
   echo "Rebuild complete. Copying kubeconfig from {{IP}}..."
 
+  # Only if this is the master node
   if [[ "{{CONFIG}}" == "node1" ]]; then
     just copy-kubeconfig {{IP}} {{USER}}
+    just update-token {{CONFIG}} {{IP}} {{USER}}
   fi
 
 update-token CONFIG IP USER="root":
+  #!/usr/bin/env bash
   echo "Installation complete. Fetching RKE2 token..."
-  export TOKEN=$(ssh {{USER}}@{{IP}} "sudo cat /var/lib/rancher/rke2/server/node-token")
+  export TOKEN=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no {{USER}}@{{IP}} "sudo cat /var/lib/rancher/rke2/server/node-token")
   echo "RKE2 token: $TOKEN"
 
   echo "Run 'just set-rke2-token $TOKEN' to set the token in sops.yaml"
@@ -106,7 +104,7 @@ edit-secrets:
   cd {{nix_path}} && EDITOR="nvim" sops {{secrets_path}}
 
 set-rke2-token TOKEN:
-  sops --set '["rke2_token"]' {{TOKEN}} {{secrets_path}}
+  sops -i --set '["rke2_token"] "{{TOKEN}}"' {{secrets_path}}
 
 copy-kubeconfig IP USER="root":
   scp {{USER}}@{{IP}}:/etc/rancher/rke2/rke2.yaml {{kubeconfig_path}}
