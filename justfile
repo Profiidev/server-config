@@ -4,6 +4,7 @@ vars_path := pwd + "/vars.tfvars"
 secret_path := pwd + "/secrets.tfvars"
 kubeconfig_path := pwd + "/kubeconfig"
 nix_path := pwd + "/nix"
+secrets_path := nix_path + "/sops.yaml"
 
 export KUBECONFIG := kubeconfig_path
 
@@ -29,6 +30,12 @@ rebuild CONFIG IP USER="root":
   nixos-rebuild switch --flake {{nix_path}}#{{CONFIG}} \
     --target-host {{USER}}@{{IP}} \
     --build-host {{USER}}@{{IP}}
+
+rekey:
+  cd {{nix_path}} && sops updatekeys -y {{secrets_path}}
+
+edit-secrets:
+  cd {{nix_path}} && EDITOR="nvim" sops {{secrets_path}}
 
 copy-kubeconfig IP USER="root":
   scp {{USER}}@{{IP}}:/etc/rancher/rke2/rke2.yaml {{kubeconfig_path}}

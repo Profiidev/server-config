@@ -2,6 +2,7 @@
   pkgs,
   host,
   lib,
+  config,
   ...
 }:
 
@@ -67,9 +68,7 @@ in
     enable = true;
 
     configPath = configFile;
-    token =
-      lib.mkIf (!host.master)
-        "";
+    tokenFile = lib.mkIf (!host.master) config.sops.secrets."rke2_token".path;
     nodeIP = host.ip;
     #serverAddr = "https://10.0.0.1:9345";
     serverAddr = lib.mkIf (!host.master) "https://10.0.0.1:9345";

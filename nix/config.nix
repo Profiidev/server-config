@@ -21,6 +21,7 @@
     ./modules/nix.nix
     ./modules/rke2.nix
     ./modules/services.nix
+    ./modules/sops.nix
     ./modules/starship.nix
     ./modules/tools.nix
     ./modules/user.nix

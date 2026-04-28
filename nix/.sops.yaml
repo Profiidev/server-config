@@ -1,0 +1,15 @@
+keys:
+  users:
+    - &profidev_home age1g0eg4sdf7tzndhs9at7gy9rrdrllsmktlq6g7yy6gjf6rg4sy3kqjmrgcu
+    - &profidev_laptop age133tjrtvw3mcyq4l44xsxpwh4gkhs9f4eurun4rah7rygns50qf0qs06yps
+  hosts:
+    - &home age1n5e38zqazrzdaahaj6lvxuvve2lqq6hv08smfpew75m6ycarh9gqrfn3ur
+    - &laptop age1e3wtf94uusd6g20c6pmgwz2he8hnr252yfa2nmz3epwuwx62v5jsma63zh
+creation_rules:
+  - path_regex: sops\.yaml$
+    key_groups:
+      - age:
+          - *profidev_home
+          - *profidev_laptop
+          - *home
+          - *laptop
