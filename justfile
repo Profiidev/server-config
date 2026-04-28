@@ -23,11 +23,16 @@ plan CONFIG:
 install CONFIG IP USER="root":
   #!/usr/bin/env bash
   set -euo pipefail
-  
+
   nix run github:nix-community/nixos-anywhere -- \
     --flake {{nix_path}}#{{CONFIG}}-minimal \
     --target-host {{USER}}@{{IP}} \
     --build-on remote
+
+  # wait for ssh to be available
+  until ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no {{USER}}@{{IP}} "echo SSH is available"; do
+    sleep 5
+  done
 
   just update-keys {{CONFIG}} {{IP}} {{USER}}
 
@@ -37,9 +42,9 @@ install CONFIG IP USER="root":
   fi
 
   echo "Installation complete. Rebuilding configuration on {{IP}}..."
-  just rebuild {{CONFIG}} {{IP}} {{USER}}
+  just rebuild {{CONFIG}} {{IP}} {{USER}} true
   echo "Rebuild complete. Copying kubeconfig from {{IP}}..."
-  
+
   if [[ "{{CONFIG}}" == "node1" ]]; then
     just copy-kubeconfig {{IP}} {{USER}}
   fi
@@ -57,7 +62,7 @@ update-token CONFIG IP USER="root":
 update-keys CONFIG IP USER="root":
   #!/usr/bin/env bash
   set -euo pipefail
-  
+
   echo "Generating age key based on ssh host key..."
   export SSH_KEY=$(ssh-keyscan -p 22 -t ssh-ed25519 {{IP}} 2>&1 | grep ssh-ed25519 | cut -f2- -d" ")
   export AGE_KEY=$(echo $SSH_KEY | ssh-to-age)
@@ -75,14 +80,21 @@ update-keys CONFIG IP USER="root":
     yq -i '.creation_rules[0].key_groups[0].age[-1] alias = "'"{{CONFIG}}"'"' {{nix_path}}/.sops.yaml
   fi
   echo "Updated .sops.yaml with new age key for host {{IP}}"
-  
+
   just rekey
 
   git add {{secrets_path}}
   git add {{nix_path}}/.sops.yaml
   git commit -m "chore: update age key for {{CONFIG}}"
 
-rebuild CONFIG IP USER="root":
+rebuild CONFIG IP USER="root" INSECURE_SSH="true":
+  #!/usr/bin/env bash
+  set -euo pipefail
+
+  if [[ "{{INSECURE_SSH}}" == "true" ]]; then
+    export NIX_SSHOPTS="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+  fi
+
   nixos-rebuild switch --flake {{nix_path}}#{{CONFIG}} \
     --target-host {{USER}}@{{IP}} \
     --build-host {{USER}}@{{IP}}
