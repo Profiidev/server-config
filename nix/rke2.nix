@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  host,
+  lib,
+  ...
+}:
 
 let
   pssFile = pkgs.writeText "rke2-pss-custom.yaml" ''
@@ -46,6 +51,10 @@ let
     kubelet-arg:
       - max-pods=200
     ingress-controller: traefik
+    bind-address: ${host.ip}
+    tls-san:
+      - 10.0.0.1
+      - 10.0.0.2
   '';
 in
 {
@@ -58,6 +67,12 @@ in
     enable = true;
 
     configPath = configFile;
+    token =
+      lib.mkIf (!host.master)
+        "";
+    nodeIP = host.ip;
+    #serverAddr = "https://10.0.0.1:9345";
+    serverAddr = lib.mkIf (!host.master) "https://10.0.0.1:9345";
   };
 
   users.groups.etcd = { };

@@ -1,6 +1,7 @@
 {
   lib,
   modulesPath,
+  host,
   ...
 }:
 
@@ -11,4 +12,14 @@
 
   networking.useDHCP = lib.mkDefault true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+
+  networking.interfaces.ens7 = {
+    useDHCP = false;
+    ipv4.addresses = [
+      {
+        address = host.ip;
+        prefixLength = 24;
+      }
+    ];
+  };
 }

@@ -8,7 +8,7 @@
   programs.starship = {
     enable = true;
 
-    settings = builtins.fromTOML ''
+    settings = fromTOML ''
       ## FIRST LINE/ROW: Info & Status
       # First param \u2500\u250c
       [username]
