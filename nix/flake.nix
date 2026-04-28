@@ -31,10 +31,29 @@
 
   outputs =
     inputs@{ self, nixpkgs-unstable, ... }:
+    let
+      hosts = [
+        {
+          name = "node1";
+          ip = "10.0.0.1";
+          master = true;
+        }
+        {
+          name = "node2";
+          ip = "10.0.0.2";
+          master = false;
+        }
+        {
+          name = "node3";
+          ip = "10.0.0.3";
+          master = false;
+        }
+      ];
+    in
     {
-      nixosConfigurations = builtins.listToAttrs (
-        map
-          (host: {
+      nixosConfigurations =
+        (builtins.listToAttrs (
+          map (host: {
             name = host.name;
             value = nixpkgs-unstable.lib.nixosSystem {
               specialArgs = {
@@ -46,24 +65,22 @@
                 ./config.nix
               ];
             };
-          })
-          [
-            {
-              name = "node1";
-              ip = "10.0.0.1";
-              master = true;
-            }
-            {
-              name = "node2";
-              ip = "10.0.0.2";
-              master = false;
-            }
-            {
-              name = "node3";
-              ip = "10.0.0.3";
-              master = false;
-            }
-          ]
-      );
+          }) hosts
+        ))
+        ++ (builtins.listToAttrs (
+          map (host: {
+            name = "${host.name}-minimal";
+            value = nixpkgs-unstable.lib.nixosSystem {
+              specialArgs = {
+                lib = nixpkgs-unstable.lib;
+                nix-config = (toString inputs.nix-config);
+                inherit inputs host self;
+              };
+              modules = [
+                ./minimal.nix
+              ];
+            };
+          }) hosts
+        ));
     };
 }
