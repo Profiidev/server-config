@@ -1,14 +1,48 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
+  users.users.root.shell = pkgs.fish;
+  
+  programs.fish = {
+    enable = true;
+    generateCompletions = true;
+
+    shellInit = ''
+      set fish_greeting
+      set -U fish_color_command blue
+    '';
+
+    interactiveShellInit = ''
+      starship init fish | source
+      fastfetch
+    '';
+
+    shellAliases = {
+      nix-shell = "nix-shell --run fish";
+      k = "kubectl";
+      ls = "eza";
+    };
+
+    shellAbbrs = {
+      l = "eza -l -a --icons --group-directories-first";
+      rmf = "rm -rf";
+      clr = "clear";
+      k9s = "k9s -c ctx";
+      n = "nvim";
+    };
+  };
+
+  documentation.man.generateCaches = lib.mkForce false;
+
   environment.systemPackages = with pkgs; [
     starship
+    eza
   ];
 
   programs.starship = {
     enable = true;
 
-    settings = builtins.fromTOML ''
+    settings = fromTOML ''
       ## FIRST LINE/ROW: Info & Status
       # First param \u2500\u250c
       [username]
