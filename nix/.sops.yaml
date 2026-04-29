@@ -5,8 +5,8 @@ keys:
   hosts:
     - &home age1n5e38zqazrzdaahaj6lvxuvve2lqq6hv08smfpew75m6ycarh9gqrfn3ur
     - &laptop age1e3wtf94uusd6g20c6pmgwz2he8hnr252yfa2nmz3epwuwx62v5jsma63zh
-    - &node2 "age1leq023mrx7kmqcu7lkfcwtrn3qrgxh7cv9q54g8kkytleyc64yvq2ezydm"
-    - &node2 age1leq023mrx7kmqcu7lkfcwtrn3qrgxh7cv9q54g8kkytleyc64yvq2ezydm
+    - &node2 "age18vrxup6senmw4vf7v7xlrwqw8ej8wc7vudv68jusfmxrsw3tqvzql6w0py"
+    - &node2 age18vrxup6senmw4vf7v7xlrwqw8ej8wc7vudv68jusfmxrsw3tqvzql6w0py
     - &node1 age1yhm65sct48w0kucgem8c3qn7ps6vt8ezhlnkvqj26jmyvvghh93qheu0c6
 creation_rules:
   - path_regex: sops\.yaml$
