@@ -8,6 +8,7 @@ keys:
     - &node2 "age18vrxup6senmw4vf7v7xlrwqw8ej8wc7vudv68jusfmxrsw3tqvzql6w0py"
     - &node2 age18vrxup6senmw4vf7v7xlrwqw8ej8wc7vudv68jusfmxrsw3tqvzql6w0py
     - &node1 age1yhm65sct48w0kucgem8c3qn7ps6vt8ezhlnkvqj26jmyvvghh93qheu0c6
+    - &node3 age166mw9ala5vht0sz94wn44m08jqqddr76y7ktqdulma04j8ht03ksv6v4vz
 creation_rules:
   - path_regex: sops\.yaml$
     key_groups:
@@ -18,3 +19,4 @@ creation_rules:
           - *laptop
           - *node2
           - *node1
+          - *node3
