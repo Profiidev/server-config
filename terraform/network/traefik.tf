@@ -28,6 +28,13 @@ spec:
         publishedService:
           enabled: true
 
+    ports:
+      websecure:
+        transport:
+          respondingTimeouts:
+            readTimeout: 600s
+            writeTimeout: 600s
+
     metrics:
       prometheus:
         serviceMonitor:
