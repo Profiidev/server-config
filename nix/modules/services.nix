@@ -25,6 +25,7 @@
       5473 # calico
       2379 # etcd server client API
       2380 # etcd server peer API
+      2222 # SSH
       593
       594
     ];

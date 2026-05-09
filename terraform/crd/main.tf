@@ -14,6 +14,10 @@ terraform {
       source  = "gavinbunney/kubectl"
       version = "~> 1.0"
     }
+    http = {
+      source  = "hashicorp/http"
+      version = "~> 3.0"
+    }
   }
 
   backend "kubernetes" {

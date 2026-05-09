@@ -19,6 +19,9 @@ spec:
       kubernetesCRD:
         allowCrossNamespace: true
         allowExternalNameServices: true
+      kubernetesGateway:
+        enabled: true
+        experimentalChannel: true
       kubernetesIngressNginx:
         ingressClass: ${var.ingress_class}
         controllerClass: "k8s.io/ingress-nginx"
@@ -34,6 +37,13 @@ spec:
           respondingTimeouts:
             readTimeout: 600s
             writeTimeout: 600s
+      ssh:
+        port: 2222
+        protocol: TCP
+        exposedPort: 2222
+        hostPort: 2222
+        expose:
+          default: true
 
     metrics:
       prometheus:
