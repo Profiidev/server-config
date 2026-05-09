@@ -170,3 +170,24 @@ resource "kubernetes_network_policy_v1" "coredns_metrics" {
     }
   }
 }
+
+resource "kubectl_manifest" "traefik_global_network_policy" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: GlobalNetworkPolicy
+metadata:
+  name: traefik-ingress
+spec:
+  order: 90
+  selector: all()
+  types:
+    - Ingress
+  ingress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        selector: app.kubernetes.io/name == 'rke2-traefik'
+        ports:
+          - 2222
+  YAML
+}
