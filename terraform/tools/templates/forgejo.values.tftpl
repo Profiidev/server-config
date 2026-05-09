@@ -1,0 +1,99 @@
+service:
+  ssh:
+    port: 2222
+
+ingress:
+  enabled: true
+  className: ${ingress_class}
+  annotations:
+    cert-manager.io/cluster-issuer: ${cluster_issuer}
+  hosts:
+    - host: git.profidev.io
+      paths:
+        - path: /
+          pathType: Prefix
+          port: http
+  tls:
+    - secretName: forgejo-tls
+      hosts:
+        - git.profidev.io
+
+tcpRoute:
+  enabled: true
+  parentRefs:
+    - name: forgejo-ssh
+      sectionName: ssh
+  port: 2222
+
+serviceAccount:
+  create: true
+
+persistence:
+  size: 10Gi
+
+signing:
+  enabled: true
+  ssh:
+    existingSecret: forgejo-secrets
+
+gitea:
+  admin:
+    username: profidev
+    email: mail@profidev.io
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+  oauth:
+    - name: "Positron"
+      provider: "openidConnect"
+      autoDiscoverUrl: "https://profidev.io/backend/oauth/.well-known/openid-configuration"
+      existingSecret: "forgejo-secrets"
+
+  config:
+    APP_NAME: "Profidev Forgejo"
+
+    repository:
+      USE_COMPAT_SSH_URI: false
+      DEFAULT_REPO_UNITS: "repo.code,repo.releases,repo.issues,repo.pulls,repo.packages,repo.actions"
+      DEFAULT_MIRROR_REPO_UNITS: "repo.code,repo.releases,repo.issues,repo.packages"
+
+    repository.signing:
+        FORMAT: ssh
+        SIGNING_KEY: /data/git/.ssh-signing/key.pub
+        SIGNING_NAME: forgejo
+        SIGNING_EMAIL: forgejo@profidev.io
+        DEFAULT_TRUST_MODEL: committer
+        CRUD_ACTIONS: always
+        WIKI: always
+        MERGES: always
+
+    server:
+      SSH_PORT: 2222
+      OFFLINE_MODE: false
+
+    security:
+      INSTALL_LOCK: true
+
+    oauth2_client:
+      REHISTER_EMAIL_CONFIRM: false
+      OPENID_CONNECT_SCOPES: "profile email"
+      ENABLE_AUTO_REGISTRATION: true
+      USERNAME: name
+      UPDATE_AVATAR: true
+      ACCOUNT_LINKING: auto
+
+    service:
+      DISABLE_REGISTRATION: true
+      ENABLE_INTERNAL_SIGNIN: false
+
+    service.explore:
+        REQUIRE_SIGNIN_VIEW: true
+
+    cron:
+      ENABLED: true
+
+    oauth2:
+      ENABLED: false
