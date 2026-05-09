@@ -1,4 +1,4 @@
-{ ... }:
+{ lib, ... }:
 
 {
   systemd.tmpfiles.rules = [ "L+ /usr/local/bin - - - - /run/current-system/sw/bin/" ];
@@ -23,7 +23,12 @@
       "root"
       "profidev"
     ];
+    builders-use-substitutes = true;
+    fallback = true;
+    connect-timeout = 5;
   };
+
+  nix.channel.enable = lib.mkDefault false;
 
   nix.extraOptions = ''
     extra-substituters = https://cache.garnix.io https://nix-community.cachix.org

@@ -16,6 +16,7 @@
     }
     inputs.disko.nixosModules.disko
 
+    ./modules/cleanup.nix
     ./modules/locale.nix
     ./modules/nix.nix
     ./modules/services.nix

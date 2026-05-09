@@ -16,7 +16,9 @@
     }
     inputs.disko.nixosModules.disko
 
+    ./modules/cleanup.nix
     ./modules/docker.nix
+    ./modules/host-name-change.nix
     ./modules/locale.nix
     ./modules/nix.nix
     ./modules/rke2.nix
