@@ -1,9 +1,3 @@
-variable "proton_ns" {
-  description = "The namespace where Proton is deployed"
-  type        = string
-  default     = "proton"
-}
-
 variable "positron_ns" {
   description = "The namespace where Positron is deployed"
   type        = string

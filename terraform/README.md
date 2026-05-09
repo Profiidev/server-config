@@ -43,13 +43,6 @@ certs/crowdsec:
 
 - API_KEY: <CrowdSec API Key>
 
-db/couchdb:
-
-- cookie_auth: <CouchDB cookie authentication string>
-- erlang_cookie: <CouchDB Erlang cookie>
-- password: <CouchDB admin password>
-- username: <CouchDB admin username>
-
 db/postgres:
 
 - password: <PostgreSQL admin password>
@@ -145,11 +138,6 @@ apps/positron:
 - WEBAUTHN_ID: <WebAuthn RPID>
 - WEBAUTHN_NAME: <WebAuthn application name>
 - WEBAUTHN_ORIGIN: <WebAuthn allowed origins>
-
-apps/proton:
-
-- CORS_ORIGIN: <CORS allowed origins>
-- RUST_LOG: <Rust logging configuration>
 
 db/rustfs:
 

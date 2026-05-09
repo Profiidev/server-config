@@ -1,9 +1,3 @@
-variable "couchdb_ns" {
-  description = "The namespace where CouchDB will be deployed"
-  type        = string
-  default     = "couchdb"
-}
-
 variable "cert_issuer_prod" {
   description = "The certificate issuer for production"
   type        = string
