@@ -13,10 +13,6 @@
 
   inputs = {
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    nix-config = {
-      url = "github:ProfiiDev/nix/main";
-      flake = false;
-    };
 
     disko = {
       url = "github:nix-community/disko";

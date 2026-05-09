@@ -1,6 +1,5 @@
 {
   inputs,
-  nix-config,
   ...
 }:
 
@@ -17,10 +16,9 @@
     }
     inputs.disko.nixosModules.disko
 
+    ./modules/locale.nix
     ./modules/nix.nix
     ./modules/services.nix
     ./modules/user.nix
-
-    "${nix-config}/modules/general.nix"
   ];
 }

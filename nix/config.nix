@@ -1,6 +1,5 @@
 {
   inputs,
-  nix-config,
   ...
 }:
 
@@ -18,6 +17,7 @@
     inputs.disko.nixosModules.disko
 
     ./modules/docker.nix
+    ./modules/locale.nix
     ./modules/nix.nix
     ./modules/rke2.nix
     ./modules/services.nix
@@ -25,8 +25,5 @@
     ./modules/shell.nix
     ./modules/tools.nix
     ./modules/user.nix
-
-    "${nix-config}/modules/general.nix"
-    "${nix-config}/modules/locale.nix"
   ];
 }

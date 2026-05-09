@@ -1,6 +1,9 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
+  systemd.tmpfiles.rules = [ "L+ /usr/local/bin - - - - /run/current-system/sw/bin/" ];
+  system.stateVersion = "26.05";
+
   programs = {
     nh = {
       enable = true;
@@ -10,11 +13,6 @@
       flake = "/etc/nixos/nix-config";
     };
   };
-
-  environment.systemPackages = with pkgs; [
-    nil
-    nixfmt
-  ];
 
   nix.settings = {
     experimental-features = [

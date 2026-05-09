@@ -20,23 +20,6 @@
         "type": "github"
       }
     },
-    "nix-config": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1764868485,
-        "narHash": "sha256-rQuNdeMEqmPDgN9Dnejr766EIY47ZnM81dAzfgdQfJA=",
-        "owner": "ProfiiDev",
-        "repo": "nix",
-        "rev": "fd728a3a30bfd097cc4895ee8ced1ddc77e98993",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ProfiiDev",
-        "ref": "main",
-        "repo": "nix",
-        "type": "github"
-      }
-    },
     "nixpkgs-unstable": {
       "locked": {
         "lastModified": 1765186076,
@@ -56,7 +39,6 @@
     "root": {
       "inputs": {
         "disko": "disko",
-        "nix-config": "nix-config",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "sops-nix": "sops-nix"
       }
