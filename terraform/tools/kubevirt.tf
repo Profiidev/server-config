@@ -34,6 +34,29 @@ module "k8s_api_np_kubevirt" {
   k8s_api   = var.k8s_api
 }
 
+resource "helm_release" "cdi-crd" {
+  name       = "cdi-crd"
+  repository = "https://profiidev.github.io/helm-charts"
+  chart      = "cdi-crd"
+  version    = "0.1.0"
+  namespace  = var.kubevirt_ns
+
+  depends_on = [kubernetes_namespace.kubevirt]
+}
+
+resource "helm_release" "cdi" {
+  name       = "cdi"
+  repository = "https://profiidev.github.io/helm-charts"
+  chart      = "cdi"
+  version    = "0.1.0"
+  namespace  = var.kubevirt_ns
+
+  values = [templatefile("${path.module}/templates/cdi.values.tftpl", {
+  })]
+
+  depends_on = [kubernetes_namespace.kubevirt, helm_release.cdi-crd]
+}
+
 resource "kubectl_manifest" "test_vm" {
   yaml_body = <<YAML
 apiVersion: kubevirt.io/v1
