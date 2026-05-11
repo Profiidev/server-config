@@ -68,6 +68,9 @@ in
   services.rke2 = {
     enable = true;
 
+    extraFlags = [
+      "--nonroot-devices"
+    ];
     configPath = configFile;
     tokenFile = lib.mkIf (!host.master) config.sops.secrets."rke2_token".path;
     nodeIP = host.ip;

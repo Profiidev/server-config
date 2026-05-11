@@ -112,3 +112,15 @@ copy-kubeconfig IP USER="root":
 
 forgejo-image:
   nix build {{nix_path}}#nixosConfigurations.forgejo.config.system.build.diskoImagesScript && {{pwd}}/result && qemu-img convert -f raw -O qcow2 {{pwd}}/main.raw {{pwd}}/main.qcow2
+
+forgejo-image-upload:
+  #!/usr/bin/env bash
+  kubectl -n kubevirt get dv nixos-forgejo > /dev/null 2>&1 && echo "DataVolume nixos-forgejo already exists, skipping upload" && exit 0 || true
+
+  CMD="virtctl image-upload dv nixos-forgejo --size=2Gi --image-path={{pwd}}/main.qcow2 --access-mode=ReadWriteOnce -n kubevirt --uploadproxy-url=https://localhost:8443 --insecure"
+  eval $CMD
+  kubectl port-forward -n kubevirt svc/cdi-uploadproxy 8443:443 &
+  PF_PID=$!
+  trap "kill $PF_PID" EXIT
+  sleep 5
+  eval $CMD

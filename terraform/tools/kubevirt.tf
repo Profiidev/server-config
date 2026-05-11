@@ -57,12 +57,27 @@ resource "helm_release" "cdi" {
   depends_on = [kubernetes_namespace.kubevirt, helm_release.cdi-crd]
 }
 
+resource "null_resource" "nixos-forgejo-image-build" {
+  provisioner "local-exec" {
+    command = "just forgejo-image"
+  }
+}
+
+resource "null_resource" "nixos-forgejo-image-upload" {
+  provisioner "local-exec" {
+    command = "just forgejo-image-upload"
+  }
+
+  depends_on = [null_resource.nixos-forgejo-image-build, helm_release.cdi]
+}
+
 resource "kubectl_manifest" "test_vm" {
   yaml_body = <<YAML
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
   name: example-vm
+  namespace: ${var.kubevirt_ns}
 spec:
   running: false # The VM won't start immediately upon creation
   template:
@@ -73,24 +88,15 @@ spec:
       domain:
         devices:
           disks:
-            - name: containerdisk
-              disk: {bus: virtio}
-            - name: cloudinitdisk
+            - name: rootdisk
               disk: {bus: virtio}
         resources:
           requests:
-            memory: 1024Mi
+            memory: 2Gi
       volumes:
-        - name: containerdisk
-          containerDisk:
-            image: quay.io/containerdisks/ubuntu:22.04
-        - name: cloudinitdisk
-          cloudInitNoCloud:
-            userData: |
-              #cloud-config
-              password: fedora
-              user: fedora
-              chpasswd: { expire: False }
+        - name: rootdisk
+          dataVolume:
+            name: nixos-forgejo
   YAML
 
   depends_on = [kubernetes_namespace.kubevirt, helm_release.kubevirt]
