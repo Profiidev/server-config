@@ -65,6 +65,12 @@ in
     name = "iqn.2020-08.org.linux-iscsi.initiatorhost:example";
   };
 
+  boot.supportedFilesystems = [ "nfs" ];
+
+  environment.systemPackages = with pkgs; [
+    nfs-utils
+  ];
+
   services.rke2 = {
     enable = true;
 
