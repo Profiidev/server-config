@@ -5,8 +5,8 @@
 
 {
   imports = [
-    ./modules/hardware-configuration.nix
-    ./modules/disko-config.nix
+    ../modules/hardware-configuration.nix
+    ../modules/disko-config.nix
     {
       _module.args = {
         disk = "/dev/vda";
@@ -16,10 +16,10 @@
     }
     inputs.disko.nixosModules.disko
 
-    ./modules/cleanup.nix
-    ./modules/locale.nix
-    ./modules/nix.nix
-    ./modules/services.nix
-    ./modules/user.nix
+    ../modules/cleanup.nix
+    ../modules/locale.nix
+    ../modules/nix.nix
+    ../modules/services.nix
+    ../modules/user.nix
   ];
 }

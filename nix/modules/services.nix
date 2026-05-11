@@ -8,6 +8,7 @@
   environment.ldso32 = null;
   boot.tmp.cleanOnBoot = lib.mkDefault true;
 
+  networking.firewall.enable = true;
   networking.firewall.logRefusedConnections = lib.mkDefault false;
   networking.useNetworkd = lib.mkDefault true;
   networking.hostName = host.name;
@@ -16,20 +17,6 @@
   systemd.network.wait-online.enable = false;
   systemd.services.systemd-networkd.stopIfChanged = false;
   systemd.services.systemd-resolved.stopIfChanged = false;
-
-  networking.firewall = {
-    enable = true;
-    allowedTCPPorts = [
-      6443 # Kubernetes API server
-      9345 # RKE2 server
-      5473 # calico
-      2379 # etcd server client API
-      2380 # etcd server peer API
-      2222 # SSH
-      593
-      594
-    ];
-  };
 
   services.timesyncd.enable = true;
   services.openssh = {

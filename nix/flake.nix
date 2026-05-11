@@ -45,38 +45,45 @@
           master = false;
         }
       ];
+
+      system =
+        host: modules:
+        nixpkgs-unstable.lib.nixosSystem {
+          specialArgs = {
+            lib = nixpkgs-unstable.lib;
+            nix-config = (toString inputs.nix-config);
+            inherit inputs self host;
+          };
+          modules = modules;
+        };
     in
     {
       nixosConfigurations =
         (builtins.listToAttrs (
           map (host: {
             name = host.name;
-            value = nixpkgs-unstable.lib.nixosSystem {
-              specialArgs = {
-                lib = nixpkgs-unstable.lib;
-                nix-config = (toString inputs.nix-config);
-                inherit inputs host self;
-              };
-              modules = [
-                ./config.nix
-              ];
-            };
+            value = system host [
+              ./configs/node.nix
+            ];
           }) hosts
         ))
         // (builtins.listToAttrs (
           map (host: {
             name = "${host.name}-minimal";
-            value = nixpkgs-unstable.lib.nixosSystem {
-              specialArgs = {
-                lib = nixpkgs-unstable.lib;
-                nix-config = (toString inputs.nix-config);
-                inherit inputs host self;
-              };
-              modules = [
-                ./minimal.nix
-              ];
-            };
+            value = system host [
+              ./configs/minimal.nix
+            ];
           }) hosts
-        ));
+        ))
+        // {
+          forgejo =
+            system
+              {
+                name = "forgejo";
+              }
+              [
+                ./configs/forgejo.nix
+              ];
+        };
     };
 }

@@ -2,6 +2,7 @@
 {
   lib,
   disk ? "/dev/vda",
+  imageSize ? "10G",
   withSwap ? false,
   swapSize,
   ...
@@ -12,6 +13,7 @@
       main = {
         type = "disk";
         device = disk;
+        imageSize = imageSize;
         content = {
           type = "gpt";
           partitions = {

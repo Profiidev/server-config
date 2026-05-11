@@ -82,6 +82,27 @@ in
     group = "etcd";
   };
 
+  networking.firewall.allowedTCPPorts = [
+    6443 # Kubernetes API server
+    9345 # RKE2 server
+    5473 # calico
+    2379 # etcd server client API
+    2380 # etcd server peer API
+    2222 # SSH
+    593
+    594
+  ];
+
+  networking.interfaces.ens7 = {
+    useDHCP = false;
+    ipv4.addresses = [
+      {
+        address = host.ip;
+        prefixLength = 24;
+      }
+    ];
+  };
+
   systemd.tmpfiles.rules = [
     # Type | Path                                  | Mode | UID | GID | Age | Argument
     "d      /var/lib/rancher/rke2/server/db/etcd  0700   root  root  -     -"

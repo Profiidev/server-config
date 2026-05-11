@@ -109,3 +109,6 @@ set-rke2-token TOKEN:
 copy-kubeconfig IP USER="root":
   scp {{USER}}@{{IP}}:/etc/rancher/rke2/rke2.yaml {{kubeconfig_path}}
   sed -i 's/127.0.0.1/{{IP}}/g' {{kubeconfig_path}}
+
+forgejo-image:
+  nix build {{nix_path}}#nixosConfigurations.forgejo.config.system.build.diskoImagesScript && {{pwd}}/result && qemu-img convert -f raw -O qcow2 {{pwd}}/main.raw {{pwd}}/main.qcow2

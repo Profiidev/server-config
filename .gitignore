@@ -8,3 +8,7 @@ secrets.tfvars
 .direnv
 
 /kubeconfig
+/nix/result
+*.raw
+*.qcow2
+/result
