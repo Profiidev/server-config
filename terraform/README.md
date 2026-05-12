@@ -5,7 +5,6 @@
 secrets.tfvars file with the following variables:
 
 ```hcl
-k8s_api = "<Kubernetes API server URL>"
 email = "<Email address letsencrypt notifications will be sent to>"
 smtp_password = "<SMTP server password>"
 ```

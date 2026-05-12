@@ -34,12 +34,6 @@ variable "ingress_class" {
   type        = string
 }
 
-variable "k8s_api" {
-  description = "The Kubernetes API server address"
-  type        = string
-  sensitive   = true
-}
-
 variable "minio_config" {
   description = "The name of the MinIO configuration secret"
   type        = string

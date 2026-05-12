@@ -8,12 +8,6 @@ variable "secrets_ns" {
   type        = string
 }
 
-variable "k8s_api" {
-  description = "The Kubernetes API server address"
-  type        = string
-  sensitive   = true
-}
-
 variable "cluster_secret_store" {
   description = "The name of the cluster secret store"
   type        = string

@@ -85,13 +85,6 @@ spec:
     - action: Allow
       protocol: TCP
       destination:
-        nets:
-          - ${var.k8s_api}/32
-        ports:
-          - 6443
-    - action: Allow
-      protocol: TCP
-      destination:
         notNets:
           - 10.0.0.0/8
           - 172.16.0.0/12

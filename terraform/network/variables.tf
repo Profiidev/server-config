@@ -1,15 +1,3 @@
-variable "lb_address_pool" {
-  description = "Load Balancer Address Pool Name"
-  type        = string
-  default     = "lb-pool"
-}
-
-variable "lb_ns" {
-  description = "Load Balancer Namespace"
-  type        = string
-  default     = "metallb"
-}
-
 variable "ingress_class" {
   description = "Ingress Class"
   type        = string
@@ -51,12 +39,6 @@ variable "crowdsec_ns" {
   description = "CrowdSec Namespace"
   type        = string
   default     = "crowdsec"
-}
-
-variable "k8s_api" {
-  description = "The Kubernetes API server address"
-  type        = string
-  sensitive   = true
 }
 
 variable "storage_ns" {

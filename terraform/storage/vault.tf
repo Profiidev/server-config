@@ -115,15 +115,6 @@ resource "null_resource" "vault_init_kv" {
   depends_on = [null_resource.vault_initial_unseal]
 }
 
-module "k8s_api_np_vault" {
-  source = "../modules/k8s-api-np"
-
-  namespace = var.secrets_ns
-  k8s_api   = var.k8s_api
-
-  depends_on = [kubernetes_namespace.secrets]
-}
-
 module "external_np_vault" {
   source = "../modules/external-np"
 
