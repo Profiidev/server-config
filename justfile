@@ -107,8 +107,11 @@ set-rke2-token TOKEN:
   sops -i --set '["rke2_token"] "{{TOKEN}}"' {{secrets_path}}
 
 copy-kubeconfig IP USER="root":
-  scp {{USER}}@{{IP}}:/etc/rancher/rke2/rke2.yaml {{kubeconfig_path}}
-  sed -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i 's/127.0.0.1/{{IP}}/g' {{kubeconfig_path}}
+  scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no {{USER}}@{{IP}}:/etc/rancher/rke2/rke2.yaml {{kubeconfig_path}}
+
+copy-kubeconfig-fixed IP USER="root" NEW_IP="kubernetes.default.svc.cluster.local:443":
+  just copy-kubeconfig {{IP}} {{USER}}
+  sed -i 's|server: https://.*|server: https://{{NEW_IP}}|' {{kubeconfig_path}}
 
 forgejo-image:
   nix build {{nix_path}}#nixosConfigurations.forgejo.config.system.build.diskoImagesScript --accept-flake-config && {{pwd}}/result && qemu-img convert -f raw -O qcow2 {{pwd}}/main.raw {{pwd}}/main.qcow2 && rm {{pwd}}/main.raw
