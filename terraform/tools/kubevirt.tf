@@ -97,39 +97,51 @@ spec:
   depends_on = [helm_release.cdi]
 }
 
-resource "null_resource" "nixos-forgejo-image-build" {
-  provisioner "local-exec" {
-    command = "just forgejo-image"
-  }
+resource "kubectl_manifest" "forgejo_runner_secret" {
+  yaml_body = <<YAML
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: forgejo-runner-secret
+  namespace: ${var.kubevirt_ns}
+spec:
+  refreshInterval: 5m
+  secretStoreRef:
+    name: ${var.cluster_secret_store}
+    kind: ClusterSecretStore
+  target:
+    name: forgejo-runner-secret
+  dataFrom:
+  - extract:
+      key: tools/forgejo-runner
+  YAML
+
+  depends_on = [kubernetes_namespace.kubevirt]
 }
 
-resource "null_resource" "nixos-forgejo-image-upload" {
-  provisioner "local-exec" {
-    command = "just forgejo-image-upload"
-  }
-
-  depends_on = [null_resource.nixos-forgejo-image-build, helm_release.cdi]
-}
-
-resource "kubectl_manifest" "test_vm" {
+resource "kubectl_manifest" "forgejo_runner" {
   yaml_body = <<YAML
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  name: example-vm
+  name: forgejo-runner
   namespace: ${var.kubevirt_ns}
 spec:
-  running: false # The VM won't start immediately upon creation
+  running: true
   template:
     metadata:
       labels:
-        kubevirt.io/domain: example-vm
+        kubevirt.io/domain: forgejo-runner
     spec:
       domain:
         devices:
           disks:
             - name: rootdisk
-              disk: {bus: virtio}
+              disk:
+                bus: virtio
+          filesystems:
+            - name: forgejo-secret
+              virtiofs: {}
         resources:
           requests:
             memory: 4Gi
@@ -138,9 +150,12 @@ spec:
         - name: rootdisk
           dataVolume:
             name: nixos-forgejo
+        - name: forgejo-secret
+          secret:
+            secretName: forgejo-runner-secret
   YAML
 
-  depends_on = [kubernetes_namespace.kubevirt, helm_release.kubevirt]
+  depends_on = [kubernetes_namespace.kubevirt, helm_release.kubevirt, kubectl_manifest.forgejo_runner_secret, kubectl_manifest.forgejo_image]
 }
 
 resource "kubectl_manifest" "kubevirt_egress" {
