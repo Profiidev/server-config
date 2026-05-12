@@ -17,13 +17,6 @@ resource "helm_release" "longhorn" {
   })]
 }
 
-module "k8s_api_np_longhorn" {
-  source = "../modules/k8s-api-np"
-
-  namespace = kubernetes_namespace.storage.metadata[0].name
-  k8s_api   = var.k8s_api
-}
-
 resource "kubectl_manifest" "longhorn_secret" {
   yaml_body = <<YAML
 apiVersion: external-secrets.io/v1
@@ -42,6 +35,8 @@ spec:
   - extract:
       key: tools/longhorn
   YAML
+
+  depends_on = [helm_release.longhorn]
 }
 
 resource "kubectl_manifest" "longhorn_db_backup" {
@@ -57,6 +52,8 @@ spec:
   retain: 3
   concurrency: 1
 YAML
+
+  depends_on = [helm_release.longhorn]
 }
 
 resource "kubectl_manifest" "longhorn_fs_trim" {
@@ -74,4 +71,6 @@ spec:
   groups:
   - default
 YAML
+
+  depends_on = [helm_release.longhorn]
 }
