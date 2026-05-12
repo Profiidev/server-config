@@ -7,7 +7,7 @@ keys:
     - &laptop age1e3wtf94uusd6g20c6pmgwz2he8hnr252yfa2nmz3epwuwx62v5jsma63zh
     - &node2 "age18vrxup6senmw4vf7v7xlrwqw8ej8wc7vudv68jusfmxrsw3tqvzql6w0py"
     - &node2 age18vrxup6senmw4vf7v7xlrwqw8ej8wc7vudv68jusfmxrsw3tqvzql6w0py
-    - &node1 age1q6vl3ppsq884ukjkcsy9qyz9s63j4z7y8xhvlhv79cy3zk0ztfhsr3y2gm
+    - &node1 age1wu57rrwvcdhxd5xhexnjm6yy388tpd4al8h8rcxefthca8rzxdasltaw56
     - &node3 age166mw9ala5vht0sz94wn44m08jqqddr76y7ktqdulma04j8ht03ksv6v4vz
 creation_rules:
   - path_regex: sops\.yaml$
