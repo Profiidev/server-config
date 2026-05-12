@@ -3,7 +3,7 @@ resource "helm_release" "vault" {
   repository = "https://helm.releases.hashicorp.com"
   chart      = "vault"
   version    = "0.31.0"
-  namespace  = var.secrets_ns
+  namespace  = kubernetes_namespace.secrets.metadata[0].name
 
   values = [templatefile("${path.module}/templates/vault.values.tftpl", {
     cert_var               = var.vault_cert_var
@@ -14,7 +14,6 @@ resource "helm_release" "vault" {
   })]
 
   depends_on = [
-    kubernetes_namespace.secrets,
     kubernetes_secret_v1.vault_tls_secret,
   ]
 }
@@ -24,17 +23,16 @@ resource "helm_release" "vault_auto_unseal" {
   repository = "https://profiidev.github.io/helm-charts"
   chart      = "vault-auto-unseal"
   version    = "0.1.12"
-  namespace  = var.secrets_ns
+  namespace  = kubernetes_namespace.secrets.metadata[0].name
 
   values = [templatefile("${path.module}/templates/vault-auto-unseal.values.tftpl", {
     key_1_var  = "vault-unseal-key-1"
     key_2_var  = "vault-unseal-key-2"
     key_3_var  = "vault-unseal-key-3"
-    secrets_ns = var.secrets_ns
+    secrets_ns = kubernetes_namespace.secrets.metadata[0].name
   })]
 
   depends_on = [
-    kubernetes_namespace.secrets,
     kubernetes_secret_v1.cluster_ca_cert_secret,
     kubernetes_secret_v1.vault_unseal_key
   ]
@@ -138,12 +136,10 @@ apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 metadata:
   name: vault-transport
-  namespace: ${var.secrets_ns}
+  namespace: ${kubernetes_namespace.secrets.metadata[0].name}
 spec:
   insecureSkipVerify: true
   YAML
-
-  depends_on = [kubernetes_namespace.secrets]
 }
 
 resource "kubectl_manifest" "vault_tls_options" {
@@ -152,13 +148,11 @@ apiVersion: traefik.io/v1alpha1
 kind: TLSOption
 metadata:
   name: vault-tls-options
-  namespace: ${var.secrets_ns}
+  namespace: ${kubernetes_namespace.secrets.metadata[0].name}
 spec:
   clientAuth:
     clientAuthType: RequireAndVerifyClientCert
     secretNames:
       - ${var.cloudflare_ca_cert_var}
   YAML
-
-  depends_on = [kubernetes_namespace.secrets]
 }

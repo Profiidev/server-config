@@ -9,13 +9,12 @@ resource "helm_release" "external_secrets" {
   repository = "https://charts.external-secrets.io"
   chart      = "external-secrets"
   version    = "0.20.4"
-  namespace  = var.secrets_ns
+  namespace  = kubernetes_namespace.secrets.metadata[0].name
 
   values = [templatefile("${path.module}/templates/external-secrets.values.tftpl", {
   })]
 
   depends_on = [
-    kubernetes_namespace.secrets,
     kubernetes_secret_v1.cluster_ca_cert_secret
   ]
 }
