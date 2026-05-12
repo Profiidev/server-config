@@ -5,7 +5,6 @@ keys:
   hosts:
     - &home age1n5e38zqazrzdaahaj6lvxuvve2lqq6hv08smfpew75m6ycarh9gqrfn3ur
     - &laptop age1e3wtf94uusd6g20c6pmgwz2he8hnr252yfa2nmz3epwuwx62v5jsma63zh
-    - &node2 "age1ayetg6vsny39juvlj2qz2w25m5lux3vp3derd0yhfylef9e8z3nst3s6j8"
     - &node2 age1ayetg6vsny39juvlj2qz2w25m5lux3vp3derd0yhfylef9e8z3nst3s6j8
     - &node1 age1wu57rrwvcdhxd5xhexnjm6yy388tpd4al8h8rcxefthca8rzxdasltaw56
     - &node3 age1gmressk3fdg8yplex3g4zj6u6sl4m8apxdke7cy9yuzv876zwvnqwv8qan

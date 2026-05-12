@@ -36,12 +36,6 @@ variable "coder_ns" {
   default     = "coder"
 }
 
-variable "tailscale_ns" {
-  description = "The namespace for Tailscale resources"
-  type        = string
-  default     = "tailscale"
-}
-
 variable "radar_ns" {
   description = "The namespace for Radar resources"
   type        = string

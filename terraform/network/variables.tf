@@ -21,6 +21,12 @@ variable "cert_ns" {
   default     = "cert-manager"
 }
 
+variable "tailscale_ns" {
+  description = "The namespace for Tailscale resources"
+  type        = string
+  default     = "tailscale"
+}
+
 variable "cert_issuer_staging" {
   description = "Certificate Issuer for Staging"
   type        = string
@@ -67,4 +73,3 @@ variable "cloudflare_ca_cert_var" {
   description = "The Vault variable name for the Cloudflare CA certificate"
   type        = string
 }
-
