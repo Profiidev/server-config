@@ -65,7 +65,10 @@ in
     name = "iqn.2020-08.org.linux-iscsi.initiatorhost:example";
   };
 
-  boot.supportedFilesystems = [ "nfs" ];
+  boot.supportedFilesystems = [
+    "nfs"
+    "btrfs"
+  ];
 
   environment.systemPackages = with pkgs; [
     nfs-utils

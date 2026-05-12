@@ -111,7 +111,7 @@ copy-kubeconfig IP USER="root":
   sed -i 's/127.0.0.1/{{IP}}/g' {{kubeconfig_path}}
 
 forgejo-image:
-  nix build {{nix_path}}#nixosConfigurations.forgejo.config.system.build.diskoImagesScript && {{pwd}}/result && qemu-img convert -f raw -O qcow2 {{pwd}}/main.raw {{pwd}}/main.qcow2
+  nix build {{nix_path}}#nixosConfigurations.forgejo.config.system.build.diskoImagesScript --accept-flake-config && {{pwd}}/result && qemu-img convert -f raw -O qcow2 {{pwd}}/main.raw {{pwd}}/main.qcow2
 
 forgejo-image-upload:
   #!/usr/bin/env bash

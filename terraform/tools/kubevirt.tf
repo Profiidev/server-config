@@ -59,31 +59,39 @@ resource "helm_release" "cdi" {
 
 resource "kubectl_manifest" "forgejo_image" {
   yaml_body = <<YAML
-  apiVersion: batch/v1
-  kind: Job
-  metadata:
-    name: forgejo-nixos-builder
-    namespace: ${var.kubevirt_ns}
-  spec:
-    template:
-      spec:
-        restartPolicy: Never
-        containers:
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: forgejo-nixos-builder
+  namespace: ${var.kubevirt_ns}
+spec:
+  schedule: "0 0 31 2 *" # never
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
           - name: builder
             image: nixos/nix:latest
             command: ["/bin/sh", "-c"]
             args:
               - |
-                # Enable flakes
-                mkdir -p ~/.config/nix
-                echo "experimental-features = nix-command flakes" > ~/.config/nix/nix.conf
+                set -euo pipefail
 
-                nix-env -iA nixpkgs.git nixpkgs.just nixpkgs.kubevirt
+                mkdir -p /etc/nix && echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
+                echo "extra-substituters = https://nix-community.cachix.org" >> /etc/nix/nix.conf
+                echo "extra-trusted-public-keys = nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" >> /etc/nix/nix.conf
+
+                nix-env -iA nixpkgs.just nixpkgs.kubevirt nixpkgs.qemu-utils
                 git clone --depth 1 --branch main https://github.com/ProfiiDev/server-config.git
                 cd server-config
 
                 just forgejo-image
                 virtctl image-upload dv nixos-forgejo --size=2Gi --image-path=main.qcow2 --access-mode=ReadWriteOnce -n ${var.kubevirt_ns}
+            securityContext:
+              privileged: true
   YAML
 
   depends_on = [helm_release.cdi]
@@ -133,4 +141,26 @@ spec:
   YAML
 
   depends_on = [kubernetes_namespace.kubevirt, helm_release.kubevirt]
+}
+
+resource "kubectl_manifest" "kubevirt_egress" {
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: kubevirt
+  namespace: ${var.kubevirt_ns}
+spec:
+  order: 10
+  namespaceSelector: kubernetes.io/metadata.name == '${var.kubevirt_ns}'
+  types:
+    - Egress
+    - Ingress
+  egress:
+    - action: Allow
+  ingress:
+    - action: Allow
+  YAML
+
+  depends_on = [kubernetes_namespace.kubevirt]
 }

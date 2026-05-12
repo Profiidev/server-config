@@ -33,5 +33,6 @@
   boot.kernelModules = [
     "kvm-intel"
     "kvm-amd"
+    "btrfs"
   ];
 }
