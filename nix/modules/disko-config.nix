@@ -49,17 +49,6 @@
                       "discard=async"
                     ];
                   };
-                  "@persist" = {
-                    mountpoint = "/persist";
-                    mountOptions = [
-                      "defaults"
-                      "subvol=root"
-                      "compress=zstd"
-                      "noatime"
-                      "space_cache=v2"
-                      "discard=async"
-                    ];
-                  };
                   "@nix" = {
                     mountpoint = "/nix";
                     mountOptions = [

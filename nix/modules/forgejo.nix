@@ -42,5 +42,14 @@
     ];
   };
 
+  fileSystems."/var/lib/docker" = {
+    device = "forgejo-docker-storage";
+    fsType = "virtiofs";
+    options = [
+      "defaults"
+      "rw"
+    ];
+  };
+
   networking.firewall.trustedInterfaces = [ "br-+" ];
 }

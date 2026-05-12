@@ -11,7 +11,7 @@
       _module.args = {
         disk = "/dev/vda";
         withSwap = false;
-        imageSize = "2G";
+        imageSize = "3G";
       };
     }
     inputs.disko.nixosModules.disko

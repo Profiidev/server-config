@@ -89,7 +89,7 @@ spec:
                 cd server-config
 
                 just forgejo-image
-                virtctl image-upload dv nixos-forgejo --size=2Gi --image-path=main.qcow2 --access-mode=ReadWriteOnce -n ${var.kubevirt_ns}
+                virtctl image-upload dv nixos-forgejo --size=3Gi --image-path=main.qcow2 --access-mode=ReadWriteOnce -n ${var.kubevirt_ns}
             securityContext:
               privileged: true
   YAML
@@ -119,6 +119,23 @@ spec:
   depends_on = [kubernetes_namespace.kubevirt]
 }
 
+resource "kubernetes_persistent_volume_claim" "forgejo_docker_storage" {
+  metadata {
+    name      = "forgejo-docker-storage"
+    namespace = var.kubevirt_ns
+  }
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    resources {
+      requests = {
+        storage = "20Gi"
+      }
+    }
+  }
+
+  depends_on = [kubernetes_namespace.kubevirt]
+}
+
 resource "kubectl_manifest" "forgejo_runner" {
   yaml_body = <<YAML
 apiVersion: kubevirt.io/v1
@@ -142,6 +159,11 @@ spec:
           filesystems:
             - name: forgejo-secret
               virtiofs: {}
+            - name: docker-storage
+              virtiofs: {}
+          interfaces:
+            - name: default
+              masquerade: {}
         resources:
           requests:
             memory: 4Gi
@@ -150,12 +172,18 @@ spec:
         - name: rootdisk
           dataVolume:
             name: nixos-forgejo
+        - name: docker-storage
+          persistentVolumeClaim:
+            claimName: forgejo-docker-storage
         - name: forgejo-secret
           secret:
             secretName: forgejo-runner-secret
+      networks:
+        - name: default
+          pod: {}
   YAML
 
-  depends_on = [kubernetes_namespace.kubevirt, helm_release.kubevirt, kubectl_manifest.forgejo_runner_secret, kubectl_manifest.forgejo_image]
+  depends_on = [kubernetes_namespace.kubevirt, helm_release.kubevirt, kubectl_manifest.forgejo_runner_secret, kubectl_manifest.forgejo_image, kubernetes_persistent_volume_claim.forgejo_docker_storage]
 }
 
 resource "kubectl_manifest" "kubevirt_egress" {
