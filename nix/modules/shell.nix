@@ -2,7 +2,7 @@
 
 {
   users.users.root.shell = pkgs.fish;
-  
+
   programs.fish = {
     enable = true;
     generateCompletions = true;
@@ -32,7 +32,7 @@
     };
   };
 
-  documentation.man.generateCaches = lib.mkForce false;
+  documentation.man.cache.enable = lib.mkForce false;
 
   environment.systemPackages = with pkgs; [
     starship
