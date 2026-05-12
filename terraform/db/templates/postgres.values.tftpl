@@ -1,10 +1,9 @@
-postgresql:
-  auth:
-    username: "postgres"
-    existingSecret: postgres-credentials
-    secretKeys:
-      adminPasswordKey: password
-      userPasswordKey: password
+auth:
+  username: "postgres"
+  existingSecret: postgres-credentials
+  secretKeys:
+    adminPasswordKey: password
+    userPasswordKey: password
 
 rbac:
   create: true

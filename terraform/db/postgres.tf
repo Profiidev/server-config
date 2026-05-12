@@ -14,7 +14,7 @@ resource "helm_release" "postgres" {
   values = [templatefile("${path.module}/templates/postgres.values.tftpl", {
   })]
 
-  depends_on = [kubernetes_namespace.pg]
+  depends_on = [kubernetes_namespace.pg, kubectl_manifest.postgres_secrets]
 }
 
 resource "kubectl_manifest" "postgres_secrets" {

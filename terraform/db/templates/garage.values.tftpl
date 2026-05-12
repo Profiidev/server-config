@@ -1,0 +1,16 @@
+garage:
+  replicationFactor: "1"
+
+persistence:
+  data:
+    size: "100Gi"
+
+
+deployment:
+  replicaCount: 1
+
+monitoring:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true

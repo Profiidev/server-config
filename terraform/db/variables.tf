@@ -8,10 +8,10 @@ variable "cluster_secret_store" {
   type        = string
 }
 
-variable "rustfs_ns" {
+variable "garage_ns" {
   description = "The namespace where MinIO will be deployed"
   type        = string
-  default     = "rustfs"
+  default     = "garage"
 }
 
 variable "storage_class" {
@@ -56,9 +56,4 @@ variable "pg_ns" {
   description = "The namespace where PostgreSQL will be deployed"
   type        = string
   default     = "postgres"
-}
-
-variable "rustfs_password" {
-  description = "Rustfs password"
-  type        = string
 }
