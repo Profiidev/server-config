@@ -12,6 +12,7 @@
         disk = "/dev/vda";
         withSwap = true;
         swapSize = "2";
+        imageSize = "2G";
       };
     }
     inputs.disko.nixosModules.disko
@@ -27,5 +28,10 @@
     ../modules/shell.nix
     ../modules/tools.nix
     ../modules/user.nix
+  ];
+
+  boot.kernelModules = [
+    "kvm-intel"
+    "kvm-amd"
   ];
 }

@@ -57,6 +57,38 @@ resource "helm_release" "cdi" {
   depends_on = [kubernetes_namespace.kubevirt, helm_release.cdi-crd]
 }
 
+resource "kubectl_manifest" "forgejo_image" {
+  yaml_body = <<YAML
+  apiVersion: batch/v1
+  kind: Job
+  metadata:
+    name: forgejo-nixos-builder
+    namespace: ${var.kubevirt_ns}
+  spec:
+    template:
+      spec:
+        restartPolicy: Never
+        containers:
+          - name: builder
+            image: nixos/nix:latest
+            command: ["/bin/sh", "-c"]
+            args:
+              - |
+                # Enable flakes
+                mkdir -p ~/.config/nix
+                echo "experimental-features = nix-command flakes" > ~/.config/nix/nix.conf
+
+                nix-env -iA nixpkgs.git nixpkgs.just nixpkgs.kubevirt
+                git clone --depth 1 --branch main https://github.com/ProfiiDev/server-config.git
+                cd server-config
+
+                just forgejo-image
+                virtctl image-upload dv nixos-forgejo --size=2Gi --image-path=main.qcow2 --access-mode=ReadWriteOnce -n ${var.kubevirt_ns}
+  YAML
+
+  depends_on = [helm_release.cdi]
+}
+
 resource "null_resource" "nixos-forgejo-image-build" {
   provisioner "local-exec" {
     command = "just forgejo-image"
@@ -92,7 +124,8 @@ spec:
               disk: {bus: virtio}
         resources:
           requests:
-            memory: 2Gi
+            memory: 4Gi
+            cpu: "2"
       volumes:
         - name: rootdisk
           dataVolume:

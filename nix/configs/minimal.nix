@@ -12,6 +12,7 @@
         disk = "/dev/vda";
         withSwap = true;
         swapSize = "2";
+        imageSize = "2G";
       };
     }
     inputs.disko.nixosModules.disko
