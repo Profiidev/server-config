@@ -2,7 +2,7 @@ resource "helm_release" "vault" {
   name       = "vault"
   repository = "https://helm.releases.hashicorp.com"
   chart      = "vault"
-  version    = "0.31.0"
+  version    = "0.32.0"
   namespace  = kubernetes_namespace.secrets.metadata[0].name
 
   values = [templatefile("${path.module}/templates/vault.values.tftpl", {

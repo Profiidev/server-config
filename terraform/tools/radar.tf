@@ -8,7 +8,7 @@ resource "helm_release" "radar" {
   name       = "radar"
   repository = "https://skyhook-io.github.io/helm-charts"
   chart      = "radar"
-  version    = "1.5.1"
+  version    = "1.5.10"
   namespace  = var.radar_ns
 
   values = [templatefile("${path.module}/templates/radar.values.tftpl", {
@@ -57,7 +57,7 @@ spec:
   - extract:
       key: tools/radar
   YAML
-  
+
   depends_on = [kubernetes_namespace.radar]
 }
 
@@ -81,7 +81,7 @@ spec:
         - "profile"
         - "email"
   YAML
-  
+
   depends_on = [kubernetes_namespace.radar]
 }
 
@@ -98,7 +98,7 @@ spec:
     secretNames:
       - ${var.cloudflare_ca_cert_var}
   YAML
-  
+
   depends_on = [kubernetes_namespace.radar]
 }
 
@@ -129,7 +129,7 @@ resource "kubernetes_service" "caretta" {
 
     type = "ClusterIP"
   }
-  
+
   depends_on = [kubernetes_namespace.caretta]
 }
 

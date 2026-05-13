@@ -175,8 +175,6 @@ tools/forgejo-runner:
 
 - positron
 - nextcloud
-- coder
-- charm
 - auto-clean-bot
 
 ## Additional setup steps

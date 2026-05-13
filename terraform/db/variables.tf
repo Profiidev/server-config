@@ -34,18 +34,6 @@ variable "ingress_class" {
   type        = string
 }
 
-variable "minio_config" {
-  description = "The name of the MinIO configuration secret"
-  type        = string
-  default     = "minio-config"
-}
-
-variable "nats_ns" {
-  description = "The namespace where NATS will be deployed"
-  type        = string
-  default     = "nats"
-}
-
 variable "pg_ns" {
   description = "The namespace where PostgreSQL will be deployed"
   type        = string

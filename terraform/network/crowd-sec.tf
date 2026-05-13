@@ -17,7 +17,7 @@ resource "helm_release" "crowdsec" {
   repository = "https://crowdsecurity.github.io/helm-charts"
   chart      = "crowdsec"
   namespace  = var.crowdsec_ns
-  version    = "0.20.1"
+  version    = "0.23.0"
 
   values = [
     templatefile("${path.module}/templates/crowdsec.values.tftpl", {

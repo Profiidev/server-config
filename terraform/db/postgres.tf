@@ -8,7 +8,7 @@ resource "helm_release" "postgres" {
   name       = "postgres"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "postgresql"
-  version    = "18.1.11"
+  version    = "18.6.5"
   namespace  = var.pg_ns
 
   values = [templatefile("${path.module}/templates/postgres.values.tftpl", {
