@@ -2,7 +2,7 @@ resource "helm_release" "grafana" {
   name       = "grafana"
   repository = "https://grafana.github.io/helm-charts"
   chart      = "grafana"
-  version    = "10.2.0"
+  version    = "10.5.15"
   namespace  = var.metrics_ns
 
   values = [templatefile("${path.module}/templates/grafana.values.tftpl", {
@@ -34,11 +34,6 @@ module "dashboards" {
     "external-secrets",
     "vault", "longhorn",
     "postgres",
-    "nats",
-    "nats-jetstream",
-    "coderd",
-    "coder-workspaces",
-    "coder-workspace-detail",
     "crowdsec-details",
     "crowdsec-insight",
     "crowdsec-overview",
@@ -81,7 +76,6 @@ resource "kubectl_manifest" "alert_configs" {
     "cert-manager",
     "longhorn",
     "postgres",
-    "coder",
     "tempo",
     "alloy",
     "argocd",

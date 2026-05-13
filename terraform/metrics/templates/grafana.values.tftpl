@@ -1,6 +1,7 @@
 persistence:
   enabled: true
   storageClassName: ${storage_class}
+  size: 2Gi
 grafana.ini:
   server:
     root_url: https://grafana.profidev.io
@@ -44,7 +45,7 @@ datasources:
       - name: Mimir
         uid: prom
         type: prometheus
-        url: http://mimir-nginx/prometheus
+        url: http://mimir-gateway/prometheus
         isDefault: true
         jsonData:
           timeInterval: 60s

@@ -48,7 +48,7 @@ resource "null_resource" "garage_metrics_buckets" {
       SET_SECRET="kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv patch -mount=kv apps/lgtm"
 
       kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv apps/lgtm GRAFANA_S3_ENDPOINT="http://garage.${kubernetes_namespace.garage.metadata[0].name}.svc.cluster.local:3900"
+      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv apps/lgtm GRAFANA_S3_ENDPOINT="garage.${kubernetes_namespace.garage.metadata[0].name}.svc.cluster.local:3900"
 
       # loki
       OUTPUT=$($EXEC key create loki)

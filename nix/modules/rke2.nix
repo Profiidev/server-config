@@ -87,8 +87,12 @@ in
     2379 # etcd server client API
     2380 # etcd server peer API
     2222 # SSH
-    593
-    594
+    # metrics
+    2381
+    9100
+    10249
+    10257
+    10259
   ];
 
   networking.interfaces.ens7 = {
