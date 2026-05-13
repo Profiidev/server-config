@@ -39,15 +39,6 @@ resource "helm_release" "caretta" {
   depends_on = [kubernetes_namespace.caretta]
 }
 
-module "k8s_api_np_radar" {
-  source = "../modules/k8s-api-np"
-
-  namespace = var.radar_ns
-  k8s_api   = var.k8s_api
-
-  depends_on = [kubernetes_namespace.radar]
-}
-
 resource "kubectl_manifest" "radar_secrets" {
   yaml_body = <<YAML
 apiVersion: external-secrets.io/v1

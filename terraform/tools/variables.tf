@@ -24,18 +24,6 @@ variable "cluster_secret_store" {
   type        = string
 }
 
-variable "k8s_api" {
-  description = "The Kubernetes API server address"
-  type        = string
-  sensitive   = true
-}
-
-variable "coder_ns" {
-  description = "The namespace for Coder resources"
-  type        = string
-  default     = "coder"
-}
-
 variable "radar_ns" {
   description = "The namespace for Radar resources"
   type        = string

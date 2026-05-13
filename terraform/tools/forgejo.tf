@@ -78,5 +78,5 @@ spec:
       key: tools/forgejo
   YAML
 
-  depends_on = [kubernetes_namespace.tailscale]
+  depends_on = [kubernetes_namespace.forgejo]
 }

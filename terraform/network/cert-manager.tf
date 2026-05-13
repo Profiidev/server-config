@@ -51,7 +51,6 @@ metadata:
   name: ${each.key == "prod" ? var.cert_issuer_prod : var.cert_issuer_staging}
 spec:
   acme:
-    email: ${var.email}
     server: ${each.value}
     privateKeySecretRef:
       name: letsencrypt-${each.key}-issuer-account-key

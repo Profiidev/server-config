@@ -25,10 +25,6 @@ variable "cert_issuer_prod" {
   type        = string
 }
 
-variable "email" {
-  description = "Email for Let's Encrypt"
-  type        = string
-}
 
 variable "cluster_secret_store" {
   description = "Cluster Secret Store"

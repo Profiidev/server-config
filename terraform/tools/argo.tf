@@ -20,15 +20,6 @@ resource "helm_release" "argocd" {
   depends_on = [kubernetes_namespace.argo]
 }
 
-module "k8s_api_np_argo" {
-  source = "../modules/k8s-api-np"
-
-  namespace = var.argo_ns
-  k8s_api   = var.k8s_api
-
-  depends_on = [kubernetes_namespace.argo]
-}
-
 resource "kubectl_manifest" "argo_secret" {
   yaml_body = <<YAML
 apiVersion: external-secrets.io/v1

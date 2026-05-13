@@ -5,7 +5,6 @@
 secrets.tfvars file with the following variables:
 
 ```hcl
-email = "<Email address letsencrypt notifications will be sent to>"
 smtp_password = "<SMTP server password>"
 ```
 
@@ -141,6 +140,24 @@ apps/alert-bot:
 
 - proxy: <Alertmanager Discord webhook proxy URL>
 - url: <Alertmanager Discord webhook URL>
+
+tools/forgejo
+
+- key: <Forgejo oidc client key>
+- secret: <Forgejo oidc client secret>
+- privateKey: <Forgejo ssh private key for git operations>
+
+tools/radar:
+
+- client-id: <OAuth2 Proxy client ID for Radar>
+- client-secret: <OAuth2 Proxy client secret for Radar>
+- secret: <OAuth2 Proxy cookie secret for Radar>
+
+### After tools setup (step 5)
+
+tools/forgejo-runner:
+
+- runner-config.yaml: <Forgejo runner configuration>
 
 ## S3 resources to create
 
