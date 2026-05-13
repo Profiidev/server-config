@@ -74,3 +74,19 @@ YAML
 
   depends_on = [helm_release.longhorn]
 }
+
+resource "kubectl_manifest" "longhorn_backup_target" {
+  yaml_body = <<YAML
+apiVersion: longhorn.io/v1beta2
+kind: BackupTarget
+metadata:
+  name: default
+  namespace: ${kubernetes_namespace.storage.metadata[0].name}
+spec:
+  backupTargetURL: "s3://longhorn@garage/"
+  credentialSecret: "longhorn-secret"
+  pollInterval: 5m0s
+YAML
+
+  depends_on = [helm_release.longhorn]
+}
