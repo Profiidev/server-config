@@ -51,3 +51,8 @@ variable "pg_ns" {
   type        = string
   default     = "postgres"
 }
+
+variable "secrets_ns" {
+  description = "The namespace where secrets will be stored"
+  type        = string
+}

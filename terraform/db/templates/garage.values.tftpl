@@ -1,10 +1,11 @@
 garage:
+  dbEngine: "sqlite"
   replicationFactor: "1"
+  adminToken: "${token}"
 
 persistence:
   data:
     size: "100Gi"
-
 
 deployment:
   replicaCount: 1

@@ -45,7 +45,6 @@ certs/crowdsec:
 db/postgres:
 
 - password: <PostgreSQL admin password>
-- username: <PostgreSQL admin username>
 
 tools/argo:
 
@@ -138,61 +137,22 @@ apps/positron:
 - WEBAUTHN_NAME: <WebAuthn application name>
 - WEBAUTHN_ORIGIN: <WebAuthn allowed origins>
 
-db/rustfs:
-
-- RUSTFS_ACCESS_KEY: <RustFS access key>
-- RUSTFS_SECRET_KEY: <RustFS secret key>
-- RUSTFS_IDENTITY_OPENID_CLIENT_ID_POSITRON: <RustFS OpenID client ID>
-- RUSTFS_IDENTITY_OPENID_CLIENT_SECRET_POSITRON: <RustFS OpenID client secret>
-- RUSTFS_IDENTITY_OPENID_CONFIG_URL_POSITRON: <RustFS OpenID configuration URL>
-- RUSTFS_IDENTITY_OPENID_DISPLAY_NAME_POSITRON: <RustFS OpenID display name>
-- RUSTFS_IDENTITY_OPENID_ROLE_POLICY_POSITRON: "consoleAdmin"
-- RUSTFS_IDENTITY_OPENID_SCOPES_POSITRON: "openid,profile,email"
-
-### After DB setup (step 4)
-
-apps/lgtm:
-
-- GRAFANA_LOKI_S3_ACCESS_KEY: <MinIO access key for Grafana Loki>
-- GRAFANA_LOKI_S3_SECRET_KEY: <MinIO secret key for Grafana Loki>
-- GRAFANA_MIMIR_S3_ACCESS_KEY: <MinIO access key for Grafana Mimir>
-- GRAFANA_MIMIR_S3_SECRET_KEY: <MinIO secret key for Grafana Mimir>
-- GRAFANA_S3_ENDPOINT: <MinIO service endpoint>
-- GRAFANA_TEMPO_S3_ACCESS_KEY: <MinIO access key for Grafana Tempo>
-- GRAFANA_TEMPO_S3_SECRET_KEY: <MinIO secret key for Grafana Tempo>
-
 apps/alert-bot:
 
 - proxy: <Alertmanager Discord webhook proxy URL>
 - url: <Alertmanager Discord webhook URL>
 
-tools/longhorn:
-
-- AWS_ACCESS_KEY_ID: <MinIO access key for Longhorn>
-- AWS_ENDPOINTS: <MinIO service endpoint for Longhorn>
-- AWS_SECRET_ACCESS_KEY: <MinIO secret key for Longhorn>
-
 ## S3 resources to create
 
 ### Buckets
 
-- loki-admin
-- loki-chunk
-- loki-ruler
-- mimir-alert
-- mimir-blocks
-- mimir-ruler
-- tempo
-- longhorn
 - positron
+- hibernation
 
 ### Access keys
 
-- loki: Access to loki-admin, loki-chunk, loki-ruler buckets
-- mimir: Access to mimir-alert, mimir-blocks, mimir-ruler buckets
-- tempo: Access to tempo bucket
-- longhorn: Access to longhorn bucket
 - positron: Access to positron bucket
+- hibernation: Access to hibernation bucket
 
 ## Databases to create
 

@@ -14,6 +14,7 @@ defaultSettings:
   # temp
   #replicaZoneSoftAntiAffinity: true
   guaranteedInstanceManagerCPU: "3"
+  nodeDownPodDeletionPolicy: "delete-both-statefulset-and-deployment-pod"
 
 networkPolicies:
   enabled: true
