@@ -21,21 +21,15 @@
       }
     ]
   },
-  "description": "An example dashboard for Longhorn. Updated by Robin Hermann (04.10.22)",
-  "editable": false,
+  "description": "An example dashboard for Longhorn. Updated by ONZACK AG (Robin Hermann)",
+  "editable": true,
   "fiscalYearStartMonth": 0,
-  "gnetId": 16888,
   "graphTooltip": 0,
-  "id": 7,
+  "id": 227,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -61,7 +55,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -80,21 +74,22 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
+          "calcs": ["last"],
           "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.1.5",
+      "pluginVersion": "12.3.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "prom"
           },
           "editorMode": "code",
           "expr": "count(longhorn_volume_capacity_bytes{volume=~\"$volume\"}) OR on() vector(0)",
@@ -121,7 +116,7 @@
             "steps": [
               {
                 "color": "red",
-                "value": null
+                "value": 0
               },
               {
                 "color": "green",
@@ -144,21 +139,22 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
+          "calcs": ["last"],
           "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.1.5",
+      "pluginVersion": "12.3.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "prom"
           },
           "editorMode": "code",
           "expr": "count(longhorn_volume_robustness{volume=~\"$volume\"}==1) OR on() vector(0)",
@@ -183,11 +179,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -196,6 +194,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
@@ -203,6 +202,7 @@
               "type": "linear"
             },
             "showPoints": "never",
+            "showValues": false,
             "spanNulls": true,
             "stacking": {
               "group": "A",
@@ -219,7 +219,7 @@
             "steps": [
               {
                 "color": "transparent",
-                "value": null
+                "value": 0
               },
               {
                 "color": "red",
@@ -240,9 +240,7 @@
       "id": 12,
       "options": {
         "legend": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
@@ -250,16 +248,17 @@
           "sortDesc": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "8.4.2",
+      "pluginVersion": "12.3.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "prom"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -287,7 +286,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "orange",
@@ -310,21 +309,22 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
+          "calcs": ["last"],
           "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.1.5",
+      "pluginVersion": "12.3.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "prom"
           },
           "editorMode": "code",
           "expr": "count(longhorn_volume_robustness{volume=~\"$volume\"}==2) OR on() vector(0)",
@@ -351,7 +351,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "red",
@@ -374,21 +374,22 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
+          "calcs": ["last"],
           "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.1.5",
+      "pluginVersion": "12.3.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "prom"
           },
           "editorMode": "code",
           "expr": "count(longhorn_volume_robustness{volume=~\"$volume\"}==3) OR on() vector(0)",
@@ -403,6 +404,7 @@
     },
     {
       "datasource": {
+        "default": false,
         "type": "prometheus",
         "uid": "${datasource}"
       },
@@ -411,7 +413,12 @@
         "defaults": {
           "custom": {
             "align": "auto",
-            "displayMode": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
             "inspect": false
           },
           "decimals": 1,
@@ -431,7 +438,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "#EAB839",
@@ -453,8 +460,12 @@
             },
             "properties": [
               {
-                "id": "custom.displayMode",
-                "value": "lcd-gauge"
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "basic",
+                  "type": "gauge",
+                  "valueDisplayMode": "color"
+                }
               }
             ]
           },
@@ -477,6 +488,18 @@
                 "value": 100
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Volume"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 344
+              }
+            ]
           }
         ]
       },
@@ -488,13 +511,7 @@
       },
       "id": 10,
       "options": {
-        "footer": {
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
+        "cellHeight": "sm",
         "frameIndex": 4,
         "showHeader": true,
         "sortBy": [
@@ -504,15 +521,15 @@
           }
         ]
       },
-      "pluginVersion": "9.1.5",
+      "pluginVersion": "12.3.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "prom"
           },
           "editorMode": "code",
-          "expr": "avg by (volume) (longhorn_volume_capacity_bytes{volume=~\"$volume\"})",
+          "expr": "avg by (pvc_namespace, pvc, volume) (longhorn_volume_capacity_bytes{volume=~\"$volume\"})",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -528,7 +545,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "avg by (volume, name) (label_replace(kubelet_volume_stats_used_bytes, \"name\", \"$1\", \"persistentvolumeclaim\", \"(.*)\") * on(name) group_left(volume) (label_replace(kube_persistentvolume_claim_ref{persistentvolume=~\"$volume\"}, \"volume\", \"$1\", \"persistentvolume\", \"(.*)\")))",
+          "expr": "label_replace(label_replace(avg by(volume, namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes),\"pvc\",\"$1\",\"persistentvolumeclaim\",\"(.*)\"),\"pvc_namespace\",\"$1\",\"namespace\",\"(.*)\")",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -539,11 +556,11 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "prom"
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "100 / avg by (volume) (longhorn_volume_capacity_bytes{volume=~\"$volume\"})\r\n*\r\navg by (volume) (label_replace(kubelet_volume_stats_used_bytes, \"name\", \"$1\", \"persistentvolumeclaim\", \"(.*)\") * on(name) group_left(volume, persistentvolume) (label_replace(kube_persistentvolume_claim_ref{persistentvolume=~\"$volume\"}, \"volume\", \"$1\", \"persistentvolume\", \"(.*)\")))",
+          "expr": "100 *\r\n  label_replace(\r\n    avg by (volume, namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes),\r\n    \"pvc\", \"$1\", \"persistentvolumeclaim\", \"(.*)\"\r\n  )\r\n/ on (namespace, pvc)\r\n  (\r\n    label_replace(\r\n      avg by (pvc_namespace, pvc, volume) (longhorn_volume_capacity_bytes{volume=~\"$volume\"}),\r\n      \"namespace\", \"$1\", \"pvc_namespace\", \"(.*)\"\r\n    )\r\n    and on (volume)\r\n      (longhorn_volume_state != 3)\r\n  )",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -562,14 +579,20 @@
           "id": "organize",
           "options": {
             "excludeByName": {
-              "Time": true
+              "Time": true,
+              "namespace": true,
+              "persistentvolumeclaim": true
             },
+            "includeByName": {},
             "indexByName": {
               "Time": 0,
-              "Value #capacity": 4,
-              "Value #usage-percentage": 5,
-              "Value #used": 3,
-              "name": 2,
+              "Value #capacity": 5,
+              "Value #usage-percentage": 6,
+              "Value #used": 4,
+              "namespace": 7,
+              "persistentvolumeclaim": 8,
+              "pvc": 2,
+              "pvc_namespace": 3,
               "volume": 1
             },
             "renameByName": {
@@ -580,8 +603,26 @@
               "Value #usage-percentage": "Usage",
               "Value #used": "Used",
               "name": "Persistent Volume Claim",
+              "pvc": "PVC",
+              "pvc_namespace": "Namespace",
               "volume": "Volume"
             }
+          }
+        },
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              {
+                "config": {
+                  "id": "isNull",
+                  "options": {}
+                },
+                "fieldName": "Volume"
+              }
+            ],
+            "match": "any",
+            "type": "exclude"
           }
         }
       ],
@@ -601,7 +642,7 @@
             "steps": [
               {
                 "color": "red",
-                "value": null
+                "value": 0
               },
               {
                 "color": "green",
@@ -624,21 +665,22 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
+          "calcs": ["last"],
           "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.1.5",
+      "pluginVersion": "12.3.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "prom"
           },
           "editorMode": "code",
           "expr": "count(longhorn_volume_state{volume=~\"$volume\"}==2) OR on() vector(0)",
@@ -665,7 +707,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "yellow",
@@ -688,21 +730,22 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
+          "calcs": ["last"],
           "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.1.5",
+      "pluginVersion": "12.3.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "prom"
           },
           "editorMode": "code",
           "expr": "count(longhorn_volume_state{volume=~\"$volume\"}==3) OR on() vector(0)",
@@ -716,11 +759,7 @@
       "type": "stat"
     },
     {
-      "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -728,570 +767,590 @@
         "y": 19
       },
       "id": 42,
-      "panels": [],
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "The total number of nodes in the Longhorn storage system",
+          "fieldConfig": {
+            "defaults": {
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 4,
+            "x": 0,
+            "y": 20
+          },
+          "id": 18,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": ["last"],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "12.1.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prom"
+              },
+              "expr": "avg(longhorn_node_count_total) OR on() vector(0)",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Total Number Of Nodes",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "Disabled nodes are nodes that are disabled by the user.  When users disable a node, Longhorn will not use the node's storage for replica scheduling. Note that Longhorn can still attach a volume to disabled nodes because the actual data of the volume could be on a different node.",
+          "fieldConfig": {
+            "defaults": {
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 4,
+            "x": 4,
+            "y": 20
+          },
+          "id": 21,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": ["last"],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "12.1.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prom"
+              },
+              "expr": "count(longhorn_node_status{condition=\"allowScheduling\"}==0) OR on() vector(0)",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Number Of Disabled Nodes",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "displayName": "${__field.labels.node}",
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 16,
+            "x": 8,
+            "y": 20
+          },
+          "id": 24,
+          "options": {
+            "legend": {
+              "calcs": ["lastNotNull"],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.1.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prom"
+              },
+              "exemplar": true,
+              "expr": "(longhorn_node_storage_usage_bytes/longhorn_node_storage_capacity_bytes) * 100",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Node Storage Usage",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "Schedulable nodes are nodes that Longhorn can use their storage for replica scheduling.",
+          "fieldConfig": {
+            "defaults": {
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": 0
+                  },
+                  {
+                    "color": "green",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 4,
+            "x": 0,
+            "y": 26
+          },
+          "id": 20,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": ["last"],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "12.1.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prom"
+              },
+              "expr": "(count(longhorn_node_status{condition=\"schedulable\"}==1) OR on() vector(0)) - (count(longhorn_node_status{condition=\"allowScheduling\"}==0) OR on() vector(0))",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Number Of Schedulable Nodes",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "Failed Nodes are nodes that Longhorn cannot attach volumes to and cannot schedule replicas onto. e.g: when the nodes went down.",
+          "fieldConfig": {
+            "defaults": {
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 4,
+            "x": 4,
+            "y": 26
+          },
+          "id": 22,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": ["last"],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "12.1.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prom"
+              },
+              "expr": "(avg(longhorn_node_count_total) OR on() vector(0)) - (count(longhorn_node_status{condition=\"ready\"}==1) OR on() vector(0))",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Number Of Failed Nodes",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "decimals": 1,
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Storage Capacity"
+                },
+                "properties": [
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "basic",
+                      "type": "gauge"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 16,
+            "x": 8,
+            "y": 30
+          },
+          "id": 23,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": ["sum"],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": false,
+                "displayName": "Storage Capacity"
+              }
+            ]
+          },
+          "pluginVersion": "12.1.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prom"
+              },
+              "expr": "longhorn_node_storage_capacity_bytes",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "{{node}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Node Capacity",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true,
+                  "endpoint": true,
+                  "instance": true,
+                  "job": true,
+                  "namespace": true,
+                  "pod": false,
+                  "service": true
+                },
+                "indexByName": {
+                  "Time": 0,
+                  "Value": 10,
+                  "__name__": 1,
+                  "container": 3,
+                  "endpoint": 4,
+                  "instance": 5,
+                  "job": 6,
+                  "namespace": 7,
+                  "node": 2,
+                  "pod": 8,
+                  "service": 9
+                },
+                "renameByName": {
+                  "Value": "Storage Capacity",
+                  "pod": ""
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 0,
+              "displayName": "${__field.labels.node}",
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 0,
+            "y": 32
+          },
+          "id": 26,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.1.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prom"
+              },
+              "exemplar": true,
+              "expr": "count by (node) (longhorn_volume_state==2)",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Number of Volumes Per Node",
+          "type": "timeseries"
+        }
+      ],
       "title": "Nodes",
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "description": "The total number of nodes in the Longhorn storage system",
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 4,
-        "x": 0,
-        "y": 20
-      },
-      "id": 18,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.1.5",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "avg(longhorn_node_count_total) OR on() vector(0)",
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Number Of Nodes",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "description": "Disabled nodes are nodes that are disabled by the user.  When users disable a node, Longhorn will not use the node's storage for replica scheduling. Note that Longhorn can still attach a volume to disabled nodes because the actual data of the volume could be on a different node.",
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 4,
-        "x": 4,
-        "y": 20
-      },
-      "id": 21,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.1.5",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "count(longhorn_node_status{condition=\"allowScheduling\"}==0) OR on() vector(0)",
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "title": "Number Of Disabled Nodes",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "displayName": "${__field.labels.node}",
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 16,
-        "x": 8,
-        "y": 20
-      },
-      "id": 24,
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "displayMode": "table",
-          "placement": "right",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "8.4.2",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "exemplar": true,
-          "expr": "(longhorn_node_storage_usage_bytes/longhorn_node_storage_capacity_bytes) * 100",
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "title": "Node Storage Usage",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "description": "Schedulable nodes are nodes that Longhorn can use their storage for replica scheduling.",
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 4,
-        "x": 0,
-        "y": 26
-      },
-      "id": 20,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.1.5",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "(count(longhorn_node_status{condition=\"schedulable\"}==1) OR on() vector(0)) - (count(longhorn_node_status{condition=\"allowScheduling\"}==0) OR on() vector(0))",
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "title": "Number Of Schedulable Nodes",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "description": "Failed Nodes are nodes that Longhorn cannot attach volumes to and cannot schedule replicas onto. e.g: when the nodes went down.",
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 4,
-        "x": 4,
-        "y": 26
-      },
-      "id": 22,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.1.5",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "(avg(longhorn_node_count_total) OR on() vector(0)) - (count(longhorn_node_status{condition=\"ready\"}==1) OR on() vector(0))",
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "title": "Number Of Failed Nodes",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": "auto",
-            "displayMode": "auto",
-            "inspect": false
-          },
-          "decimals": 1,
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "bytes"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Storage Capacity"
-            },
-            "properties": [
-              {
-                "id": "custom.displayMode",
-                "value": "lcd-gauge"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 16,
-        "x": 8,
-        "y": 30
-      },
-      "id": 23,
-      "options": {
-        "footer": {
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
-        "showHeader": true
-      },
-      "pluginVersion": "9.1.5",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "expr": "longhorn_node_storage_capacity_bytes",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "{{node}}",
-          "refId": "A"
-        }
-      ],
-      "title": "Node Capacity",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "__name__": true,
-              "endpoint": true,
-              "instance": true,
-              "job": true,
-              "namespace": true,
-              "pod": false,
-              "service": true
-            },
-            "indexByName": {
-              "Time": 0,
-              "Value": 10,
-              "__name__": 1,
-              "container": 3,
-              "endpoint": 4,
-              "instance": 5,
-              "job": 6,
-              "namespace": 7,
-              "node": 2,
-              "pod": 8,
-              "service": 9
-            },
-            "renameByName": {
-              "Value": "Storage Capacity",
-              "pod": ""
-            }
-          }
-        }
-      ],
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "decimals": 0,
-          "displayName": "${__field.labels.node}",
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 32
-      },
-      "id": 26,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "8.4.2",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "exemplar": true,
-          "expr": "count by (node) (longhorn_volume_state==2)",
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "title": "Number of Volumes Per Node",
-      "type": "timeseries"
-    },
-    {
       "collapsed": true,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 40
+        "y": 20
       },
       "id": 44,
       "panels": [
@@ -1363,9 +1422,7 @@
           "id": 32,
           "options": {
             "legend": {
-              "calcs": [
-                "lastNotNull"
-              ],
+              "calcs": ["lastNotNull"],
               "displayMode": "table",
               "placement": "right",
               "showLegend": true
@@ -1380,7 +1437,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "prom"
               },
               "exemplar": true,
               "expr": "(longhorn_disk_usage_bytes/longhorn_disk_capacity_bytes)*100",
@@ -1402,7 +1459,9 @@
             "defaults": {
               "custom": {
                 "align": "auto",
-                "displayMode": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
                 "inspect": false
               },
               "decimals": 1,
@@ -1426,8 +1485,11 @@
                 },
                 "properties": [
                   {
-                    "id": "custom.displayMode",
-                    "value": "lcd-gauge"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "mode": "lcd",
+                      "type": "gauge"
+                    }
                   }
                 ]
               }
@@ -1443,9 +1505,7 @@
           "options": {
             "footer": {
               "fields": "",
-              "reducer": [
-                "sum"
-              ],
+              "reducer": ["sum"],
               "show": false
             },
             "showHeader": true
@@ -1455,7 +1515,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "prom"
               },
               "expr": "longhorn_disk_capacity_bytes",
               "format": "table",
@@ -1510,15 +1570,11 @@
     },
     {
       "collapsed": true,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 41
+        "y": 21
       },
       "id": 46,
       "panels": [
@@ -1570,8 +1626,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent",
-                    "value": null
+                    "color": "transparent"
                   },
                   {
                     "color": "red",
@@ -1590,7 +1645,6 @@
             "y": 42
           },
           "id": 36,
-          "links": [],
           "options": {
             "legend": {
               "calcs": [],
@@ -1608,7 +1662,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "prom"
               },
               "exemplar": true,
               "expr": "(longhorn_node_cpu_usage_millicpu / longhorn_node_cpu_capacity_millicpu) * 100",
@@ -1668,8 +1722,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent",
-                    "value": null
+                    "color": "transparent"
                   },
                   {
                     "color": "red",
@@ -1688,7 +1741,6 @@
             "y": 42
           },
           "id": 38,
-          "links": [],
           "options": {
             "legend": {
               "calcs": [],
@@ -1706,7 +1758,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "prom"
               },
               "exemplar": true,
               "expr": "( longhorn_node_memory_usage_bytes / longhorn_node_memory_capacity_bytes ) * 100",
@@ -1766,8 +1818,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1786,7 +1837,6 @@
             "y": 52
           },
           "id": 28,
-          "links": [],
           "options": {
             "legend": {
               "calcs": [],
@@ -1804,7 +1854,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "prom"
               },
               "exemplar": true,
               "expr": "longhorn_instance_manager_cpu_usage_millicpu",
@@ -1864,8 +1914,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "transparent",
-                    "value": null
+                    "color": "transparent"
                   },
                   {
                     "color": "red",
@@ -1884,7 +1933,6 @@
             "y": 52
           },
           "id": 30,
-          "links": [],
           "options": {
             "legend": {
               "calcs": [],
@@ -1902,7 +1950,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "prom"
               },
               "exemplar": true,
               "expr": "(longhorn_instance_manager_cpu_usage_millicpu/longhorn_instance_manager_cpu_requests_millicpu)*100",
@@ -1961,8 +2009,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -1981,7 +2028,6 @@
             "y": 52
           },
           "id": 29,
-          "links": [],
           "options": {
             "legend": {
               "calcs": [],
@@ -1999,7 +2045,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "prom"
               },
               "exemplar": true,
               "expr": "longhorn_instance_manager_memory_usage_bytes",
@@ -2059,8 +2105,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2096,7 +2141,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "prom"
               },
               "exemplar": true,
               "expr": "longhorn_manager_cpu_usage_millicpu",
@@ -2155,8 +2200,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -2192,7 +2236,7 @@
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "prom"
               },
               "exemplar": true,
               "expr": "longhorn_manager_memory_usage_bytes",
@@ -2214,16 +2258,16 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 42
+        "y": 22
       },
       "id": 50,
       "panels": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "P1809F7CD0C75ACF3"
-          },
           "description": "To get Longhorn Alerts you have to deploy PrometheusRules (more Infos: https://longhorn.io/docs/1.3.1/monitoring/alert-rules-example/)",
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
           "gridPos": {
             "h": 13,
             "w": 24,
@@ -2256,51 +2300,36 @@
       "type": "row"
     }
   ],
+  "preload": false,
   "refresh": "5m",
-  "schemaVersion": 37,
-  "style": "dark",
-  "tags": [
-    "Storage",
-    "K8s",
-    "Longhorn"
-  ],
+  "schemaVersion": 42,
+  "tags": ["Storage", "K8s", "Longhorn"],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "prometheus",
-          "value": "prometheus"
+          "text": "Mimir",
+          "value": "prom"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Datasource",
-        "multi": false,
         "name": "datasource",
         "options": [],
         "query": "prometheus",
-        "queryValue": "",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
         "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": ["All"],
+          "value": ["$__all"]
         },
         "datasource": {
           "type": "prometheus",
           "uid": "${datasource}"
         },
         "definition": "label_values(longhorn_volume_state,volume)",
-        "hide": 0,
         "includeAll": true,
         "label": "Volume",
         "multi": true,
@@ -2312,7 +2341,6 @@
         },
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       }
@@ -2322,23 +2350,9 @@
     "from": "now-6h",
     "to": "now"
   },
-  "timepicker": {
-    "refresh_intervals": [
-      "5s",
-      "10s",
-      "30s",
-      "1m",
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "2h",
-      "1d"
-    ]
-  },
+  "timepicker": {},
   "timezone": "",
-  "title": "Longhorn",
-  "uid": "ozk-lh-mon",
-  "version": 3,
-  "weekStart": ""
+  "title": "Longhorn Monitoring",
+  "uid": "ozk-lh-mona",
+  "version": 1
 }

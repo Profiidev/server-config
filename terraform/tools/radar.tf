@@ -20,25 +20,6 @@ resource "helm_release" "radar" {
   depends_on = [kubernetes_namespace.radar]
 }
 
-resource "kubernetes_namespace" "caretta" {
-  metadata {
-    name = var.caretta_ns
-  }
-}
-
-resource "helm_release" "caretta" {
-  name       = "caretta"
-  repository = "https://helm.groundcover.com"
-  chart      = "caretta"
-  version    = "0.0.16"
-  namespace  = var.caretta_ns
-
-  values = [templatefile("${path.module}/templates/caretta.values.tftpl", {
-  })]
-
-  depends_on = [kubernetes_namespace.caretta]
-}
-
 resource "kubectl_manifest" "radar_secrets" {
   yaml_body = <<YAML
 apiVersion: external-secrets.io/v1
@@ -100,59 +81,4 @@ spec:
   YAML
 
   depends_on = [kubernetes_namespace.radar]
-}
-
-resource "kubernetes_service" "caretta" {
-  metadata {
-    name      = "caretta"
-    namespace = var.caretta_ns
-    labels = {
-      app = "caretta"
-      "app.kubernetes.io/name"    = "caretta"
-      "app.kubernetes.io/instance" = "caretta"
-    }
-  }
-
-  spec {
-    selector = {
-      app = "caretta"
-      "app.kubernetes.io/name"    = "caretta"
-      "app.kubernetes.io/instance" = "caretta"
-    }
-
-    port {
-      name        = "prom-metrics"
-      port        = 7117
-      target_port = "prom-metrics"
-      protocol    = "TCP"
-    }
-
-    type = "ClusterIP"
-  }
-
-  depends_on = [kubernetes_namespace.caretta]
-}
-
-resource "kubectl_manifest" "caretta_service_monitor" {
-  yaml_body = <<YAML
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: caretta
-  labels:
-    app.kubernetes.io/name: caretta
-spec:
-  selector:
-    matchLabels:
-      app: caretta
-  namespaceSelector:
-    matchNames:
-      - ${var.radar_ns}
-  endpoints:
-    - port: prom-metrics
-      path: /metrics
-      interval: 60s
-  YAML
-
-  depends_on = [kubernetes_namespace.caretta]
 }
