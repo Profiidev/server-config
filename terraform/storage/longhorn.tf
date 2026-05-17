@@ -47,9 +47,9 @@ metadata:
   name: longhorn-db-backup
   namespace: ${kubernetes_namespace.storage.metadata[0].name}
 spec:
-  cron: "0 0 * * *"
+  cron: "0 0/4 * * ?"
   task: backup-force-create
-  retain: 3
+  retain: 24
   concurrency: 1
 YAML
 
@@ -64,7 +64,7 @@ metadata:
   name: longhorn-fs-trim
   namespace: ${kubernetes_namespace.storage.metadata[0].name}
 spec:
-  cron: "0 0 * * *"
+  cron: "0 0/4 * * ?"
   task: filesystem-trim
   retain: 0
   concurrency: 1
