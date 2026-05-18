@@ -90,3 +90,18 @@ YAML
 
   depends_on = [helm_release.longhorn]
 }
+
+resource "kubernetes_annotations" "longhorn_cdi_patch" {
+  api_version = "storage.k8s.io/v1"
+  kind        = "StorageClass"
+
+  metadata {
+    name = "longhorn"
+  }
+
+  annotations = {
+    "cdi.kubevirt.io/clone-strategy" = "csi-clone"
+  }
+
+  depends_on = [helm_release.longhorn]
+}

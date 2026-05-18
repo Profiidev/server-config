@@ -28,8 +28,6 @@ variable "ghcr_profidev" {
   type        = string
 }
 
-
-
 variable "vault_svc" {
   description = "The name of the Vault service"
   type        = string
