@@ -98,14 +98,6 @@ vault write auth/oidc/role/default \
   oidc_scopes="email,profile"
 ```
 
-policy
-
-```hcl
-path "*" {
-    capabilities = ["create", "read", "update", "delete", "list"]
-}
-```
-
 group:
 
 name: Vault Admin
