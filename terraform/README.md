@@ -55,11 +55,28 @@ sso:
 vault
 grafana
 
-### After tools setup (step 5)
+### After apps setup (step 8)
 
 tools/forgejo-runner:
 
 - runner-config.yaml: <Forgejo runner configuration>
+
+base config:
+
+```yaml
+server:
+  connections:
+    forgejo:
+      url: https://git.profidev.io/
+      token: <token>
+      uuid: <uuid>
+runner:
+  name: node1
+  labels:
+    - node-22:docker://node22-bookworm
+    - nixos-latest:docker://nixos/nix
+    - ubuntu-latest:docker://node:16-bullseye
+```
 
 ## Additional setup steps
 
