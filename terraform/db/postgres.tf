@@ -28,7 +28,7 @@ resource "helm_release" "postgres" {
     password = random_password.postgres_password.result
   })]
 
-  depends_on = [kubernetes_namespace.pg, kubectl_manifest.postgres_secrets]
+  depends_on = [kubernetes_namespace.pg]
 }
 
 resource "null_resource" "create_db" {
@@ -36,7 +36,7 @@ resource "null_resource" "create_db" {
     command = <<-EOT
       set -euo pipefail
 
-      EXEC="kubectl exec -n ${var.pg_ns} -c postgresql -l app.kubernetes.io/name=postgresql -- psql -U postgres"
+      EXEC="kubectl exec -n ${var.pg_ns} postgres-postgresql-0 -c postgresql -- env PGPASSWORD=${random_password.postgres_password.result} psql -U postgres"
       $EXEC -c "CREATE DATABASE positron;"
       $EXEC -c "CREATE DATABASE hibernation;"
       $EXEC -c "CREATE DATABASE auto_clean_bot;"
