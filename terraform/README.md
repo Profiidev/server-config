@@ -50,10 +50,6 @@ tools/tailscale:
 - client_id: <Tailscale OAuth client ID>
 - client_secret: <Tailscale OAuth client secret>
 
-sso:
-
-vault
-
 ### After apps setup (step 8)
 
 tools/forgejo-runner:
@@ -83,24 +79,3 @@ runner:
 
 - Cloudflare
 - Tailscale
-
-### Vault OIDC setup
-
-role
-
-```bash
-vault write auth/oidc/role/default \
-  bound_audiences="7f25d29e-ff95-4161-b95a-ad5d918bd85f" \
-  allowed_redirect_uris="https://vault.profidev.io/ui/vault/auth/oidc/oidc/callback" \
-  user_claim="email" \
-  groups_claim="groups" \
-  token_policies="default" \
-  oidc_scopes="email,profile"
-```
-
-group:
-
-name: Vault Admin
-type: external
-policies: admin
-add alias: Vault Admin
