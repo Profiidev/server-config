@@ -91,3 +91,20 @@ spec:
 
   depends_on = [kubernetes_namespace.positron]
 }
+
+resource "null_resource" "wait_for_positron" {
+   provisioner "local-exec" {
+    command = <<-EOT
+      set -euo pipefail
+
+      while [[ $(kubectl get pods -n ${var.positron_ns} -l app=positron -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do
+        echo "Waiting for Positron to be ready..."
+        sleep 5
+      done
+
+      echo "Positron is ready!"
+    EOT
+  }
+
+  depends_on = [kubectl_manifest.positron_app]
+}

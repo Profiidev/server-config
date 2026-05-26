@@ -18,7 +18,8 @@ discord_token = "<Discord bot token for Auto Clean Bot>"
 4. db: Deploy database services. (create buckets, dbs and access keys after this)
 5. tools: Install auxiliary tools and services.
 6. metrics: Set up monitoring and metrics collection services.
-7. apps: Deploy application services.
+7. sso: Configure Single Sign-On (SSO) services and authentication mechanisms.
+8. apps: Deploy application services.
 
 ## Required secrets in Vault
 
