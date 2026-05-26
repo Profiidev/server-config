@@ -14,6 +14,9 @@ spec:
         traefik-oidc-auth:
           moduleName: "github.com/sevensolutions/traefik-oidc-auth"
           version: "v0.17.0"
+        bouncer:
+          moduleName: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
+          version: "v1.6.0"
 
     providers:
       kubernetesCRD:
@@ -37,6 +40,15 @@ spec:
           respondingTimeouts:
             readTimeout: 600s
             writeTimeout: 600s
+        forwardedHeaders:
+          trustedIPs:
+            - "10.0.0.0/8"
+        proxyProtocol:
+          trustedIPs:
+            - "10.0.0.0/8"
+        http:
+          middlewares:
+            - kube-system-bouncer@kubernetescrd
       ssh:
         port: 2222
         protocol: TCP
@@ -60,6 +72,14 @@ spec:
           - websecure
         middlewares:
           - name: oidc-traefik
+
+    logs:
+      access:
+        enabled: true
+        format: json
+        fields:
+          headers:
+            defaultmode: keep
   YAML
 }
 
@@ -73,11 +93,12 @@ metadata:
 spec:
   plugin:
     bouncer:
-      enabled: true
-      crowdsecMode: stream
-      crowdsecLapiScheme: https
-      crowdsecLapiHost: "crowdsec-service.crowdsec.svc.cluster.local:8080"
-      corwdsecLapiKey: ${random_password.bouncer_key.result}
+      Enabled: true
+      CrowdsecMode: stream
+      CrowdsecLapiHost: "crowdsec-service.crowdsec.svc.cluster.local:8080"
+      CrowdsecLapiKey: ${random_password.bouncer_key.result}
+      ForwardedHeadersTrustedIPs:
+        - "10.0.0.0/8"
   YAML
 }
 

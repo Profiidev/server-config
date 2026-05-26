@@ -6,6 +6,7 @@ secrets.tfvars file with the following variables:
 
 ```hcl
 smtp_password = "<SMTP server password>"
+apod_api_key = "<NASA APOD API Key>"
 ```
 
 ## Initial deployment order
@@ -101,41 +102,6 @@ apps/nextcloud:
 - smtp-username: <SMTP server port>
 - username: <Nextcloud admin username>
 
-apps/positron:
-
-- APOD_API_KEY: <NASA APOD API Key>
-- ASSETLINKS: <Positron Android Asset Links JSON content>
-- AUTH_ISSUER: <OIDC issuer URL>
-- AUTH_JWT_EXPIRATION: <JWT expiration duration>
-- AUTH_JWT_EXPIRATION_SHORT: <Short JWT expiration duration>
-- AUTH_PEPPER: <Authentication pepper string>
-- CORS_ORIGIN: <CORS allowed origins>
-- CORS_ORIGIN_REGEX: <CORS allowed origin regex patterns>
-- DB_URL: <Database connection URL>
-- FRONTEND_URL: <Positron frontend URL>
-- LOG_LEVEL: <Logging level>
-- NATS_UPDATE_SUBJECT: <NATS subject for updates>
-- NATS_URL: <NATS server URL>
-- OIDC_BACKEND_INTERNAL: <Internal OIDC provider URL>
-- OIDC_BACKEND_URL: <Public OIDC provider URL>
-- OIDC_ISSUER: <OIDC issuer URL>
-- RUST_LOG: <Rust logging configuration>
-- S3_ACCESS_KEY: <MinIO access key for Positron>
-- S3_BUCKET: <MinIO bucket name for Positron>
-- S3_HOST: <MinIO service endpoint>
-- S3_KEY_ID: <MinIO access key ID for Positron
-- S3_REGION: <MinIO region for Positron>
-- SMTP_DOMAIN: <SMTP server domain>
-- SMTP_PASSWORD: <SMTP server password>
-- SMTP_SENDER_EMAIL: <SMTP sender email>
-- SMTP_SENDER_NAME: <SMTP sender name>
-- SMTP_SITE_LINK: <SMTP site link>
-- SMTP_USERNAME: <SMTP server username>
-- WEBAUTHN_ADDITIONAL_ORIGINS: <WebAuthn additional origins>
-- WEBAUTHN_ID: <WebAuthn RPID>
-- WEBAUTHN_NAME: <WebAuthn application name>
-- WEBAUTHN_ORIGIN: <WebAuthn allowed origins>
-
 apps/alert-bot:
 
 - proxy: <Alertmanager Discord webhook proxy URL>
@@ -158,18 +124,6 @@ tools/radar:
 tools/forgejo-runner:
 
 - runner-config.yaml: <Forgejo runner configuration>
-
-## S3 resources to create
-
-### Buckets
-
-- positron
-- hibernation
-
-### Access keys
-
-- positron: Access to positron bucket
-- hibernation: Access to hibernation bucket
 
 ## Databases to create
 

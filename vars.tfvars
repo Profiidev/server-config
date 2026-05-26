@@ -17,3 +17,5 @@ argo_ns = "argo"
 
 # metrics
 metrics_ns = "metrics"
+
+smtp_username = "no-reply@profidev.io"

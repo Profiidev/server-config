@@ -44,3 +44,20 @@ variable "secrets_ns" {
   description = "The namespace where secrets will be stored"
   type        = string
 }
+
+variable "smtp_password" {
+  description = "The password for the SMTP server"
+  type        = string
+  sensitive = true
+}
+
+variable "smtp_username" {
+  description = "The username for the SMTP server"
+  type        = string
+}
+
+variable "apod_api_key" {
+  description = "The API key for the Astronomy Picture of the Day API"
+  type        = string
+  sensitive   = true
+}

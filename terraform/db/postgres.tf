@@ -4,6 +4,17 @@ resource "kubernetes_namespace" "pg" {
   }
 }
 
+resource "random_password" "postgres_password" {
+  length  = 16
+  special = true
+}
+
+locals {
+  db_url_base = "postgres://postgres:${random_password.postgres_password.result}@postgres-postgresql.${kubernetes_namespace.pg.metadata[0].name}.svc:5432"
+  db_url_positron = "${local.db_url_base}/positron?sslmode=disable"
+  db_url_hibernation = "${local.db_url_base}/hibernation?sslmode=disable"
+}
+
 resource "helm_release" "postgres" {
   name       = "postgres"
   repository = "oci://registry-1.docker.io/bitnamicharts"
@@ -12,29 +23,8 @@ resource "helm_release" "postgres" {
   namespace  = var.pg_ns
 
   values = [templatefile("${path.module}/templates/postgres.values.tftpl", {
+    password = random_password.postgres_password.result
   })]
 
   depends_on = [kubernetes_namespace.pg, kubectl_manifest.postgres_secrets]
-}
-
-resource "kubectl_manifest" "postgres_secrets" {
-  yaml_body = <<YAML
-apiVersion: external-secrets.io/v1
-kind: ExternalSecret
-metadata:
-  name: postgres
-  namespace: ${var.pg_ns}
-spec:
-  refreshInterval: 5m
-  secretStoreRef:
-    name: ${var.cluster_secret_store}
-    kind: ClusterSecretStore
-  target:
-    name: postgres-credentials
-  dataFrom:
-  - extract:
-      key: db/postgres
-  YAML
-
-  depends_on = [kubernetes_namespace.pg]
 }

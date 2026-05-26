@@ -5,6 +5,8 @@ agent:
       podName: rke2-traefik-*
       program: traefik
   env:
+    - name: PARSERS
+      value: "crowdsecurity/cri-logs"
     - name: COLLECTIONS
       value: "crowdsecurity/traefik"
   metrics:
