@@ -43,3 +43,8 @@ variable "github_webhook" {
   type        = string
   sensitive   = true
 }
+
+variable "metrics_ns" {
+  description = "The namespace where metrics components will be deployed"
+  type        = string
+}
