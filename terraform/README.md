@@ -45,6 +45,7 @@ certs/crowdsec:
 tools/argo:
 
 - oidc.positron.clientSecret: <Positron OIDC client secret>
+- oidc.positron.clientID: <Positron OIDC client ID>
 - webhook.github.secret: <GitHub webhook secret>
 
 tools/tailscale:

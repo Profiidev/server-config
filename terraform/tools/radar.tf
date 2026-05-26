@@ -56,7 +56,7 @@ spec:
       Provider:
         ClientId: "urn:k8s:secret:radar:client-id"
         ClientSecret: "urn:k8s:secret:radar:client-secret"
-        Url: "https://profidev.io/backend/oauth"
+        Url: "https://profidev.io/api/oauth"
       Scopes:
         - "openid"
         - "profile"

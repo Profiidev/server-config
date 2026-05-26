@@ -33,7 +33,7 @@ spec:
       Provider:
         ClientId: "urn:k8s:secret:longhorn-proxy:client-id"
         ClientSecret: "urn:k8s:secret:longhorn-proxy:client-secret"
-        Url: "https://profidev.io/backend/oauth"
+        Url: "https://profidev.io/api/oauth"
       Scopes:
         - "openid"
         - "profile"
