@@ -24,16 +24,6 @@ spec:
       valuesObject:
         secret:
           storeName: ${var.cluster_secret_store}
-        extraVolumes:
-          - name: cluster-ca-cert
-            secret:
-              defaultMode: 420
-              secretName: kube-root-ca.crt
-        extraVolumeMounts:
-          - name: cluster-ca-cert
-            readOnly: true
-            subPath: ${local.ca_hash}.0
-            mountPath: /etc/ssl/certs/${local.ca_hash}.0
         ingress:
           className: ${var.ingress_class}
           host: sap.profidev.io

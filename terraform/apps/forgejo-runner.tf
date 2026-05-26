@@ -88,7 +88,7 @@ spec:
               privileged: true
   YAML
 
-  depends_on = [helm_release.cdi, kubectl_manifest.builder_role_binding]
+  depends_on = [kubectl_manifest.builder_role_binding]
 }
 
 resource "null_resource" "forgejo_image_build_trigger" {
@@ -185,5 +185,5 @@ spec:
           pod: {}
   YAML
 
-  depends_on = [kubernetes_namespace.forgejo, helm_release.kubevirt, kubectl_manifest.forgejo_runner_secret, kubectl_manifest.forgejo_image, kubernetes_persistent_volume_claim.forgejo_docker_storage, kubernetes_namespace.forgejo]
+  depends_on = [kubernetes_namespace.forgejo, kubectl_manifest.forgejo_runner_secret, kubectl_manifest.forgejo_image, kubernetes_persistent_volume_claim.forgejo_docker_storage, kubernetes_namespace.forgejo]
 }

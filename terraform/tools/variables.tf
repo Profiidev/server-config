@@ -45,9 +45,3 @@ variable "cloudflare_ca_cert_var" {
   description = "The Vault variable name for the Cloudflare CA certificate"
   type        = string
 }
-
-variable "forgejo_ns" {
-  description = "The namespace for Forgejo resources"
-  type        = string
-  default     = "forgejo"
-}

@@ -4,12 +4,6 @@ variable "positron_ns" {
   default     = "positron"
 }
 
-variable "nextcloud_ns" {
-  description = "The namespace where Nextcloud is deployed"
-  type        = string
-  default     = "nextcloud"
-}
-
 variable "argo_ns" {
   description = "The namespace where ArgoCD is deployed"
   type        = string
@@ -65,6 +59,12 @@ variable "ichwilldich_sep_ns" {
   description = "The namespace where ichwilldich sep resources will be deployed"
   type        = string
   default     = "ichwilldich-sep"
+}
+
+variable "forgejo_ns" {
+  description = "The namespace for Forgejo resources"
+  type        = string
+  default     = "forgejo"
 }
 
 data "local_file" "ca_hash" {
