@@ -8,6 +8,8 @@ secrets.tfvars file with the following variables:
 smtp_password = "<SMTP server password>"
 apod_api_key = "<NASA APOD API Key>"
 discord_token = "<Discord bot token for Auto Clean Bot>"
+discord_alert_webhook = "<Discord webhook URL for alerts>"
+github_webhook = "<GitHub webhook secret for Argo CD>"
 ```
 
 ## Initial deployment order
@@ -43,46 +45,15 @@ certs/crowdsec:
 
 - API_KEY: <CrowdSec API Key>
 
-tools/argo:
-
-- oidc.positron.clientSecret: <Positron OIDC client secret>
-- oidc.positron.clientID: <Positron OIDC client ID>
-- webhook.github.secret: <GitHub webhook secret>
-
 tools/tailscale:
 
 - client_id: <Tailscale OAuth client ID>
 - client_secret: <Tailscale OAuth client secret>
 
-tools/longhorn-proxy:
+sso:
 
-- client-id: <OAuth2 Proxy client ID for Longhorn>
-- client-secret: <OAuth2 Proxy client secret for Longhorn>
-- secret: <OAuth2 Proxy cookie secret for Longhorn>
-
-apps/alloy-proxy:
-
-- client-id: <OAuth2 Proxy client ID for Alloy>
-- client-secret: <OAuth2 Proxy client secret for Alloy>
-- secret: <OAuth2 Proxy cookie secret for Alloy>
-
-tools/traefik-proxy:
-
-- client-id: <OAuth2 Proxy client ID for Traefik>
-- client-secret: <OAuth2 Proxy client secret for Traefik>
-- secret: <OAuth2 Proxy cookie secret for Traefik>
-
-tools/forgejo
-
-- key: <Forgejo oidc client key>
-- secret: <Forgejo oidc client secret>
-- privateKey: <Forgejo ssh private key for git operations>
-
-tools/radar:
-
-- client-id: <OAuth2 Proxy client ID for Radar>
-- client-secret: <OAuth2 Proxy client secret for Radar>
-- secret: <OAuth2 Proxy cookie secret for Radar>
+vault
+grafana
 
 ### After tools setup (step 5)
 
@@ -91,6 +62,11 @@ tools/forgejo-runner:
 - runner-config.yaml: <Forgejo runner configuration>
 
 ## Additional setup steps
+
+### SSO Client
+
+- Cloudflare
+- Tailscale
 
 ### Vault OIDC setup
 

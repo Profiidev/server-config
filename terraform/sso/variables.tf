@@ -1,3 +1,7 @@
+locals {
+  vault_token = jsondecode(file("${path.module}/../storage/certs/global_token.json")).token
+}
+
 variable "positron_ns" {
   description = "The namespace where Positron is deployed"
   type        = string
@@ -27,4 +31,15 @@ variable "cloudflare_ca_cert_var" {
 variable "ingress_class" {
   description = "The ingress class to be used"
   type        = string
+}
+
+variable "secrets_ns" {
+  description = "The namespace where secrets are stored"
+  type        = string
+}
+
+variable "github_webhook" {
+  description = "The secret value for the GitHub webhook"
+  type        = string
+  sensitive   = true
 }
