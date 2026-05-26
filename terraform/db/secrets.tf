@@ -13,7 +13,6 @@ resource "null_resource" "positron_bucket_and_secret" {
       kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
       kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv apps/positron S3_HOST="http://garage.${kubernetes_namespace.garage.metadata[0].name}.svc.cluster.local:3900"
 
-      # tempo
       OUTPUT=$($EXEC key create positron)
       KEY_ID=$(echo "$OUTPUT" | grep -oP 'Key ID:\s+\K\S+')
       SECRET=$(echo "$OUTPUT" | grep -oP 'Secret key:\s+\K\S+')
@@ -38,7 +37,6 @@ resource "null_resource" "hibernation_bucket_and_secret" {
       kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
       kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv db/hibernation S3_HOST="http://garage.${kubernetes_namespace.garage.metadata[0].name}.svc.cluster.local:3900"
 
-      # tempo
       OUTPUT=$($EXEC key create hibernation)
       KEY_ID=$(echo "$OUTPUT" | grep -oP 'Key ID:\s+\K\S+')
       SECRET=$(echo "$OUTPUT" | grep -oP 'Secret key:\s+\K\S+')
@@ -46,6 +44,45 @@ resource "null_resource" "hibernation_bucket_and_secret" {
 
       $EXEC bucket create hibernation
       $EXEC bucket allow hibernation --key "$KEY_ID" --read --write
+    EOT
+  }
+
+  depends_on = [helm_release.garage, null_resource.garage_init, null_resource.garage_metrics_buckets]
+}
+
+resource "null_resource" "auto_clean_bot_secret" {
+  provisioner "local-exec" {
+    command = <<-EOT
+      set -euo pipefail
+
+      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
+      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv apps/auto-clean-bot DB_URL="${local.db_url_auto_clean_bot}" RUST_LOG="info" DISCORD_TOKEN="${var.discord_token}"
+    EOT
+  }
+
+  depends_on = [helm_release.garage, null_resource.garage_init, null_resource.garage_metrics_buckets]
+}
+
+resource "null_resource" "ichwilldich_sep_secret" {
+  provisioner "local-exec" {
+    command = <<-EOT
+      set -euo pipefail
+
+      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
+      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv apps/ichwilldich-sep SITE_URL="https://sap.profidev.io" DB_URL="${local.db_url_ichwilldich_sep}" ${local.smpt_config} SMTP_FROM_NAME="IchWillDich SEP"
+    EOT
+  }
+
+  depends_on = [helm_release.garage, null_resource.garage_init, null_resource.garage_metrics_buckets]
+}
+
+resource "null_resource" "alert_bot_secret" {
+  provisioner "local-exec" {
+    command = <<-EOT
+      set -euo pipefail
+
+      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
+      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv apps/alert-bot proxy="http://alert-bot-alertmanager-discord.metrics.svc:9094" url="${var.discord_alert_webhook}"
     EOT
   }
 

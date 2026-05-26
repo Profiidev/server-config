@@ -7,6 +7,7 @@ secrets.tfvars file with the following variables:
 ```hcl
 smtp_password = "<SMTP server password>"
 apod_api_key = "<NASA APOD API Key>"
+discord_token = "<Discord bot token for Auto Clean Bot>"
 ```
 
 ## Initial deployment order
@@ -42,22 +43,10 @@ certs/crowdsec:
 
 - API_KEY: <CrowdSec API Key>
 
-db/postgres:
-
-- password: <PostgreSQL admin password>
-
 tools/argo:
 
 - oidc.positron.clientSecret: <Positron OIDC client secret>
 - webhook.github.secret: <GitHub webhook secret>
-
-tools/coder:
-
-- CODER_OIDC_CLIENT_ID: <Coder OIDC client ID>
-- CODER_OIDC_CLIENT_SECRET: <Coder OIDC client secret>
-- CODER_OIDC_EMAIL_DOMAIN: <Coder OIDC email domain>
-- CODER_OIDC_ISSUER_URL: <Coder OIDC issuer URL>
-- CODER_PG_CONNECTION_URL: <Coder PostgreSQL connection URL>
 
 tools/tailscale:
 
@@ -81,31 +70,6 @@ tools/traefik-proxy:
 - client-id: <OAuth2 Proxy client ID for Traefik>
 - client-secret: <OAuth2 Proxy client secret for Traefik>
 - secret: <OAuth2 Proxy cookie secret for Traefik>
-
-tools/auto-clean-bot:
-
-- RUST_LOG: <Logging level for Auto Clean Bot>
-- DISCORD_TOKEN: <Discord bot token for Auto Clean Bot>
-- DB_URL: <Database connection URL for Auto Clean Bot>
-
-apps/nextcloud:
-
-- collabora-password: <Collabora Online admin password>
-- collabora-username: <Collabora Online admin username>
-- db-host: <Nextcloud database host>
-- db-name: <Nextcloud database name>
-- db-password: <Nextcloud database password>
-- db-username: <Nextcloud database username>
-- password: <Nextcloud admin password>
-- smtp-host: <SMTP server host>
-- smtp-password: <SMTP server password>
-- smtp-username: <SMTP server port>
-- username: <Nextcloud admin username>
-
-apps/alert-bot:
-
-- proxy: <Alertmanager Discord webhook proxy URL>
-- url: <Alertmanager Discord webhook URL>
 
 tools/forgejo
 

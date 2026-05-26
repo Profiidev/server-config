@@ -61,3 +61,15 @@ variable "apod_api_key" {
   type        = string
   sensitive   = true
 }
+
+variable "discord_token" {
+  description = "The token for the Discord bot used by the auto-clean bot"
+  type        = string
+  sensitive   = true
+}
+
+variable "discord_alert_webhook" {
+  description = "The webhook URL for sending alerts to Discord"
+  type        = string
+  sensitive   = true
+}

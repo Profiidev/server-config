@@ -13,6 +13,8 @@ locals {
   db_url_base = "postgres://postgres:${random_password.postgres_password.result}@postgres-postgresql.${kubernetes_namespace.pg.metadata[0].name}.svc:5432"
   db_url_positron = "${local.db_url_base}/positron?sslmode=disable"
   db_url_hibernation = "${local.db_url_base}/hibernation?sslmode=disable"
+  db_url_auto_clean_bot = "${local.db_url_base}/auto_clean_bot?sslmode=disable"
+  db_url_ichwilldich_sep = "${local.db_url_base}/ichwilldich_sep?sslmode=disable"
 }
 
 resource "helm_release" "postgres" {
