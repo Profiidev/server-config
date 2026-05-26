@@ -19,7 +19,6 @@ discord_token = "<Discord bot token for Auto Clean Bot>"
 5. tools: Install auxiliary tools and services.
 6. metrics: Set up monitoring and metrics collection services.
 7. apps: Deploy application services.
-8. docker: Deploy Docker-related services and configurations.
 
 ## Required secrets in Vault
 
@@ -89,23 +88,7 @@ tools/forgejo-runner:
 
 - runner-config.yaml: <Forgejo runner configuration>
 
-## Databases to create
-
-- positron
-- nextcloud
-- auto-clean-bot
-
 ## Additional setup steps
-
-### Pterodactyl panel
-
-create user:
-
-```bash
-docker exec -it panel php artisan p:user:make
-```
-
-copy ssl ca bundles to /mnt/ssl for wings because of symlinks
 
 ### Vault OIDC setup
 
