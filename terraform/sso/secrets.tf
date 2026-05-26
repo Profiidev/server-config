@@ -170,3 +170,23 @@ resource "null_resource" "ichwilldich_sep_secrets" {
 
   depends_on = [null_resource.wait_for_positron]
 }
+
+resource "null_resource" "grafana_secrets" {
+  provisioner "local-exec" {
+    command = <<-EOT
+      set -euo pipefail
+
+      GROUP_ID=$(${local.positron_exec} group create "Grafana Viewer")
+      ADMIN_GROUP_ID=$(${local.positron_exec} group create "Grafana Admin")
+      OUTPUT=$(${local.positron_exec} oauth-client create Grafana https://grafana.profidev.io/login/generic_oauth openid,profile,email "$GROUP_ID" "$ADMIN_GROUP_ID")
+
+      CLIENT_ID=$(echo "$OUTPUT" | jq -r '.id')
+      CLIENT_SECRET=$(echo "$OUTPUT" | jq -r '.secret')
+
+      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
+      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv patch -mount=kv apps/grafana-oidc GF_AUTH_GENERIC_OAUTH_CLIENT_ID="$CLIENT_ID" GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET="$CLIENT_SECRET"
+    EOT
+  }
+
+  depends_on = [null_resource.wait_for_positron]
+}

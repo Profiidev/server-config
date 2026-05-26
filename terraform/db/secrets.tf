@@ -88,3 +88,16 @@ resource "null_resource" "alert_bot_secret" {
 
   depends_on = [helm_release.garage, null_resource.garage_init, null_resource.garage_metrics_buckets]
 }
+
+resource "null_resource" "grafana_secret" {
+  provisioner "local-exec" {
+    command = <<-EOT
+      set -euo pipefail
+
+      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
+      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv apps/grafana-oidc GF_AUTH_GENERIC_OAUTH_CLIENT_ID="" GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET=""
+    EOT
+  }
+
+  depends_on = [helm_release.garage, null_resource.garage_init, null_resource.garage_metrics_buckets]
+}

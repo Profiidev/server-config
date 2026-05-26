@@ -13,6 +13,27 @@ resource "helm_release" "grafana" {
     cloudflare_cert_var    = var.cloudflare_cert_var
   })]
 }
+
+resource "kubectl_manifest" "grafana_oidc_secret" {
+  yaml_body = <<YAML
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: grafana-oidc
+  namespace: ${var.metrics_ns}
+spec:
+  refreshInterval: 5m
+  secretStoreRef:
+    name: ${var.cluster_secret_store}
+    kind: ClusterSecretStore
+  target:
+    name: grafana-oidc
+  dataFrom:
+  - extract:
+      key: apps/grafana-oidc
+  YAML
+}
+
 resource "kubectl_manifest" "grafana_tls_options" {
   yaml_body = <<YAML
 apiVersion: traefik.io/v1alpha1

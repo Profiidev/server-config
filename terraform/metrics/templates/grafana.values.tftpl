@@ -5,6 +5,20 @@ persistence:
 grafana.ini:
   server:
     root_url: https://grafana.profidev.io
+  auth.generic_oauth:
+    enabled: true
+    name: "Positron"
+    scopes: "openid profile email grafana"
+    auth_url: "https://profidev.io/api/oauth/authorize"
+    token_url: "https://profidev.io/api/oauth/token"
+    api_url: "https://profidev.io/api/oauth/user"
+    allow_sign_up: true
+    auto_login: true
+    role_attribute_path: "role"
+    role_attribute_strict: true
+    allow_assign_grafana_admin: true
+envFromSecrets:
+  - name: grafana-oidc
 sidecar:
   dashboards:
     enabled: true

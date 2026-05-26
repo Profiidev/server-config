@@ -53,7 +53,6 @@ tools/tailscale:
 sso:
 
 vault
-grafana
 
 ### After apps setup (step 8)
 
