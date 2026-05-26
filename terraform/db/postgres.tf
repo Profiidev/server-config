@@ -30,3 +30,19 @@ resource "helm_release" "postgres" {
 
   depends_on = [kubernetes_namespace.pg, kubectl_manifest.postgres_secrets]
 }
+
+resource "null_resource" "create_db" {
+  provisioner "local-exec" {
+    command = <<-EOT
+      set -euo pipefail
+
+      EXEC="kubectl exec -n ${var.pg_ns} -c postgresql -l app.kubernetes.io/name=postgresql -- psql -U postgres"
+      $EXEC -c "CREATE DATABASE positron;"
+      $EXEC -c "CREATE DATABASE hibernation;"
+      $EXEC -c "CREATE DATABASE auto_clean_bot;"
+      $EXEC -c "CREATE DATABASE ichwilldich_sep;"
+    EOT
+  }
+
+  depends_on = [helm_release.postgres]
+}
