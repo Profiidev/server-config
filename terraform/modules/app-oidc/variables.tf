@@ -75,3 +75,15 @@ variable "additional_secrets" {
   type        = map(string)
   default     = {}
 }
+
+variable "extra_oidc_create" {
+  description = "Additional commands to run after creating the OIDC client, as a list of strings (optional)"
+  type        = string
+  default     = ""
+}
+
+variable "extra_oidc_destroy" {
+  description = "Additional commands to run before destroying the OIDC client, as a list of strings (optional)"
+  type        = string
+  default     = ""
+}

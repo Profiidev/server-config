@@ -10,6 +10,8 @@ resource "terraform_data" "app_oidc" {
     admin_group = var.oidc.admin_group != null ? var.oidc.admin_group : ""
     client_id_var = var.client_id_var
     client_secret_var = var.client_secret_var
+    extra_create = var.extra_oidc_create
+    extra_destroy = var.extra_oidc_destroy
   }
 
   provisioner "local-exec" {
@@ -17,8 +19,16 @@ resource "terraform_data" "app_oidc" {
       set -euo pipefail
 
       GROUP_ID=$(${self.input.exec} group create "${self.input.client_name}")
+
       if [ -n "${self.input.admin_group}" ]; then
         ADMIN_GROUP_ID=$(${self.input.exec} group create "${self.input.admin_group}")
+      fi
+
+      if [ -n '${self.input.extra_create}' ]; then
+        ${self.input.extra_create}
+      fi
+
+      if [ -n "${self.input.admin_group}" ]; then
         OUTPUT=$(${self.input.exec} oauth-client create "${self.input.client_name}" ${self.input.redirect_uri} ${self.input.scope} "$GROUP_ID" "$ADMIN_GROUP_ID")
       else
         OUTPUT=$(${self.input.exec} oauth-client create "${self.input.client_name}" ${self.input.redirect_uri} ${self.input.scope} "$GROUP_ID")
@@ -41,6 +51,10 @@ resource "terraform_data" "app_oidc" {
       fi
       ${self.input.exec} group delete "${self.input.client_name}"
       ${self.input.exec} oauth-client delete "${self.input.client_name}"
+
+      if [ -n '${self.input.extra_destroy}' ]; then
+        ${self.input.extra_destroy}
+      fi
     EOT
   }
 

@@ -176,16 +176,27 @@ module "grafana" {
   source = "../modules/app-oidc"
 
   secret_path = "apps/grafana-oidc"
+  create = false
 
   oidc = {
     client_name = "Grafana"
     redirect_uri = "https://sap.profidev.io/api/auth/oidc/callback"
-    scope = "openid,profile,email"
+    scope = "openid,profile,email,grafana"
     admin_group = "Grafana Admin"
   }
 
   client_id_var = "GF_AUTH_GENERIC_OAUTH_CLIENT_ID"
   client_secret_var = "GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET"
+
+  extra_oidc_create = <<-EOT
+    POLICY_ID=$(${local.positron_exec} oauth-policy create Grafana role Viewer $ADMIN_GROUP_ID:Admin)
+    ${local.positron_exec} oauth-scope create Grafana grafana $POLICY_ID
+  EOT
+
+  extra_oidc_destroy = <<-EOT
+    ${local.positron_exec} oauth-scope delete Grafana
+    ${local.positron_exec} oauth-policy delete Grafana
+  EOT
 
   depends_on = [null_resource.wait_for_positron]
 }
