@@ -22,8 +22,6 @@ resource "terraform_data" "app_secret" {
     secret_path = var.secret_path
     vault_token = local.vault_token
     secret_ns  = var.secrets_ns
-    exec = local.vault_exec
-    custom_secrets = var.additional_secrets
   }
 
   provisioner "local-exec" {
@@ -31,10 +29,6 @@ resource "terraform_data" "app_secret" {
       set -euo pipefail
 
       kubectl exec vault-0 -n ${self.input.secret_ns} -- vault kv put -mount=kv ${self.input.secret_path} dummy="placeholder"
-
-      %{ for key, value in self.input.custom_secrets }
-      ${self.input.exec} ${key}="${value}"
-      %{ endfor }
     EOT
   }
 
@@ -49,6 +43,27 @@ resource "terraform_data" "app_secret" {
   }
 
   depends_on = [terraform_data.vault_login]
+}
+
+resource "terraform_data" "app_secret_custom" {
+  count = var.enabled ? 1 : 0
+
+  input = {
+    exec = local.vault_exec
+    custom_secrets = var.additional_secrets
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      set -euo pipefail
+
+      %{ for key, value in self.input.custom_secrets }
+      ${self.input.exec} ${key}="${value}"
+      %{ endfor }
+    EOT
+  }
+
+  depends_on = [terraform_data.app_secret]
 }
 
 resource "terraform_data" "app_remove_dummy" {

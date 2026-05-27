@@ -37,10 +37,10 @@ resource "terraform_data" "app_oidc" {
       set -euo pipefail
 
       if [ -n "${self.input.admin_group}" ]; then
-        ${self.input.exec} group delete ${self.input.admin_group}
+        ${self.input.exec} group delete "${self.input.admin_group}"
       fi
-      ${self.input.exec} group delete ${self.input.client_name}
-      ${self.input.exec} oauth-client delete ${self.input.client_name}
+      ${self.input.exec} group delete "${self.input.client_name}"
+      ${self.input.exec} oauth-client delete "${self.input.client_name}"
     EOT
   }
 

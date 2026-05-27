@@ -6,7 +6,7 @@ resource "random_password" "cookie_secret" {
 }
 
 locals {
-  cookie_secret_value = var.cookie_secret ? random_password.cookie_secret[0].result : null
+  cookie_secret_value = var.cookie_secret && var.enabled ? random_password.cookie_secret[0].result : null
 }
 
 resource "terraform_data" "app_cookie_secret" {

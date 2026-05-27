@@ -11,7 +11,7 @@ locals {
 module "longhorn" {
   source = "../modules/app-oidc"
 
-  secret_path = "tools/longhorn-proxy-test"
+  secret_path = "tools/longhorn-proxy"
   cookie_secret = true
 
   oidc = {
@@ -26,7 +26,7 @@ module "longhorn" {
 module "alloy" {
   source = "../modules/app-oidc"
 
-  secret_path = "apps/alloy-proxy-test"
+  secret_path = "apps/alloy-proxy"
   cookie_secret = true
 
   oidc = {
@@ -41,7 +41,7 @@ module "alloy" {
 module "treafik" {
   source = "../modules/app-oidc"
 
-  secret_path = "tools/traefik-proxy-test"
+  secret_path = "tools/traefik-proxy"
   cookie_secret = true
 
   oidc = {
@@ -56,7 +56,7 @@ module "treafik" {
 module "radar" {
   source = "../modules/app-oidc"
 
-  secret_path = "tools/radar-test"
+  secret_path = "tools/radar"
   cookie_secret = true
 
   oidc = {
@@ -90,7 +90,7 @@ data "local_file" "forgejo_ssh_key" {
 module "forgejo" {
   source = "../modules/app-oidc"
 
-  secret_path = "tools/forgejo-test"
+  secret_path = "tools/forgejo"
 
   oidc = {
     client_name = "Forgejo"
@@ -111,7 +111,7 @@ module "forgejo" {
 module "argocd" {
   source = "../modules/app-oidc"
 
-  secret_path = "tools/argo-test"
+  secret_path = "tools/argo"
 
   oidc = {
     client_name = "ArgoCD"
@@ -133,7 +133,8 @@ module "argocd" {
 module "hibernation" {
   source = "../modules/app-oidc"
 
-  secret_path = "db/hibernation-test"
+  secret_path = "db/hibernation"
+  create = false
 
   oidc = {
     client_name = "Hibernation"
@@ -153,7 +154,8 @@ module "hibernation" {
 module "ichwilldich_sep" {
   source = "../modules/app-oidc"
 
-  secret_path = "db/ichwilldich-sep-test"
+  secret_path = "apps/ichwilldich-sep"
+  create = false
 
   oidc = {
     client_name = "Ichwilldich SEP"
