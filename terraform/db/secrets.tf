@@ -1,103 +1,103 @@
 locals {
-  smpt_config = "SMTP_SERVER=\"smtp.protonmail.ch\" SMTP_PORT=\"587\" SMTP_USERNAME=\"${var.smtp_username}\" SMTP_PASSWORD=\"${var.smtp_password}\" SMTP_FROM_ADDRESS=\"${var.smtp_username}\" SMTP_ENABLED=\"true\" SMTP_USE_TLS=\"false\""
+  smtp_config_map = {
+    SMTP_SERVER = "smtp.protonmail.ch"
+    SMTP_PORT = "587"
+    SMTP_USERNAME = var.smtp_username
+    SMTP_PASSWORD = var.smtp_password
+    SMTP_FROM_ADDRESS = var.smtp_username
+    SMTP_ENABLED = "true"
+    SMTP_USE_TLS = "false"
+  }
 }
 
-resource "null_resource" "positron_bucket_and_secret" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      set -euo pipefail
+module "positron" {
+  source = "../modules/app-resources"
 
-      EXEC="kubectl exec -n ${kubernetes_namespace.garage.metadata[0].name} garage-0 -c garage -- /garage"
-      SET_SECRET="kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv patch -mount=kv apps/positron"
+  secret_path = "apps/positron"
 
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv apps/positron S3_HOST="http://garage.${kubernetes_namespace.garage.metadata[0].name}.svc.cluster.local:3900"
+  s3_bucket = "positron"
 
-      OUTPUT=$($EXEC key create positron)
-      KEY_ID=$(echo "$OUTPUT" | grep -oP 'Key ID:\s+\K\S+')
-      SECRET=$(echo "$OUTPUT" | grep -oP 'Secret key:\s+\K\S+')
-      $SET_SECRET S3_ACCESS_KEY="$KEY_ID" S3_SECRET_KEY="$SECRET" S3_REGION="garage" S3_FORCE_PATH_STYLE="true" S3_BUCKET="positron" SITE_URL="https://profidev.io" DB_URL="${local.db_url_positron}" ${local.smpt_config} SMTP_FROM_NAME="Positron" APOD_API_KEY="${var.apod_api_key}"
+  db_name = "positron"
+  db_password = random_password.postgres_password.result
 
-      $EXEC bucket create positron
-      $EXEC bucket allow positron --key "$KEY_ID" --read --write
-    EOT
-  }
+  additional_secrets = merge(local.smtp_config_map, {
+    SITE_URL = "https://profidev.io"
+    APOD_API_KEY = var.apod_api_key
+    SMTP_FROM_NAME = "Positron"
+  })
 
-  depends_on = [helm_release.garage, null_resource.garage_init, null_resource.garage_metrics_buckets]
+  depends_on = [null_resource.garage_init, helm_release.postgres]
 }
 
-resource "null_resource" "hibernation_bucket_and_secret" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      set -euo pipefail
+module "hibernation" {
+  source = "../modules/app-resources"
 
-      EXEC="kubectl exec -n ${kubernetes_namespace.garage.metadata[0].name} garage-0 -c garage -- /garage"
-      SET_SECRET="kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv patch -mount=kv db/hibernation"
+  secret_path = "db/hibernation"
 
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv db/hibernation S3_HOST="http://garage.${kubernetes_namespace.garage.metadata[0].name}.svc.cluster.local:3900"
+  s3_bucket = "hibernation"
 
-      OUTPUT=$($EXEC key create hibernation)
-      KEY_ID=$(echo "$OUTPUT" | grep -oP 'Key ID:\s+\K\S+')
-      SECRET=$(echo "$OUTPUT" | grep -oP 'Secret key:\s+\K\S+')
-      $SET_SECRET S3_ACCESS_KEY="$KEY_ID" S3_SECRET_KEY="$SECRET" S3_REGION="garage" S3_FORCE_PATH_STYLE="true" S3_BUCKET="hibernation" SITE_URL="https://cache.profidev.io" VIRTUAL_HOST_ROUTING="true" DB_URL="${local.db_url_hibernation}" ${local.smpt_config} SMTP_FROM_NAME="Hibernation"
+  db_name = "hibernation"
+  db_password = random_password.postgres_password.result
 
-      $EXEC bucket create hibernation
-      $EXEC bucket allow hibernation --key "$KEY_ID" --read --write
-    EOT
-  }
+  additional_secrets = merge(local.smtp_config_map, {
+    SITE_URL = "https://cache.profidev.io"
+    SMTP_FROM_NAME = "Hibernation"
+    VIRTUAL_HOST_ROUTING = "true"
+  })
 
-  depends_on = [helm_release.garage, null_resource.garage_init, null_resource.garage_metrics_buckets]
+  depends_on = [null_resource.garage_init, helm_release.postgres]
 }
 
-resource "null_resource" "auto_clean_bot_secret" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      set -euo pipefail
+module "auto_clean_bot" {
+  source = "../modules/app-resources"
 
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv apps/auto-clean-bot DB_URL="${local.db_url_auto_clean_bot}" RUST_LOG="info" DISCORD_TOKEN="${var.discord_token}"
-    EOT
+  secret_path = "apps/auto-clean-bot"
+
+  db_name = "auto_clean_bot"
+  db_password = random_password.postgres_password.result
+
+  additional_secrets = {
+    RUST_LOG = "info"
+    DISCORD_TOKEN = var.discord_token
   }
 
-  depends_on = [helm_release.garage, null_resource.garage_init, null_resource.garage_metrics_buckets]
+  depends_on = [helm_release.postgres]
 }
 
-resource "null_resource" "ichwilldich_sep_secret" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      set -euo pipefail
+module "ichwildich_sep" {
+  source = "../modules/app-resources"
 
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv apps/ichwilldich-sep SITE_URL="https://sap.profidev.io" DB_URL="${local.db_url_ichwilldich_sep}" ${local.smpt_config} SMTP_FROM_NAME="IchWillDich SEP"
-    EOT
-  }
+  secret_path = "apps/ichwilldich-sep"
 
-  depends_on = [helm_release.garage, null_resource.garage_init, null_resource.garage_metrics_buckets]
+  db_name = "ichwilldich_sep"
+  db_password = random_password.postgres_password.result
+
+  additional_secrets = merge(local.smtp_config_map, {
+    SITE_URL = "https://sap.profidev.io"
+    SMTP_FROM_NAME = "IchWillDich SEP"
+  })
+
+  depends_on = [helm_release.postgres]
 }
 
-resource "null_resource" "alert_bot_secret" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      set -euo pipefail
+module "alert_bot" {
+  source = "../modules/app-resources"
 
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv apps/alert-bot proxy="http://alert-bot-alertmanager-discord.metrics.svc:9094" url="${var.discord_alert_webhook}"
-    EOT
+  secret_path = "apps/alert-bot"
+
+  additional_secrets = {
+    proxy = "http://alert-bot-alertmanager-discord.metrics.svc:9094"
+    url = var.discord_alert_webhook
   }
-
-  depends_on = [helm_release.garage, null_resource.garage_init, null_resource.garage_metrics_buckets]
 }
 
-resource "null_resource" "grafana_secret" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      set -euo pipefail
+module "grafana_dummy" {
+  source = "../modules/app-resources"
 
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv apps/grafana-oidc GF_AUTH_GENERIC_OAUTH_CLIENT_ID="" GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET=""
-    EOT
+  secret_path = "apps/grafana-oidc"
+
+  additional_secrets = {
+    GF_AUTH_GENERIC_OAUTH_CLIENT_ID = ""
+    GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET = ""
   }
-
-  depends_on = [helm_release.garage, null_resource.garage_init, null_resource.garage_metrics_buckets]
 }

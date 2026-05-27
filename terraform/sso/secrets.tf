@@ -1,192 +1,189 @@
-resource "random_password" "cookie_secret" {
-  length  = 16
-  special = true
-}
-
 locals {
   positron_exec = "kubectl exec -n ${var.positron_ns} deploy/positron -- positron"
-  cookie_secret = random_password.cookie_secret.result
-  oidc_base_config = "OIDC_ENABLED=\"true\" OIDC_ISSUER=\"https://profidev.io/api/oauth\" OIDC_SCOPES=\"openid email profile image\""
+
+  oidc_config_map = {
+    OIDC_ENABLED = "true"
+    OIDC_ISSUER = "https://profidev.io/api/oauth"
+    OIDC_SCOPES = "openid email profile image"
+  }
 }
 
-resource "null_resource" "longhorn_proxy_secrets" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      set -euo pipefail
+module "longhorn" {
+  source = "../modules/app-oidc"
 
-      GROUP_ID=$(${local.positron_exec} group create Longhorn)
-      OUTPUT=$(${local.positron_exec} oauth-client create Longhorn https://longhorn.profidev.io/oidc/callback openid,profile,email "$GROUP_ID")
+  secret_path = "tools/longhorn-proxy-test"
+  cookie_secret = true
 
-      CLIENT_ID=$(echo "$OUTPUT" | jq -r '.id')
-      CLIENT_SECRET=$(echo "$OUTPUT" | jq -r '.secret')
-
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv tools/longhorn-proxy client-id="$CLIENT_ID" client-secret="$CLIENT_SECRET" secret='${local.cookie_secret}'
-    EOT
+  oidc = {
+    client_name = "Longhorn"
+    redirect_uri = "https://longhorn.profidev.io/oidc/callback"
+    scope = "openid,profile,email"
   }
 
   depends_on = [null_resource.wait_for_positron]
 }
 
-resource "null_resource" "alloy_proxy_secrets" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      set -euo pipefail
+module "alloy" {
+  source = "../modules/app-oidc"
 
-      GROUP_ID=$(${local.positron_exec} group create Alloy)
-      OUTPUT=$(${local.positron_exec} oauth-client create Alloy https://alloy.profidev.io/oidc/callback openid,profile,email "$GROUP_ID")
+  secret_path = "apps/alloy-proxy-test"
+  cookie_secret = true
 
-      CLIENT_ID=$(echo "$OUTPUT" | jq -r '.id')
-      CLIENT_SECRET=$(echo "$OUTPUT" | jq -r '.secret')
-
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv apps/alloy-proxy client-id="$CLIENT_ID" client-secret="$CLIENT_SECRET" secret='${local.cookie_secret}'
-    EOT
+  oidc = {
+    client_name = "Alloy"
+    redirect_uri = "https://alloy.profidev.io/oidc/callback"
+    scope = "openid,profile,email"
   }
 
   depends_on = [null_resource.wait_for_positron]
 }
 
-resource "null_resource" "traefik_proxy_secrets" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      set -euo pipefail
+module "treafik" {
+  source = "../modules/app-oidc"
 
-      GROUP_ID=$(${local.positron_exec} group create Traefik)
-      OUTPUT=$(${local.positron_exec} oauth-client create Traefik https://traefik.profidev.io/oidc/callback openid,profile,email "$GROUP_ID")
+  secret_path = "tools/traefik-proxy-test"
+  cookie_secret = true
 
-      CLIENT_ID=$(echo "$OUTPUT" | jq -r '.id')
-      CLIENT_SECRET=$(echo "$OUTPUT" | jq -r '.secret')
-
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv tools/traefik-proxy client-id="$CLIENT_ID" client-secret="$CLIENT_SECRET" secret='${local.cookie_secret}'
-    EOT
+  oidc = {
+    client_name = "Traefik"
+    redirect_uri = "https://treafik.profidev.io/oidc/callback"
+    scope = "openid,profile,email"
   }
 
   depends_on = [null_resource.wait_for_positron]
 }
 
-resource "null_resource" "radar_proxy_secrets" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      set -euo pipefail
+module "radar" {
+  source = "../modules/app-oidc"
 
-      GROUP_ID=$(${local.positron_exec} group create Radar)
-      OUTPUT=$(${local.positron_exec} oauth-client create Radar https://radar.profidev.io/oidc/callback openid,profile,email "$GROUP_ID")
+  secret_path = "tools/radar-test"
+  cookie_secret = true
 
-      CLIENT_ID=$(echo "$OUTPUT" | jq -r '.id')
-      CLIENT_SECRET=$(echo "$OUTPUT" | jq -r '.secret')
-
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv tools/radar client-id="$CLIENT_ID" client-secret="$CLIENT_SECRET" secret='${local.cookie_secret}'
-    EOT
+  oidc = {
+    client_name = "Radar"
+    redirect_uri = "https://radar.profidev.io/oidc/callback"
+    scope = "openid,profile,email"
   }
 
   depends_on = [null_resource.wait_for_positron]
 }
 
-resource "null_resource" "forgejo_secrets" {
+resource "null_resource" "forgejo_ssh" {
   provisioner "local-exec" {
     command = <<-EOT
       set -euo pipefail
-
-      GROUP_ID=$(${local.positron_exec} group create Forgejo)
-      OUTPUT=$(${local.positron_exec} oauth-client create Forgejo https://git.profidev.io/oidc/callback openid,profile,email "$GROUP_ID")
-
-      CLIENT_ID=$(echo "$OUTPUT" | jq -r '.id')
-      CLIENT_SECRET=$(echo "$OUTPUT" | jq -r '.secret')
 
       cd ${path.module}
       mkdir -p ../storage/certs/forgejo
       if [ ! -f ../storage/certs/forgejo/ssh_key ]; then
         ssh-keygen -t ed25519 -f ../storage/certs/forgejo/ssh_key -N ""
       fi
-      PRIVATE_KEY=$(cat ../storage/certs/forgejo/ssh_key)
-
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv tools/forgejo key="$CLIENT_ID" secret="$CLIENT_SECRET" privateKey="$PRIVATE_KEY"
     EOT
+  }
+}
+
+data "local_file" "forgejo_ssh_key" {
+  filename = "${path.module}/../storage/certs/forgejo/ssh_key"
+  depends_on = [null_resource.forgejo_ssh]
+}
+
+module "forgejo" {
+  source = "../modules/app-oidc"
+
+  secret_path = "tools/forgejo-test"
+
+  oidc = {
+    client_name = "Forgejo"
+    redirect_uri = "https://git.profidev.io/user/oauth2/Positron/callback"
+    scope = "openid,profile,email,image"
+  }
+
+  client_id_var = "key"
+  client_secret_var = "secret"
+
+  additional_secrets = {
+    privateKey = data.local_file.forgejo_ssh_key.content
   }
 
   depends_on = [null_resource.wait_for_positron]
 }
 
-resource "null_resource" "argo_cd_secrets" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      set -euo pipefail
+module "argocd" {
+  source = "../modules/app-oidc"
 
-      GROUP_ID=$(${local.positron_exec} group create ArgoCD)
-      ADMIN_GROUP_ID=$(${local.positron_exec} group create "ArgoCD Admin")
-      OUTPUT=$(${local.positron_exec} oauth-client create ArgoCD https://argocd.profidev.io/oidc/callback openid,profile,email "$GROUP_ID" "$ADMIN_GROUP_ID")
+  secret_path = "tools/argo-test"
 
-      CLIENT_ID=$(echo "$OUTPUT" | jq -r '.id')
-      CLIENT_SECRET=$(echo "$OUTPUT" | jq -r '.secret')
+  oidc = {
+    client_name = "ArgoCD"
+    redirect_uri = "https://argocd.profidev.io/auth/callback"
+    scope = "openid,profile,email"
+    admin_group = "ArgoCD Admin"
+  }
 
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv put -mount=kv tools/argo oidc.positron.clientID="$CLIENT_ID" oidc.positron.clientSecret="$CLIENT_SECRET" webhook.github.secret="${var.github_webhook}"
-    EOT
+  client_id_var = "oidc.positron.clientID"
+  client_secret_var = "oidc.positron.clientSecret"
+
+  additional_secrets = {
+    "webhook.github.secret" = var.github_webhook
   }
 
   depends_on = [null_resource.wait_for_positron]
 }
 
-resource "null_resource" "hibernation_secrets" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      set -euo pipefail
+module "hibernation" {
+  source = "../modules/app-oidc"
 
-      GROUP_ID=$(${local.positron_exec} group create Hibernation)
-      ADMIN_GROUP_ID=$(${local.positron_exec} group create "Hibernation Admin")
-      OUTPUT=$(${local.positron_exec} oauth-client create Hibernation https://cache.profidev.io/api/auth/oidc/callback openid,profile,email,image "$GROUP_ID" "$ADMIN_GROUP_ID")
+  secret_path = "db/hibernation-test"
 
-      CLIENT_ID=$(echo "$OUTPUT" | jq -r '.id')
-      CLIENT_SECRET=$(echo "$OUTPUT" | jq -r '.secret')
-
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv patch -mount=kv db/hibernation ${local.oidc_base_config} OIDC_CLIENT_ID="$CLIENT_ID" OIDC_CLIENT_SECRET="$CLIENT_SECRET"
-    EOT
+  oidc = {
+    client_name = "Hibernation"
+    redirect_uri = "https://cache.profidev.io/api/auth/oidc/callback"
+    scope = "openid,profile,email,image"
+    admin_group = "Hibernation Admin"
   }
+
+  client_id_var = "OIDC_CLIENT_ID"
+  client_secret_var = "OIDC_CLIENT_SECRET"
+
+  additional_secrets = local.oidc_config_map
 
   depends_on = [null_resource.wait_for_positron]
 }
 
-resource "null_resource" "ichwilldich_sep_secrets" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      set -euo pipefail
+module "ichwilldich_sep" {
+  source = "../modules/app-oidc"
 
-      GROUP_ID=$(${local.positron_exec} group create "Ichwilldich SEP")
-      ADMIN_GROUP_ID=$(${local.positron_exec} group create "Ichwilldich SEP Admin")
-      OUTPUT=$(${local.positron_exec} oauth-client create "Ichwilldich SEP" https://sap.profidev.io/api/auth/oidc/callback openid,profile,email,image "$GROUP_ID" "$ADMIN_GROUP_ID")
+  secret_path = "db/ichwilldich-sep-test"
 
-      CLIENT_ID=$(echo "$OUTPUT" | jq -r '.id')
-      CLIENT_SECRET=$(echo "$OUTPUT" | jq -r '.secret')
-
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv patch -mount=kv apps/ichwilldich-sep ${local.oidc_base_config} OIDC_CLIENT_ID="$CLIENT_ID" OIDC_CLIENT_SECRET="$CLIENT_SECRET"
-    EOT
+  oidc = {
+    client_name = "Ichwilldich SEP"
+    redirect_uri = "https://sap.profidev.io/api/auth/oidc/callback"
+    scope = "openid,profile,email,image"
+    admin_group = "Ichwilldich SEP Admin"
   }
+
+  client_id_var = "OIDC_CLIENT_ID"
+  client_secret_var = "OIDC_CLIENT_SECRET"
+
+  additional_secrets = local.oidc_config_map
 
   depends_on = [null_resource.wait_for_positron]
 }
 
-resource "null_resource" "grafana_secrets" {
-  provisioner "local-exec" {
-    command = <<-EOT
-      set -euo pipefail
+module "grafana" {
+  source = "../modules/app-oidc"
 
-      GROUP_ID=$(${local.positron_exec} group create "Grafana Viewer")
-      ADMIN_GROUP_ID=$(${local.positron_exec} group create "Grafana Admin")
-      OUTPUT=$(${local.positron_exec} oauth-client create Grafana https://grafana.profidev.io/login/generic_oauth openid,profile,email "$GROUP_ID" "$ADMIN_GROUP_ID")
+  secret_path = "apps/grafana-oidc"
 
-      CLIENT_ID=$(echo "$OUTPUT" | jq -r '.id')
-      CLIENT_SECRET=$(echo "$OUTPUT" | jq -r '.secret')
-
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault login ${local.vault_token}
-      kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv patch -mount=kv apps/grafana-oidc GF_AUTH_GENERIC_OAUTH_CLIENT_ID="$CLIENT_ID" GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET="$CLIENT_SECRET"
-    EOT
+  oidc = {
+    client_name = "Grafana"
+    redirect_uri = "https://sap.profidev.io/api/auth/oidc/callback"
+    scope = "openid,profile,email"
+    admin_group = "Grafana Admin"
   }
+
+  client_id_var = "GF_AUTH_GENERIC_OAUTH_CLIENT_ID"
+  client_secret_var = "GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET"
 
   depends_on = [null_resource.wait_for_positron]
 }

@@ -10,11 +10,11 @@ resource "null_resource" "restart_for_sso" {
   }
 
   depends_on = [
-    null_resource.longhorn_proxy_secrets,
-    null_resource.alloy_proxy_secrets,
-    null_resource.traefik_proxy_secrets,
-    null_resource.radar_proxy_secrets,
-    null_resource.argo_cd_secrets,
-    null_resource.grafana_secrets,
+    module.longhorn,
+    module.alloy,
+    module.treafik,
+    module.radar,
+    module.argocd,
+    module.grafana,
   ]
 }

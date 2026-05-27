@@ -23,6 +23,16 @@ github_webhook = "<GitHub webhook secret for Argo CD>"
 7. sso: Configure Single Sign-On (SSO) services and authentication mechanisms.
 8. apps: Deploy application services.
 
+## Destory
+
+Confirm flags: 2. storage: Confirm longhorn deletion 5. tools: Remove finalizer from cdi resource
+
+Remove resource modules (app-oidc, app-resources):
+
+1. Set `enabled = false` in the respective module blocks in terraform
+2. Run `terraform apply` to update the infrastructure and remove the resources associated with these modules
+3. After the resources are removed, you can optionally delete the module blocks from terraform if they are no longer needed.
+
 ## Required secrets in Vault
 
 ### After Storage setup (step 2)
