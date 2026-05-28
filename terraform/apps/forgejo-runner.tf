@@ -179,7 +179,7 @@ spec:
               disk:
                 bus: virtio
           filesystems:
-            - name: forgejo-secret-${each.key}
+            - name: forgejo-secret
               virtiofs: {}
             - name: docker-storage
               virtiofs: {}
@@ -200,7 +200,7 @@ spec:
         - name: docker-storage
           persistentVolumeClaim:
             claimName: forgejo-docker-storage-${each.key}
-        - name: forgejo-secret-${each.key}
+        - name: forgejo-secret
           secret:
             secretName: forgejo-runner-secret-${each.key}
       networks:
