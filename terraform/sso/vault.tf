@@ -116,7 +116,7 @@ resource "terraform_data" "vault_oidc_config" {
         allowed_redirect_uris="https://vault.profidev.io/ui/vault/auth/oidc/oidc/callback" \
         allowed_redirect_uris="http://localhost:8250/oidc/callback" \
         user_claim="email" \
-        group_claim="groups" \
+        groups_claim="groups" \
         token_policies="default" \
         oidc_scopes="openid,profile,email"
     EOT
