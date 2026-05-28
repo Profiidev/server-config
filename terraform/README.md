@@ -62,7 +62,7 @@ tools/tailscale:
 
 ### After apps setup (step 8)
 
-tools/forgejo-runner:
+tools/forgejo-runner-{node1,node2,node3} (one secret per runner):
 
 - runner-config.yaml: <Forgejo runner configuration>
 

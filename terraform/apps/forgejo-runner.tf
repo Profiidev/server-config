@@ -100,11 +100,13 @@ resource "null_resource" "forgejo_image_build_trigger" {
 }
 
 resource "kubectl_manifest" "forgejo_runner_secret" {
+  for_each = { for vm in ["node1", "node2", "node3"] : vm => vm }
+
   yaml_body = <<YAML
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: forgejo-runner-secret
+  name: forgejo-runner-secret-${each.key}
   namespace: ${var.forgejo_ns}
 spec:
   refreshInterval: 5m
@@ -112,18 +114,20 @@ spec:
     name: ${var.cluster_secret_store}
     kind: ClusterSecretStore
   target:
-    name: forgejo-runner-secret
+    name: forgejo-runner-secret-${each.key}
   dataFrom:
   - extract:
-      key: tools/forgejo-runner
+      key: tools/forgejo-runner-${each.key}
   YAML
 
   depends_on = [kubernetes_namespace.forgejo]
 }
 
 resource "kubernetes_persistent_volume_claim" "forgejo_docker_storage" {
+  for_each = { for vm in ["node1", "node2", "node3"] : vm => vm }
+
   metadata {
-    name      = "forgejo-docker-storage"
+    name      = "forgejo-docker-storage-${each.key}"
     namespace = var.forgejo_ns
   }
   spec {
@@ -139,19 +143,35 @@ resource "kubernetes_persistent_volume_claim" "forgejo_docker_storage" {
 }
 
 resource "kubectl_manifest" "forgejo_runner" {
+  for_each = { for vm in ["node1", "node2", "node3"] : vm => vm }
+
   yaml_body = <<YAML
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  name: forgejo-runner
+  name: forgejo-runner-${each.key}
   namespace: ${var.forgejo_ns}
 spec:
   running: true
+  dataVolumeTemplates:
+    - metadata:
+        name: nixos-forgejo-${each.key}
+      spec:
+        source:
+          pvc:
+            namespace: ${var.forgejo_ns}
+            name: nixos-forgejo
+        storage:
+          resources:
+            requests:
+              storage: 3Gi
   template:
     metadata:
       labels:
         kubevirt.io/domain: forgejo-runner
     spec:
+      nodeSelector:
+        "kubernetes.io/hostname": "${each.key}"
       domain:
         devices:
           disks:
@@ -159,7 +179,7 @@ spec:
               disk:
                 bus: virtio
           filesystems:
-            - name: forgejo-secret
+            - name: forgejo-secret-${each.key}
               virtiofs: {}
             - name: docker-storage
               virtiofs: {}
@@ -167,19 +187,22 @@ spec:
             - name: default
               masquerade: {}
         resources:
+          limits:
+            memory: 8Gi
+            cpu: "6"
           requests:
-            memory: 4Gi
-            cpu: "2"
+            memory: 1Gi
+            cpu: "1"
       volumes:
         - name: rootdisk
           dataVolume:
-            name: nixos-forgejo
+            name: nixos-forgejo-${each.key}
         - name: docker-storage
           persistentVolumeClaim:
-            claimName: forgejo-docker-storage
-        - name: forgejo-secret
+            claimName: forgejo-docker-storage-${each.key}
+        - name: forgejo-secret-${each.key}
           secret:
-            secretName: forgejo-runner-secret
+            secretName: forgejo-runner-secret-${each.key}
       networks:
         - name: default
           pod: {}

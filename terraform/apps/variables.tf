@@ -38,11 +38,6 @@ variable "storage_class" {
   type        = string
 }
 
-variable "k8s_api" {
-  description = "The Kubernetes API server URL"
-  type        = string
-}
-
 variable "hibernation_ns" {
   description = "The namespace where hibernation resources will be deployed"
   type        = string
@@ -59,6 +54,12 @@ variable "forgejo_ns" {
   description = "The namespace for Forgejo resources"
   type        = string
   default     = "forgejo"
+}
+
+variable "kubevirt_ns" {
+  description = "The namespace where KubeVirt is deployed"
+  type        = string
+  default = "kubevirt"
 }
 
 data "local_file" "ca_hash" {

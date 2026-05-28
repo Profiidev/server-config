@@ -41,7 +41,7 @@ resource "helm_release" "cdi" {
   name       = "cdi"
   repository = "https://profiidev.github.io/helm-charts"
   chart      = "cdi"
-  version    = "0.1.0"
+  version    = "0.1.1"
   namespace  = var.kubevirt_ns
 
   values = [templatefile("${path.module}/templates/cdi.values.tftpl", {
