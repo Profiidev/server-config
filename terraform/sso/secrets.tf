@@ -2,9 +2,14 @@ locals {
   positron_exec = "kubectl exec -n ${var.positron_ns} deploy/positron -- positron"
 
   oidc_config_map = {
+    SKIP_SETUP = "true"
     OIDC_ENABLED = "true"
     OIDC_ISSUER = "https://profidev.io/api/oauth"
     OIDC_SCOPES = "openid email profile image"
+    OIDC_GROUP_SYNC = "true"
+    OIDC_IMAGE_SYNC = "true"
+    SSO_INSTANT_REDIRECT = "true"
+    SSO_CREATE_USER = "true"
   }
 }
 
@@ -146,7 +151,9 @@ module "hibernation" {
   client_id_var = "OIDC_CLIENT_ID"
   client_secret_var = "OIDC_CLIENT_SECRET"
 
-  additional_secrets = local.oidc_config_map
+  additional_secrets = merge(local.oidc_config_map, {
+    ADMIN_GROUP = "Hibernation Admin"
+  })
 
   depends_on = [null_resource.wait_for_positron]
 }
@@ -167,7 +174,9 @@ module "ichwilldich_sep" {
   client_id_var = "OIDC_CLIENT_ID"
   client_secret_var = "OIDC_CLIENT_SECRET"
 
-  additional_secrets = local.oidc_config_map
+  additional_secrets = merge(local.oidc_config_map, {
+    ADMIN_GROUP = "Ichwilldich SEP Admin"
+  })
 
   depends_on = [null_resource.wait_for_positron]
 }
