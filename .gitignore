@@ -12,3 +12,4 @@ secrets.tfvars
 *.raw
 *.qcow2
 /result
+/temp*

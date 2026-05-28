@@ -51,7 +51,7 @@ module "treafik" {
 
   oidc = {
     client_name = "Traefik"
-    redirect_uri = "https://treafik.profidev.io/oidc/callback"
+    redirect_uri = "https://traefik.profidev.io/oidc/callback"
     scope = "openid,profile,email"
   }
 
@@ -189,7 +189,7 @@ module "grafana" {
 
   oidc = {
     client_name = "Grafana"
-    redirect_uri = "https://sap.profidev.io/api/auth/oidc/callback"
+    redirect_uri = "https://grafana.profidev.io/login/generic_oauth"
     scope = "openid,profile,email,grafana"
     admin_group = "Grafana Admin"
   }

@@ -1,7 +1,7 @@
 resource "random_password" "cookie_secret" {
   count   = var.cookie_secret && var.enabled ? 1 : 0
 
-  length  = 16
+  length  = 32
   special = true
 }
 
