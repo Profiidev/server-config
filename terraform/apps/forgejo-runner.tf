@@ -115,9 +115,27 @@ spec:
     kind: ClusterSecretStore
   target:
     name: forgejo-runner-secret-${each.key}
+    template:
+      engineVersion: v2
+      data:
+        "runner-config.yaml": |
+          server:
+            connections:
+              forgejo:
+                url: https://git.profidev.io/
+                token: {{ index . "${each.key}-token" }}
+                uuid: {{ index . "${each.key}-uuid" }}
+          runner:
+            name: ${each.key}
+            labels:
+              - nixos-latest:docker://nixos/nix
+              - ubuntu-latest:docker://catthehacker/ubuntu:act-latest
+              - rust-latest:docker://catthehacker/ubuntu:rust-latest
+              - node-latest:docker://catthehacker/ubuntu:js-latest
+              - gh-latest:docker://catthehacker/ubuntu:gh-latest
   dataFrom:
   - extract:
-      key: tools/forgejo-runner-${each.key}
+      key: tools/forgejo-runner
   YAML
 
   depends_on = [kubernetes_namespace.forgejo]

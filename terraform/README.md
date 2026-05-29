@@ -62,28 +62,14 @@ tools/tailscale:
 
 ### After apps setup (step 8)
 
-tools/forgejo-runner-{node1,node2,node3} (one secret per runner):
+tools/forgejo-runner:
 
-- runner-config.yaml: <Forgejo runner configuration>
-
-base config:
-
-```yaml
-server:
-  connections:
-    forgejo:
-      url: https://git.profidev.io/
-      token: <token>
-      uuid: <uuid>
-runner:
-  name: <node>
-  labels:
-    - nixos-latest:docker://nixos/nix
-    - ubuntu-latest:docker://catthehacker/ubuntu:act-latest
-    - rust-latest:docker://catthehacker/ubuntu:rust-latest
-    - node-latest:docker://catthehacker/ubuntu:js-latest
-    - gh-latest:docker://catthehacker/ubuntu:gh-latest
-```
+- node1-token: <Forgejo runner token for node1>
+- node1-uuid: <Forgejo runner UUID for node1>
+- node2-token: <Forgejo runner token for node2>
+- node2-uuid: <Forgejo runner UUID for node2>
+- node3-token: <Forgejo runner token for node3>
+- node3-uuid: <Forgejo runner UUID for node3>
 
 ## Additional setup steps
 
