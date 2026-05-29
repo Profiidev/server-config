@@ -13,13 +13,13 @@ spec:
   externalSecretName: ${each.key}
   namespaceSelectors:
     - matchLabels: {}
-  refreshTime: 5m
+  refreshTime: 60m
   externalSecretSpec:
     target:
       name: ${each.key}
       template:
         type: ${var.cloudflare_cert_var == each.key ? "kubernetes.io/tls" : "Opaque"}
-    refreshInterval: 5m
+    refreshInterval: 60m
     secretStoreRef:
       name: ${var.cluster_secret_store}
       kind: ClusterSecretStore
