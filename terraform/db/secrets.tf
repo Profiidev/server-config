@@ -101,3 +101,25 @@ module "grafana_dummy" {
     GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET = ""
   }
 }
+
+module "forgejo" {
+  source = "../modules/app-resources"
+
+  secret_path = "tools/forgejo"
+
+  s3_bucket = "forgejo"
+  s3_access_key_var = "FORGEJO__storage__MINIO_ACCESS_KEY_ID"
+  s3_secret_key_var = "FORGEJO__storage__MINIO_SECRET_ACCESS_KEY"
+
+  db_name = "forgejo"
+  db_password = random_password.postgres_password.result
+
+  additional_secrets = {
+    FORGEJO__database__HOST = "postgres-postgresql.${var.pg_ns}.svc:5432"
+    FORGEJO__database__USER = "postgres"
+    FORGEJO__database__PASSWD = random_password.postgres_password.result
+    FORGEJO__storage__MINIO_ENDPOINT = "garage.${var.garage_ns}.svc.cluster.local:3900"
+  }
+
+  depends_on = [null_resource.garage_init, helm_release.postgres]
+}

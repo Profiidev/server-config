@@ -96,6 +96,7 @@ module "forgejo" {
   source = "../modules/app-oidc"
 
   secret_path = "tools/forgejo"
+  create = false
 
   oidc = {
     client_name = "Forgejo"

@@ -18,6 +18,39 @@ ingress:
       hosts:
         - git.profidev.io
 
+deployment:
+  env:
+    - name: FORGEJO__database__HOST
+      valueFrom:
+        secretKeyRef:
+          name: forgejo-secrets
+          key: FORGEJO__database__HOST
+    - name: FORGEJO__database__USER
+      valueFrom:
+        secretKeyRef:
+          name: forgejo-secrets
+          key: FORGEJO__database__USER
+    - name: FORGEJO__database__PASSWD
+      valueFrom:
+        secretKeyRef:
+          name: forgejo-secrets
+          key: FORGEJO__database__PASSWD
+    - name: FORGEJO__storage__MINIO_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: forgejo-secrets
+          key: FORGEJO__storage__MINIO_ACCESS_KEY_ID
+    - name: FORGEJO__storage__MINIO_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: forgejo-secrets
+          key: FORGEJO__storage__MINIO_SECRET_ACCESS_KEY
+    - name: FORGEJO__storage__MINIO_ENDPOINT
+      valueFrom:
+        secretKeyRef:
+          name: forgejo-secrets
+          key: FORGEJO__storage__MINIO_ENDPOINT
+
 tcpRoute:
   enabled: true
   parentRefs:
@@ -100,3 +133,12 @@ gitea:
 
     oauth2:
       ENABLED: false
+
+    storage:
+      STORAGE_TYPE: minio
+      MINIO_BUCKET: forgejo
+      MINIO_LOCATION: garage
+
+    database:
+      DB_TYPE: postgres
+      NAME: forgejo
