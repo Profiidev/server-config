@@ -76,11 +76,13 @@ server:
       token: <token>
       uuid: <uuid>
 runner:
-  name: node1
+  name: <node>
   labels:
-    - node-22:docker://node22-bookworm
     - nixos-latest:docker://nixos/nix
-    - ubuntu-latest:docker://node:16-bullseye
+    - ubuntu-latest:docker://catthehacker/ubuntu:act-latest
+    - rust-latest:docker://catthehacker/ubuntu:rust-latest
+    - node-latest:docker://catthehacker/ubuntu:js-latest
+    - gh-latest:docker://catthehacker/ubuntu:gh-latest
 ```
 
 ## Additional setup steps
