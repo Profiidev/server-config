@@ -1,4 +1,6 @@
 resource "helm_release" "tempo" {
+  count = 0
+
   name       = "tempo"
   repository = "https://grafana.github.io/helm-charts"
   chart      = "tempo"

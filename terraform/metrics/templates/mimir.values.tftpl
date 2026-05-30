@@ -45,6 +45,13 @@ mimir:
     blocks_storage:
       s3:
         bucket_name: mimir-blocks
+      bucket_store:
+        index_cache:
+          inmemory:
+            max_size_bytes: 104857600 # 100MB
+        series_hash_cache_max_size_bytes: 104857600 # 100MB
+      tsdb:
+        head_chunks_write_buffer_size_bytes: 1048576 # 1MB
     alertmanager_storage:
       s3:
         bucket_name: mimir-alert

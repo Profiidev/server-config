@@ -37,6 +37,8 @@ let
       - metrics-bind-address=0.0.0.0
     kubelet-arg:
       - max-pods=200
+    kube-apiserver-arg:
+      - "watch-cache-sizes=customresourcedefinitions.apiextensions.k8s.io#200,secrets#300,configmaps#200,events#600"
     ingress-controller: traefik
     bind-address: ${host.ip}
     tls-san:
