@@ -206,11 +206,13 @@ spec:
               masquerade: {}
         resources:
           limits:
-            memory: 8Gi
+            memory: 6Gi
             cpu: "6"
           requests:
             memory: 1Gi
             cpu: "1"
+        memory:
+          guest: 6Gi
       volumes:
         - name: rootdisk
           dataVolume:
