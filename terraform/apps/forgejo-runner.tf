@@ -142,37 +142,18 @@ spec:
   depends_on = [kubernetes_namespace.forgejo]
 }
 
-resource "kubernetes_persistent_volume_claim" "forgejo_docker_storage" {
+resource "kubernetes_persistent_volume_claim" "forgejo_runner_storage" {
   for_each = { for vm in ["node1", "node2", "node3"] : vm => vm }
 
   metadata {
-    name      = "forgejo-docker-storage-${each.key}"
+    name      = "forgejo-runner-storage-${each.key}"
     namespace = var.forgejo_ns
   }
   spec {
     access_modes = ["ReadWriteOnce"]
     resources {
       requests = {
-        storage = "20Gi"
-      }
-    }
-  }
-
-  depends_on = [kubernetes_namespace.forgejo]
-}
-
-resource "kubernetes_persistent_volume_claim" "forgejo_act_storage" {
-  for_each = { for vm in ["node1", "node2", "node3"] : vm => vm }
-
-  metadata {
-    name      = "forgejo-act-storage-${each.key}"
-    namespace = var.forgejo_ns
-  }
-  spec {
-    access_modes = ["ReadWriteOnce"]
-    resources {
-      requests = {
-        storage = "5Gi"
+        storage = "30Gi"
       }
     }
   }
@@ -219,9 +200,7 @@ spec:
           filesystems:
             - name: forgejo-secret
               virtiofs: {}
-            - name: docker-storage
-              virtiofs: {}
-            - name: act-storage
+            - name: runner-storage
               virtiofs: {}
           interfaces:
             - name: default
@@ -239,12 +218,9 @@ spec:
         - name: rootdisk
           dataVolume:
             name: nixos-forgejo-${each.key}
-        - name: docker-storage
+        - name: runner-storage
           persistentVolumeClaim:
-            claimName: forgejo-docker-storage-${each.key}
-        - name: act-storage
-          persistentVolumeClaim:
-            claimName: forgejo-act-storage-${each.key}
+            claimName: forgejo-runner-storage-${each.key}
         - name: forgejo-secret
           secret:
             secretName: forgejo-runner-secret-${each.key}
