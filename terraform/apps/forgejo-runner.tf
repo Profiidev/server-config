@@ -127,6 +127,7 @@ spec:
                 uuid: {{ index . "${each.key}-uuid" }}
           runner:
             name: ${each.key}
+            capacity: 10
             labels:
               - nixos-latest:docker://nixos/nix
               - ubuntu-latest:docker://catthehacker/ubuntu:act-latest
