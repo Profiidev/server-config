@@ -161,6 +161,25 @@ resource "kubernetes_persistent_volume_claim" "forgejo_docker_storage" {
   depends_on = [kubernetes_namespace.forgejo]
 }
 
+resource "kubernetes_persistent_volume_claim" "forgejo_act_storage" {
+  for_each = { for vm in ["node1", "node2", "node3"] : vm => vm }
+
+  metadata {
+    name      = "forgejo-act-storage-${each.key}"
+    namespace = var.forgejo_ns
+  }
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    resources {
+      requests = {
+        storage = "5Gi"
+      }
+    }
+  }
+
+  depends_on = [kubernetes_namespace.forgejo]
+}
+
 resource "kubectl_manifest" "forgejo_runner" {
   for_each = { for vm in ["node1", "node2", "node3"] : vm => vm }
 
@@ -202,6 +221,8 @@ spec:
               virtiofs: {}
             - name: docker-storage
               virtiofs: {}
+            - name: act-storage
+              virtiofs: {}
           interfaces:
             - name: default
               masquerade: {}
@@ -221,6 +242,9 @@ spec:
         - name: docker-storage
           persistentVolumeClaim:
             claimName: forgejo-docker-storage-${each.key}
+        - name: act-storage
+          persistentVolumeClaim:
+            claimName: forgejo-act-storage-${each.key}
         - name: forgejo-secret
           secret:
             secretName: forgejo-runner-secret-${each.key}
@@ -229,5 +253,5 @@ spec:
           pod: {}
   YAML
 
-  depends_on = [kubernetes_namespace.forgejo, kubectl_manifest.forgejo_runner_secret, kubectl_manifest.forgejo_image, kubernetes_persistent_volume_claim.forgejo_docker_storage, kubernetes_namespace.forgejo]
+  depends_on = [kubernetes_namespace.forgejo, kubectl_manifest.forgejo_runner_secret, kubectl_manifest.forgejo_image, kubernetes_persistent_volume_claim.forgejo_docker_storage, kubernetes_namespace.forgejo, kubernetes_persistent_volume_claim.forgejo_act_storage]
 }

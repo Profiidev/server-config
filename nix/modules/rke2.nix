@@ -38,7 +38,6 @@ let
     kubelet-arg:
       - max-pods=200
     kube-apiserver-arg:
-      - "profiling=true"
       - "watch-cache-sizes=externalsecrets#20,configmaps#30,services#40,validatingadmissionpolicies#10,nodes#20,apiservices#20"
     ingress-controller: traefik
     bind-address: ${host.ip}

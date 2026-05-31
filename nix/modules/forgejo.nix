@@ -43,7 +43,16 @@
   };
 
   fileSystems."/var/lib/docker" = {
-    device = "forgejo-docker-storage";
+    device = "docker-storage";
+    fsType = "virtiofs";
+    options = [
+      "defaults"
+      "rw"
+    ];
+  };
+
+  fileSystems."/var/lib/forgejo-runner/.cache/act" = {
+    device = "act-storage";
     fsType = "virtiofs";
     options = [
       "defaults"
