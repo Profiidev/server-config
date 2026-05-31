@@ -229,5 +229,5 @@ spec:
           pod: {}
   YAML
 
-  depends_on = [kubernetes_namespace.forgejo, kubectl_manifest.forgejo_runner_secret, kubectl_manifest.forgejo_image, kubernetes_persistent_volume_claim.forgejo_docker_storage, kubernetes_namespace.forgejo, kubernetes_persistent_volume_claim.forgejo_act_storage]
+  depends_on = [kubernetes_namespace.forgejo, kubectl_manifest.forgejo_runner_secret, kubectl_manifest.forgejo_image, kubernetes_namespace.forgejo, kubernetes_persistent_volume_claim.forgejo_runner_storage]
 }
