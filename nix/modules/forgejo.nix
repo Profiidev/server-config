@@ -57,7 +57,7 @@
     enable = true;
     settings = {
       Resolve = {
-        DNS = [ "10.43.0.10" ]
+        DNS = [ "10.43.0.10" ];
         Domains = [ "~cluster.local" ];
       };
     };
