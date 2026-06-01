@@ -22,8 +22,10 @@
     serviceConfig = {
       DynamicUser = true;
       User = "forgejo-runner";
+      Group = "forgejo-runner";
+
       StateDirectory = "forgejo-runner";
-      WorkingDirectory = "-/var/lib/forgejo-runner";
+      WorkingDirectory = "/var/lib/forgejo-runner";
 
       Restart = "on-failure";
       RestartSec = 2;
@@ -39,15 +41,6 @@
     options = [
       "defaults"
       "ro"
-    ];
-  };
-
-  fileSystems."/var/lib" = {
-    device = "runner-storage";
-    fsType = "virtiofs";
-    options = [
-      "defaults"
-      "rw"
     ];
   };
 

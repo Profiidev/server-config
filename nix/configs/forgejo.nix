@@ -26,6 +26,11 @@
     ../modules/user.nix
   ];
 
+  boot.kernelParams = [
+    "console=tty0"
+    "console=ttyS0,115200n8"
+  ];
+
   boot.loader.grub.efiSupport = true;
   boot.loader.grub.efiInstallAsRemovable = true;
 }

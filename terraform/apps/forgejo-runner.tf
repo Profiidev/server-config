@@ -201,10 +201,11 @@ spec:
             - name: rootdisk
               disk:
                 bus: virtio
+            - name: runner-storage
+              disk:
+                bus: virtio
           filesystems:
             - name: forgejo-secret
-              virtiofs: {}
-            - name: runner-storage
               virtiofs: {}
           interfaces:
             - name: default
