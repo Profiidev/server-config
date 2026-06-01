@@ -134,6 +134,10 @@ spec:
               - rust-latest:docker://catthehacker/ubuntu:rust-latest
               - node-latest:docker://catthehacker/ubuntu:js-latest
               - gh-latest:docker://catthehacker/ubuntu:gh-latest
+          cache:
+            enabled: true
+            secret: {{ index . "CACHE_SECRET" }}
+            external_server: "http://forgejo-runner-cache.forgejo.svc.cluster.local:8000"
   dataFrom:
   - extract:
       key: tools/forgejo-runner

@@ -52,4 +52,8 @@
   };
 
   networking.firewall.trustedInterfaces = [ "br-+" ];
+
+  services.resolved = {
+    domains = [ "~cluster.local" ];
+  };
 }

@@ -123,3 +123,25 @@ module "forgejo" {
 
   depends_on = [null_resource.garage_init, helm_release.postgres]
 }
+
+resource "random_password" "runner_secret" {
+  length  = 16
+  special = false
+}
+
+module "forgejo-runner" {
+  source = "../modules/app-resources"
+
+  secret_path = "tools/forgejo-runner"
+
+  s3_bucket = "forgejo-runner"
+
+  db_name = "forgejo_runner"
+  db_password = random_password.postgres_password.result
+
+  additional_secrets = {
+    CACHE_SECRET = random_password.runner_secret.result
+  }
+
+  depends_on = [null_resource.garage_init, helm_release.postgres]
+}
