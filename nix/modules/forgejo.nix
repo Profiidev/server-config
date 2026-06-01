@@ -54,6 +54,12 @@
   networking.firewall.trustedInterfaces = [ "br-+" ];
 
   services.resolved = {
-    domains = [ "~cluster.local" ];
+    enable = true;
+    settings = {
+      Resolve = {
+        DNS = [ "10.43.0.10" ]
+        Domains = [ "~cluster.local" ];
+      };
+    };
   };
 }
