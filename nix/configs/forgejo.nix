@@ -19,6 +19,7 @@
     ../modules/cleanup.nix
     ../modules/docker.nix
     ../modules/forgejo.nix
+    ../modules/forgejo-disk.nix
     ../modules/host-name-change.nix
     ../modules/locale.nix
     ../modules/nix.nix
