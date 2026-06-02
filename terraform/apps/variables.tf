@@ -59,7 +59,7 @@ variable "forgejo_ns" {
 variable "kubevirt_ns" {
   description = "The namespace where KubeVirt is deployed"
   type        = string
-  default = "kubevirt"
+  default     = "kubevirt"
 }
 
 data "local_file" "ca_hash" {

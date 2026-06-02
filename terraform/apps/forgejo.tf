@@ -13,7 +13,7 @@ resource "helm_release" "forgejo" {
 
   values = [templatefile("${path.module}/templates/forgejo.values.tftpl", {
     cluster_issuer = var.cert_issuer_prod
-    ingress_class   = var.ingress_class
+    ingress_class  = var.ingress_class
   })]
 
   depends_on = [kubernetes_namespace.forgejo]
