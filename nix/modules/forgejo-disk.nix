@@ -1,75 +1,87 @@
 { pkgs, ... }:
 {
-
-  systemd.services.auto-mount-kubevirt-disk = {
-    description = "Format and mount secondary KubeVirt volume by KubeVirt name";
-
-    # Run as part of the system initialization phase, before standard local filesystems are checked
-    requiredBy = [ "local-fs.target" ];
-    before = [ "local-fs.target" ];
-
-    # Ensure udev has triggered and populated /dev/disk/by-id/ paths
-    after = [ "systemd-udev-settle.service" ];
-    conflicts = [ "shutdown.target" ];
-
-    onFailure = [ "emergency.target" ];
-
-    path = [
-      pkgs.util-linux
-      pkgs.e2fsprogs
-      pkgs.gptfdisk
+  boot.initrd = {
+    # 1. Ensure KubeVirt/QEMU block drivers and ext4 modules are present in Stage 1
+    kernelModules = [
+      "virtio_blk"
+      "ext4"
     ];
 
-    script = ''
-      # Match the 'name' from your KubeVirt yaml manifest
-      TARGET_DEVICE="/dev/vdb"
-      MOUNT_PATH="/var/lib"
+    # 2. Add required binaries to the initrd environment using the systemd-initrd way
+    systemd.initrdBin = [
+      pkgs.gptfdisk
+      pkgs.e2fsprogs
+      pkgs.util-linux
+    ];
 
-      # Wait up to 5 seconds for KubeVirt to surface the hotplugged device
-      for i in {1..5}; do
-        if [ -b "$TARGET_DEVICE" ]; then
-          break
+    # 3. Define the formatting service running completely inside Stage 1 systemd
+    systemd.services.initrd-format-kubevirt-disk = {
+      description = "Format secondary KubeVirt volume before pivot-root";
+
+      # Hook into the early initrd device discovery phase
+      wantedBy = [ "initrd-root-device.target" ];
+      before = [ "initrd-root-device.target" ];
+      after = [ "systemd-modules-load.service" ];
+
+      path = [
+        pkgs.gptfdisk
+        pkgs.e2fsprogs
+        pkgs.util-linux
+      ];
+
+      unitConfig = {
+        DefaultDependencies = false;
+      };
+
+      script = ''
+        TARGET_DEVICE="/dev/vdb"
+
+        echo "=== Initrd KubeVirt Storage Provisioning ==="
+
+        # Aggressive polling for the KubeVirt block device node
+        for i in {1..20}; do
+          if [ -b "$TARGET_DEVICE" ]; then break; fi
+          sleep 0.1
+        done
+
+        if [ ! -b "$TARGET_DEVICE" ]; then
+          echo "CRITICAL ERROR: Required disk $TARGET_DEVICE did not appear!" >&2
+          exit 1
         fi
-        echo "Waiting for $TARGET_DEVICE..."
-        sleep 1
-      done
 
-      if [ ! -b "$TARGET_DEVICE" ]; then
-        echo "Error: Target disk $TARGET_DEVICE did not appear."
-        exit 1
-      fi
+        # Check if device is completely blank
+        if ! blkid "$TARGET_DEVICE" >/dev/null 2>&1; then
+          echo "Device $TARGET_DEVICE is blank. Creating partition layout..."
 
-      # Check if device already has a filesystem or partition layout
-      if ! blkid "$TARGET_DEVICE" >/dev/null 2>&1; then
-        echo "Device $TARGET_DEVICE is blank. Initializing..."
+          # Create a single GPT partition spanning the whole disk
+          sgdisk -N 1 "$TARGET_DEVICE" || exit 1
 
-        # Create a single GPT partition spanning the whole disk
-        sgdisk -N 1 "$TARGET_DEVICE"
+          # Force the kernel to instantly notice the new partition inside the initrd
+          udevadm settle || true
 
-        # The first partition is symlinked as '-part1' by udev
-        PARTITION="/dev/vdb1"
+          echo "Formatting /dev/vdb1 with label 'runner-storage'..."
+          mkfs.ext4 -O mmp -L runner-storage /dev/vdb1 || exit 1
+        fi
+        echo "=== Initrd Storage Provisioning Complete ==="
+      '';
 
-        # Force kernel to register the new partition node
-        udevadm settle
-
-        # Format the partition with a filesystem label
-        mkfs.ext4 -L runner-storage "$PARTITION"
-      fi
-
-      # Safely mount it
-      mkdir -p "$MOUNT_PATH"
-      if ! mountpoint -q "$MOUNT_PATH"; then
-        mount -L runner-storage "$MOUNT_PATH"
-        echo "Successfully mounted disk to $MOUNT_PATH"
-      fi
-    '';
-
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      TimeoutSec = 30;
-      # Safely unmount during system stop/reboot phases
-      ExecStop = "umount /var/lib || true";
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+      };
     };
+  };
+
+  # 4. Use native NixOS filesystem mounting with top structural priority
+  fileSystems."/var/lib" = {
+    device = "/dev/disk/by-label/runner-storage";
+    fsType = "ext4";
+    options = [
+      "defaults"
+      "noatime"
+    ];
+
+    # Crucial: Tells NixOS to mount this in Stage 1 so it's ready when systemd transitions to Stage 2
+    neededForBoot = true;
   };
 }
