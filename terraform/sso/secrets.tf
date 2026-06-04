@@ -210,3 +210,26 @@ module "grafana" {
 
   depends_on = [null_resource.wait_for_positron]
 }
+
+module "ichtrackdich" {
+  source = "../modules/app-oidc"
+
+  secret_path = "apps/ichtrackdich"
+  create = false
+
+  oidc = {
+    client_name = "Ichtrackdich"
+    redirect_uri = "https://ichtrackdich.profidev.io/api/auth/oidc/callback"
+    scope = "openid,profile,email,image"
+    admin_group = "Ichtrackdich Admin"
+  }
+
+  client_id_var = "OIDC_CLIENT_ID"
+  client_secret_var = "OIDC_CLIENT_SECRET"
+
+  additional_secrets = merge(local.oidc_config_map, {
+    ADMIN_GROUP = "Ichtrackdich Admin"
+  })
+
+  depends_on = [null_resource.wait_for_positron]
+}

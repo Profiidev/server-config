@@ -50,6 +50,12 @@ variable "ichwilldich_sep_ns" {
   default     = "ichwilldich-sep"
 }
 
+variable "ichtrackdich_ns" {
+  description = "The namespace where ichtrackdich resources will be deployed"
+  type        = string
+  default     = "ichtrackdich"
+}
+
 variable "forgejo_ns" {
   description = "The namespace for Forgejo resources"
   type        = string

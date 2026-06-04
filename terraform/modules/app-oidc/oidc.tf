@@ -26,6 +26,7 @@ resource "terraform_data" "app_oidc" {
 
       if [ -n '${self.input.extra_create}' ]; then
         ${self.input.extra_create}
+        true
       fi
 
       if [ -n "${self.input.admin_group}" ]; then

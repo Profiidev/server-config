@@ -145,3 +145,19 @@ module "forgejo-runner" {
 
   depends_on = [null_resource.garage_init, helm_release.postgres]
 }
+
+module "ichtrackdich" {
+  source = "../modules/app-resources"
+
+  secret_path = "apps/ichtrackdich"
+
+  db_name = "ichtrackdich"
+  db_password = random_password.postgres_password.result
+
+  additional_secrets = merge(local.smtp_config_map, {
+    SITE_URL = "https://ichtrackdich.profidev.io"
+    SMTP_FROM_NAME = "IchTrackDich"
+  })
+
+  depends_on = [helm_release.postgres]
+}
