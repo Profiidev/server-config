@@ -89,6 +89,7 @@ in
     2379 # etcd server client API
     2380 # etcd server peer API
     2222 # SSH
+    10000 # MQTT
     # metrics
     2381
     9100

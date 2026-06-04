@@ -56,6 +56,13 @@ spec:
         hostPort: 2222
         expose:
           default: true
+      mqtt:
+        port: 10000
+        protocol: TCP
+        exposedPort: 10000
+        hostPort: 10000
+        expose:
+          default: true
 
     metrics:
       prometheus:
@@ -210,5 +217,6 @@ spec:
         selector: app.kubernetes.io/name == 'rke2-traefik'
         ports:
           - 2222
+          - 10000
   YAML
 }

@@ -75,3 +75,47 @@ spec:
 
   depends_on = [kubernetes_namespace.ichtrackdich]
 }
+
+resource "kubectl_manifest" "ichtrackdich_mqtt" {
+  yaml_body = <<YAML
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: ichtrackdich-mqtt
+  namespace: ${var.ichtrackdich_ns}
+spec:
+  gatewayClassName: traefik
+  listeners:
+    - name: mqtt
+      protocol: TLS
+      port: 10000
+      tls:
+        mode: Passthrough
+  YAML
+
+  depends_on = [kubernetes_namespace.ichtrackdich]
+}
+
+resource "kubectl_manifest" "ichtrackdich_mqtt_route" {
+  yaml_body = <<YAML
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TLSRoute
+metadata:
+  name: ichtrackdich-mqtt-route
+  namespace: ${var.ichtrackdich_ns}
+spec:
+  parentRefs:
+    - name: ichtrackdich-mqtt
+      kind: Gateway
+      sectionName: mqtt
+  hostnames:
+    - ichtrackdich.profidev.io
+  rules:
+    - backendRefs:
+        - name: ichtrackdich-mqtt
+          kind: Service
+          port: 10000
+YAML
+
+  depends_on = [kubectl_manifest.ichtrackdich_mqtt]
+}
