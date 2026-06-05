@@ -12,6 +12,7 @@ resource "terraform_data" "app_oidc" {
     client_secret_var = var.client_secret_var
     extra_create = var.extra_oidc_create
     extra_destroy = var.extra_oidc_destroy
+    pkce_flag = var.require_pkce ? " --require-pkce" : ""
   }
 
   provisioner "local-exec" {
@@ -30,9 +31,9 @@ resource "terraform_data" "app_oidc" {
       fi
 
       if [ -n "${self.input.admin_group}" ]; then
-        OUTPUT=$(${self.input.exec} oauth-client create "${self.input.client_name}" ${self.input.redirect_uri} ${self.input.scope} "$GROUP_ID" "$ADMIN_GROUP_ID")
+        OUTPUT=$(${self.input.exec} oauth-client create "${self.input.client_name}" ${self.input.redirect_uri} ${self.input.scope} "$GROUP_ID" "$ADMIN_GROUP_ID"${self.input.pkce_flag})
       else
-        OUTPUT=$(${self.input.exec} oauth-client create "${self.input.client_name}" ${self.input.redirect_uri} ${self.input.scope} "$GROUP_ID")
+        OUTPUT=$(${self.input.exec} oauth-client create "${self.input.client_name}" ${self.input.redirect_uri} ${self.input.scope} "$GROUP_ID"${self.input.pkce_flag})
       fi
 
       CLIENT_ID=$(echo "$OUTPUT" | jq -r '.id')

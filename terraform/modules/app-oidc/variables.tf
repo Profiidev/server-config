@@ -87,3 +87,9 @@ variable "extra_oidc_destroy" {
   type        = string
   default     = ""
 }
+
+variable "require_pkce" {
+  description = "Whether to require PKCE for the OIDC client"
+  type        = bool
+  default     = false
+}

@@ -8,6 +8,7 @@ locals {
     OIDC_SCOPES = "openid email profile image"
     OIDC_GROUP_SYNC = "true"
     OIDC_IMAGE_SYNC = "true"
+    OIDC_PKCE = "true"
     SSO_INSTANT_REDIRECT = "true"
     SSO_CREATE_USER = "true"
   }
@@ -149,6 +150,7 @@ module "hibernation" {
     admin_group = "Hibernation Admin"
   }
 
+  require_pkce = true
   client_id_var = "OIDC_CLIENT_ID"
   client_secret_var = "OIDC_CLIENT_SECRET"
 
@@ -172,6 +174,7 @@ module "ichwilldich_sep" {
     admin_group = "Ichwilldich SEP Admin"
   }
 
+  require_pkce = true
   client_id_var = "OIDC_CLIENT_ID"
   client_secret_var = "OIDC_CLIENT_SECRET"
 
@@ -224,6 +227,7 @@ module "ichtrackdich" {
     admin_group = "Ichtrackdich Admin"
   }
 
+  require_pkce = true
   client_id_var = "OIDC_CLIENT_ID"
   client_secret_var = "OIDC_CLIENT_SECRET"
 
