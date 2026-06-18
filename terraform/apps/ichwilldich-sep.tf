@@ -32,7 +32,7 @@ spec:
             external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
             external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
             external-dns.alpha.kubernetes.io/hostname: sap.profidev.io
-            external-dns.alpha.kubernetes.io/target: profidev.io
+            external-dns.alpha.kubernetes.io/target: cluster.profidev.io
           tls:
             - hosts:
                 - profidev.io

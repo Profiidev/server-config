@@ -31,7 +31,7 @@ spec:
             external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
             external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
             external-dns.alpha.kubernetes.io/hostname: profidev.io
-            external-dns.alpha.kubernetes.io/target: node1.profidev.io,node2.profidev.io,node3.profidev.io
+            external-dns.alpha.kubernetes.io/target: cluster.profidev.io
           tls:
             - hosts:
                 - profidev.io

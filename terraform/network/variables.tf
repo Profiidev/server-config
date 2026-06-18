@@ -57,3 +57,15 @@ variable "cloudflare_ca_cert_var" {
   description = "The Vault variable name for the Cloudflare CA certificate"
   type        = string
 }
+
+variable "node1" {
+  type = string
+}
+
+variable "node2" {
+  type = string
+}
+
+variable "node3" {
+  type = string
+}

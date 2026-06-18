@@ -66,7 +66,7 @@ server:
       cert-manager.io/cluster-issuer: ${cert_issuer}
       external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
       external-dns.alpha.kubernetes.io/hostname: argocd.profidev.io
-      external-dns.alpha.kubernetes.io/target: profidev.io
+      external-dns.alpha.kubernetes.io/target: cluster.profidev.io
 
   service:
     annotations:
