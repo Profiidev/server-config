@@ -14,6 +14,7 @@ github_webhook = "<GitHub webhook secret for Argo CD>"
 
 ## Initial deployment order
 
+0. create dns records for node{1-3}.profidev.io
 1. crd: Install Custom Resource Definitions (CRDs) and monitoring tools.
 2. storage: Set up storage solutions required for the cluster. (add cloudflare cert to vault)
 3. network: Configure networking components and services.

@@ -29,6 +29,9 @@ spec:
           host: cache.profidev.io
           annotations:
             cert-manager.io/cluster-issuer: ${var.cert_issuer_prod}
+            external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
+            external-dns.alpha.kubernetes.io/hostname: cache.profidev.io,*.cache.profidev.io
+            external-dns.alpha.kubernetes.io/target: profidev.io
           tls:
             - hosts:
                 - "cache.profidev.io"

@@ -28,6 +28,10 @@ spec:
           className: ${var.ingress_class}
           annotations:
             traefik.ingress.kubernetes.io/router.tls.options: ${var.positron_ns}-positron-tls-options@kubernetescrd
+            external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
+            external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+            external-dns.alpha.kubernetes.io/hostname: profidev.io
+            external-dns.alpha.kubernetes.io/target: node1.profidev.io,node2.profidev.io,node3.profidev.io
           tls:
             - hosts:
                 - profidev.io

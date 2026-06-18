@@ -37,6 +37,12 @@ variable "crowdsec_ns" {
   default     = "crowdsec"
 }
 
+variable "external_dns_ns" {
+  description = "External DNS Namespace"
+  type        = string
+  default     = "external-dns"
+}
+
 variable "storage_ns" {
   description = "The namespace for Storage resources"
   type        = string

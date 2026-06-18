@@ -1,0 +1,11 @@
+serviceMonitor:
+  enabled: true
+
+provider:
+  name: cloudflare
+env:
+  - name: CF_API_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: external-dns
+        key: cloudflare

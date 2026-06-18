@@ -7,6 +7,9 @@ ingress:
   className: ${ingress_class}
   annotations:
     cert-manager.io/cluster-issuer: ${cluster_issuer}
+    external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
+    external-dns.alpha.kubernetes.io/hostname: git.profidev.io
+    external-dns.alpha.kubernetes.io/target: profidev.io
   hosts:
     - host: git.profidev.io
       paths:
