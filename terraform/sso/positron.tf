@@ -24,6 +24,10 @@ spec:
       valuesObject:
         secret:
           storeName: ${var.cluster_secret_store}
+        metrics:
+          enabled: true
+          serviceMonitor:
+            enabled: true
         ingress:
           className: ${var.ingress_class}
           annotations:
