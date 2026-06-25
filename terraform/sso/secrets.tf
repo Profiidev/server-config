@@ -29,6 +29,21 @@ module "longhorn" {
   depends_on = [null_resource.wait_for_positron]
 }
 
+module "crowdsec" {
+  source = "../modules/app-oidc"
+
+  secret_path = "tools/crowdsec-proxy"
+  cookie_secret = true
+
+  oidc = {
+    client_name = "Crowdsec"
+    redirect_uri = "https://crowdsec.profidev.io/oidc/callback"
+    scope = "openid,profile,email"
+  }
+
+  depends_on = [null_resource.wait_for_positron]
+}
+
 module "alloy" {
   source = "../modules/app-oidc"
 

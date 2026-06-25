@@ -1,0 +1,98 @@
+env:
+  TZ: "Europe/Berlin"
+
+ingress:
+  main:
+    enabled: true
+    annotations:
+      traefik.ingress.kubernetes.io/router.middlewares: "${namespace}-crowdsec@kubernetescrd"
+      traefik.ingress.kubernetes.io/router.tls.options: "${namespace}-crowdsec-tls-options@kubernetescrd"
+      external-dns.alpha.kubernetes.io/ingress-hostname-source: "annotation-only"
+      external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+      external-dns.alpha.kubernetes.io/hostname: "crowdsec.profidev.io"
+      external-dns.alpha.kubernetes.io/target: "cluster.profidev.io"
+    ingressClassName: ${ingress_class}
+    hosts:
+      - host: crowdsec.profidev.io
+        paths:
+          - pathType: "Prefix"
+            path: /
+    tls:
+      - secretName: ${cloudflare_cert}
+        hosts:
+          - "*.profidev.io"
+          - "profidev.io"
+
+command: ["/bin/sh", "-c"]
+args:
+    - |
+      if [ -f /data/shared.env ]; then
+        # Export the variables so sub-processes can see them
+        set -a
+        . /data/shared.env
+        set +a
+      fi
+
+      # Verification: Print the loaded variables to the logs
+      echo "--- Main Container Started ---"
+      echo "URL: \$CROWDSEC_URL"
+      echo "Login: \$CROWDSEC_USER"
+
+      pnpm start
+
+initContainers:
+  wait-for-lapi-and-register:
+    command:
+    - sh
+    - -c
+    - |
+      until nc "$LAPI_HOST" "$LAPI_PORT" -z; do
+        echo waiting for lapi to start;
+        sleep 5;
+      done;
+      ln -s /staging/etc/crowdsec /etc/crowdsec;
+      cscli lapi register --machine "$USERNAME" -u "$LAPI_URL" --token "$REGISTRATION_TOKEN";
+      awk '/^(url|login|password):/ {
+          idx = index($0, ":");
+          key = substr($0, 1, idx-1);
+          val = substr($0, idx+1);
+          sub(/^[ \t]+/, "", val);
+
+          if (key == "login") name="USER";
+          else if (key == "password") name="PASSWORD";
+          else if (key == "url") name="URL";
+
+          print "CROWDSEC_" name "=" val
+        }' /etc/crowdsec/local_api_credentials.yaml > /data/shared.env
+    env:
+    - name: REGISTRATION_TOKEN
+      valueFrom:
+        secretKeyRef:
+          key: registrationToken
+          name: crowdsec-lapi-secrets
+    - name: USERNAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.name
+    - name: LAPI_URL
+      value: http://crowdsec-service.crowdsec:8080
+    - name: LAPI_HOST
+      value: crowdsec-service.crowdsec
+    - name: LAPI_PORT
+      value: "8080"
+    image: crowdsecurity/crowdsec:v1.7.7
+    imagePullPolicy: IfNotPresent
+    name: wait-for-lapi-and-register
+    resources:
+      limits:
+        memory: 50Mi
+      requests:
+        cpu: 1m
+        memory: 10Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      privileged: false
+    volumeMounts:
+    - mountPath: /data
+      name: data
