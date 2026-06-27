@@ -36,6 +36,28 @@ lapi:
       enabled: true
 
 config:
+  parsers:
+    s02-enrich:
+      hibernation-path-whitelist.yaml: |
+        name: hibernation/path_whitelist
+        description: "Paths that are expected for nix binary cache"
+        whitelist:
+          reason: "Nix binary cache paths"
+          expression:
+            # Path Style
+            # Cache info
+            - "evt.Meta.http_path matches '^/api/nix/[^/]+/nix-cache-info$' and evt.Meta.http_verb == 'GET'"
+            # Narinfo
+            - "evt.Meta.http_path matches '^/api/nix/[^/]+/[^/]+.narinfo$' and (evt.Meta.http_verb == 'GET' or evt.Meta.http_verb == 'HEAD')"
+            # Nar Download
+            - "evt.Meta.http_path matches '^/api/nix/[^/]+/nar/[^/]+.nar.[^/]+$' and evt.Meta.http_verb == 'GET'"
+            # Virtual Host Style
+            # Cache info
+            - "evt.Meta.http_path matches '^/nix-cache-info$' and evt.Meta.http_verb == 'GET'"
+            # Narinfo
+            - "evt.Meta.http_path matches '^/[^/]+.narinfo$' and (evt.Meta.http_verb == 'GET' or evt.Meta.http_verb == 'HEAD')"
+            # Nar Download
+            - "evt.Meta.http_path matches '^/nar/[^/]+.nar.[^/]+$' and evt.Meta.http_verb == 'GET'"
   config.yaml.local: |
     api:
       server:
