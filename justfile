@@ -93,7 +93,14 @@ rebuild CONFIG IP USER="root" INSECURE_SSH="true":
     export NIX_SSHOPTS="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
   fi
 
-  nixos-rebuild switch --flake {{nix_path}}#{{CONFIG}} \
+  # Check if nh is available
+  if ! command -v nh &> /dev/null; then
+    CMD="nixos-rebuild switch --flake"
+  else
+    CMD="nh os switch"
+  fi
+
+  $CMD {{nix_path}}#{{CONFIG}} \
     --target-host {{USER}}@{{IP}} \
     --build-host {{USER}}@{{IP}}
 

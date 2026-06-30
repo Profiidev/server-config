@@ -1,5 +1,10 @@
-{ lib, ... }:
+{ lib, inputs, ... }:
 
+let
+  collectFlakeInputs =
+    input:
+    [ input ] ++ builtins.concatMap collectFlakeInputs (builtins.attrValues (input.inputs or { }));
+in
 {
   systemd.tmpfiles.rules = [ "L+ /usr/local/bin - - - - /run/current-system/sw/bin/" ];
   system.stateVersion = "26.05";
@@ -34,6 +39,8 @@
     extra-substituters = https://cache.garnix.io https://nix-community.cachix.org
     extra-trusted-public-keys = cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
   '';
+
+  system.extraDependencies = (builtins.concatMap collectFlakeInputs (builtins.attrValues inputs));
 
   nixpkgs = {
     config = {
