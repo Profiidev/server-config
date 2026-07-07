@@ -56,13 +56,6 @@ spec:
         hostPort: 2222
         expose:
           default: true
-      mqtt:
-        port: 10000
-        protocol: TCP
-        exposedPort: 10000
-        hostPort: 10000
-        expose:
-          default: true
 
     metrics:
       prometheus:

@@ -56,6 +56,7 @@ resource "terraform_data" "app_oidc" {
 
       if [ -n '${self.input.extra_destroy}' ]; then
         ${self.input.extra_destroy}
+        true
       fi
     EOT
   }

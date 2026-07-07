@@ -176,30 +176,6 @@ module "hibernation" {
   depends_on = [null_resource.wait_for_positron]
 }
 
-module "ichwilldich_sep" {
-  source = "../modules/app-oidc"
-
-  secret_path = "apps/ichwilldich-sep"
-  create = false
-
-  oidc = {
-    client_name = "Ichwilldich SEP"
-    redirect_uri = "https://sap.profidev.io/api/auth/oidc/callback"
-    scope = "openid,profile,email,image"
-    admin_group = "Ichwilldich SEP Admin"
-  }
-
-  require_pkce = true
-  client_id_var = "OIDC_CLIENT_ID"
-  client_secret_var = "OIDC_CLIENT_SECRET"
-
-  additional_secrets = merge(local.oidc_config_map, {
-    ADMIN_GROUP = "Ichwilldich SEP Admin"
-  })
-
-  depends_on = [null_resource.wait_for_positron]
-}
-
 module "grafana" {
   source = "../modules/app-oidc"
 
@@ -225,30 +201,6 @@ module "grafana" {
     ${local.positron_exec} oauth-scope delete Grafana
     ${local.positron_exec} oauth-policy delete Grafana
   EOT
-
-  depends_on = [null_resource.wait_for_positron]
-}
-
-module "ichtrackdich" {
-  source = "../modules/app-oidc"
-
-  secret_path = "apps/ichtrackdich"
-  create = false
-
-  oidc = {
-    client_name = "Ichtrackdich"
-    redirect_uri = "https://ichtrackdich.profidev.io/api/auth/oidc/callback"
-    scope = "openid,profile,email,image"
-    admin_group = "Ichtrackdich Admin"
-  }
-
-  require_pkce = true
-  client_id_var = "OIDC_CLIENT_ID"
-  client_secret_var = "OIDC_CLIENT_SECRET"
-
-  additional_secrets = merge(local.oidc_config_map, {
-    ADMIN_GROUP = "Ichtrackdich Admin"
-  })
 
   depends_on = [null_resource.wait_for_positron]
 }

@@ -64,22 +64,6 @@ module "auto_clean_bot" {
   depends_on = [helm_release.postgres]
 }
 
-module "ichwildich_sep" {
-  source = "../modules/app-resources"
-
-  secret_path = "apps/ichwilldich-sep"
-
-  db_name = "ichwilldich_sep"
-  db_password = random_password.postgres_password.result
-
-  additional_secrets = merge(local.smtp_config_map, {
-    SITE_URL = "https://sap.profidev.io"
-    SMTP_FROM_NAME = "IchWillDich SEP"
-  })
-
-  depends_on = [helm_release.postgres]
-}
-
 module "alert_bot" {
   source = "../modules/app-resources"
 
@@ -144,20 +128,4 @@ module "forgejo-runner" {
   }
 
   depends_on = [null_resource.garage_init, helm_release.postgres]
-}
-
-module "ichtrackdich" {
-  source = "../modules/app-resources"
-
-  secret_path = "apps/ichtrackdich"
-
-  db_name = "ichtrackdich"
-  db_password = random_password.postgres_password.result
-
-  additional_secrets = merge(local.smtp_config_map, {
-    SITE_URL = "https://ichtrackdich.profidev.io"
-    SMTP_FROM_NAME = "IchTrackDich"
-  })
-
-  depends_on = [helm_release.postgres]
 }
