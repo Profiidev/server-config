@@ -13,6 +13,9 @@
       "matchPackageNames": ["postgresql", "forgejo"],
       "pin": {
         "enabled": false
+      },
+      "pinDigests": {
+        "enabled": false
       }
     }
   ]
