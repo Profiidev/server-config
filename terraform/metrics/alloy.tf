@@ -2,7 +2,7 @@ resource "helm_release" "alloy" {
   name       = "alloy"
   repository = "https://grafana.github.io/helm-charts"
   chart      = "alloy"
-  version    = "1.8.1"
+  version    = "1.10.0"
   namespace  = var.metrics_ns
 
   values = [templatefile("${path.module}/templates/alloy.values.tftpl", {

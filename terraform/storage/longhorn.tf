@@ -8,7 +8,7 @@ resource "helm_release" "longhorn" {
   name       = "longhorn"
   repository = "https://charts.longhorn.io"
   chart      = "longhorn"
-  version    = "1.11.2"
+  version    = "1.12.0"
   namespace  = kubernetes_namespace.storage.metadata[0].name
 
   values = [templatefile("${path.module}/templates/longhorn.values.tftpl", {

@@ -8,7 +8,7 @@ resource "helm_release" "external_secrets" {
   name       = "external-secrets"
   repository = "https://charts.external-secrets.io"
   chart      = "external-secrets"
-  version    = "2.4.1"
+  version    = "2.7.0"
   namespace  = kubernetes_namespace.secrets.metadata[0].name
 
   values = [templatefile("${path.module}/templates/external-secrets.values.tftpl", {

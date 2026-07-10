@@ -8,7 +8,7 @@ resource "helm_release" "forgejo" {
   name       = "forgejo"
   repository = "oci://code.forgejo.org/forgejo-helm"
   chart      = "forgejo"
-  version    = "17.0.1"
+  version    = "17.1.2"
   namespace  = var.forgejo_ns
 
   values = [templatefile("${path.module}/templates/forgejo.values.tftpl", {

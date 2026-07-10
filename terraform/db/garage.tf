@@ -13,7 +13,7 @@ resource "helm_release" "garage" {
   name       = "garage"
   repository = "https://profiidev.github.io/helm-charts"
   chart      = "garage"
-  version    = "0.9.4"
+  version    = "0.9.5"
   namespace  = kubernetes_namespace.garage.metadata[0].name
 
   values = [templatefile("${path.module}/templates/garage.values.tftpl", {
