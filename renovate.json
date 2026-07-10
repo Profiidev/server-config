@@ -10,6 +10,7 @@
   "ignoreDeps": ["data.forgejo.org/forgejo/runner"],
   "packageRules": [
     {
+      "matchDatasources": ["docker", "oci"],
       "matchPackageNames": ["postgresql", "forgejo"],
       "pin": {
         "enabled": false
