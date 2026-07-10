@@ -8,7 +8,7 @@ resource "helm_release" "radar" {
   name       = "radar"
   repository = "https://skyhook-io.github.io/helm-charts"
   chart      = "radar"
-  version    = "1.5.10"
+  version    = "1.8.1"
   namespace  = var.radar_ns
 
   values = [templatefile("${path.module}/templates/radar.values.tftpl", {
