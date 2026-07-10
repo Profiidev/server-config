@@ -17,7 +17,7 @@ jobs:
             terraform -chdir=./terraform/$dir fmt -check
           done
 
-          MODULE_DIRS=$(find {{config_path}}/modules -type d -maxdepth 1 -mindepth 1 -exec basename {} \;)
+          MODULE_DIRS=$(find ./terraform/modules -type d -maxdepth 1 -mindepth 1 -exec basename {} \;)
           for dir in $MODULE_DIRS; do
             echo "Checking Terraform formatting in module $dir"
             terraform -chdir={{config_path}}/modules/$dir fmt -check
@@ -31,6 +31,7 @@ jobs:
       - uses: hashicorp/setup-terraform@v4
       - name: Run Terraform validate
         run: |
+          cat "{ \"token\": \"dummy\" }" > ./terraform/storage/certs/global_token.json
           CONFIG_DIRS=$(find ./terraform -type d -maxdepth 1 -mindepth 1 ! -name "modules" -exec basename {} \;)
           for dir in $CONFIG_DIRS; do
             echo "Validating Terraform configuration in $dir"
