@@ -1,0 +1,49 @@
+name: Checks
+on:
+  pull_request:
+
+jobs:
+  terraform-fmt:
+    name: Check Terraform
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - name: Run Terraform fmt
+        run: |
+          CONFIG_DIRS=$(find ./terraform -type d -maxdepth 1 -mindepth 1 ! -name "modules" -exec basename {} \;)
+          for dir in $CONFIG_DIRS; do
+            echo "Checking Terraform formatting in $dir"
+            terraform fmt -chdir=./terraform/$dir fmt -check
+          done
+
+          MODULE_DIRS=$(find {{config_path}}/modules -type d -maxdepth 1 -mindepth 1 -exec basename {} \;)
+          for dir in $MODULE_DIRS; do
+            echo "Checking Terraform formatting in module $dir"
+            terraform -chdir={{config_path}}/modules/$dir fmt -check
+          done
+
+  terraform-validate:
+    name: Validate Terraform
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - name: Run Terraform validate
+        run: |
+          CONFIG_DIRS=$(find ./terraform -type d -maxdepth 1 -mindepth 1 ! -name "modules" -exec basename {} \;)
+          for dir in $CONFIG_DIRS; do
+            echo "Validating Terraform configuration in $dir"
+            terraform -chdir=./terraform/$dir validate
+          done
+
+  flake-check:
+    name: Check nix flake
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: cachix/install-nix-action@8aa03977d8d733052d78f4e008a241fd1dbf36b3 # v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Run flake check
+        run: |
+          cd nix && nix flake check --all-systems

@@ -24,7 +24,7 @@ fmt CONFIG:
   terraform -chdir={{config_path}}/{{CONFIG}} fmt
 
 validate CONFIG:
-  terraform -chdir={{config_path}}/{{CONFIG}} validate -var-file={{vars_path}} -var-file={{secret_path}}
+  terraform -chdir={{config_path}}/{{CONFIG}} validate
 
 fmt-all:
   #!/usr/bin/env bash
