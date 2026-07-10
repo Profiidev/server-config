@@ -6,5 +6,6 @@
   },
   "nix": {
     "enabled": true
-  }
+  },
+  "ignoreDeps": ["data.forgejo.org/forgejo/runner"]
 }
