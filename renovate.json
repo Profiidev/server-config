@@ -1,23 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["github>profiidev/renovate-config"],
-  "terraform": {
-    "pinDigests": true
-  },
   "nix": {
     "enabled": true
   },
-  "ignoreDeps": ["data.forgejo.org/forgejo/runner"],
-  "packageRules": [
-    {
-      "matchDatasources": ["docker", "oci"],
-      "matchPackageNames": ["postgresql", "forgejo"],
-      "pin": {
-        "enabled": false
-      },
-      "force": {
-        "pinDigests": false
-      }
-    }
-  ]
+  "ignoreDeps": ["data.forgejo.org/forgejo/runner"]
 }
