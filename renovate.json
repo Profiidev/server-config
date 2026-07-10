@@ -15,7 +15,9 @@
       "pin": {
         "enabled": false
       },
-      "pinDigests": false
+      "force": {
+        "pinDigests": false
+      }
     }
   ]
 }
