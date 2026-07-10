@@ -48,7 +48,7 @@ variable "secrets_ns" {
 variable "smtp_password" {
   description = "The password for the SMTP server"
   type        = string
-  sensitive = true
+  sensitive   = true
 }
 
 variable "smtp_username" {

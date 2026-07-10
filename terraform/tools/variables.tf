@@ -6,7 +6,7 @@ variable "argo_ns" {
 variable "kubevirt_ns" {
   description = "The namespace where KubeVirt is deployed"
   type        = string
-  default = "kubevirt"
+  default     = "kubevirt"
 }
 
 variable "ingress_class" {

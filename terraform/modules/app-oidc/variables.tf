@@ -1,7 +1,7 @@
 locals {
   positron_exec = "kubectl exec -n ${var.positron_ns} deploy/positron -- positron"
-  vault_exec = "kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv patch -mount=kv ${var.secret_path}"
-  vault_token = jsondecode(file("${path.module}/../../storage/certs/global_token.json")).token
+  vault_exec    = "kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv patch -mount=kv ${var.secret_path}"
+  vault_token   = jsondecode(file("${path.module}/../../storage/certs/global_token.json")).token
 }
 
 variable "enabled" {
@@ -37,10 +37,10 @@ variable "oidc" {
   description = "The OIDC config"
 
   type = object({
-    client_name = string
+    client_name  = string
     redirect_uri = string
-    scope = string
-    admin_group = optional(string)
+    scope        = string
+    admin_group  = optional(string)
   })
 
   default = null
@@ -49,13 +49,13 @@ variable "oidc" {
 variable "client_id_var" {
   description = "The Vault variable name for the OIDC client ID"
   type        = string
-  default = "client-id"
+  default     = "client-id"
 }
 
 variable "client_secret_var" {
   description = "The Vault variable name for the OIDC client secret"
   type        = string
-  default = "client-secret"
+  default     = "client-secret"
 }
 
 variable "cookie_secret" {

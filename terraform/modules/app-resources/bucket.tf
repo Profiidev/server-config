@@ -7,22 +7,22 @@ resource "terraform_data" "app_bucket" {
   count = var.s3_bucket != null && var.enabled ? 1 : 0
 
   input = {
-    secrets_ns = var.secrets_ns
-    secret_path = var.secret_path
-    s3_ns = var.s3_ns
-    vault_exec = local.vault_exec
-    vault_token = local.vault_token
-    exec = local.s3_exec
-    bucket = var.s3_bucket
-    key_var = var.s3_access_key_var
-    secret_var = var.s3_secret_key_var
-    region_var = var.s3_region_var
-    bucket_var = var.s3_bucket_var
-    host_var = var.s3_host_var
-    host = local.s3_host
+    secrets_ns     = var.secrets_ns
+    secret_path    = var.secret_path
+    s3_ns          = var.s3_ns
+    vault_exec     = local.vault_exec
+    vault_token    = local.vault_token
+    exec           = local.s3_exec
+    bucket         = var.s3_bucket
+    key_var        = var.s3_access_key_var
+    secret_var     = var.s3_secret_key_var
+    region_var     = var.s3_region_var
+    bucket_var     = var.s3_bucket_var
+    host_var       = var.s3_host_var
+    host           = local.s3_host
     path_style_var = var.s3_force_path_style_var
-    path_style = var.s3_force_path_style ? "true" : "false"
-    destroy_port = random_integer.destory_port.result
+    path_style     = var.s3_force_path_style ? "true" : "false"
+    destroy_port   = random_integer.destory_port.result
   }
 
   provisioner "local-exec" {

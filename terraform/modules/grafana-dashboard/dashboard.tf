@@ -1,5 +1,5 @@
 data "local_file" "json" {
-  filename   = "${path.module}/dashboards/${var.name}.json"
+  filename = "${path.module}/dashboards/${var.name}.json"
 }
 
 resource "kubernetes_config_map_v1" "config_map" {

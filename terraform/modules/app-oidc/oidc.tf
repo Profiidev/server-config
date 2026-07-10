@@ -2,17 +2,17 @@ resource "terraform_data" "app_oidc" {
   count = var.oidc != null && var.enabled ? 1 : 0
 
   input = {
-    exec       = local.positron_exec
-    client_name = var.oidc.client_name
-    redirect_uri = var.oidc.redirect_uri
-    scope = var.oidc.scope
-    vault_exec = local.vault_exec
-    admin_group = var.oidc.admin_group != null ? var.oidc.admin_group : ""
-    client_id_var = var.client_id_var
+    exec              = local.positron_exec
+    client_name       = var.oidc.client_name
+    redirect_uri      = var.oidc.redirect_uri
+    scope             = var.oidc.scope
+    vault_exec        = local.vault_exec
+    admin_group       = var.oidc.admin_group != null ? var.oidc.admin_group : ""
+    client_id_var     = var.client_id_var
     client_secret_var = var.client_secret_var
-    extra_create = var.extra_oidc_create
-    extra_destroy = var.extra_oidc_destroy
-    pkce_flag = var.require_pkce ? " --require-pkce" : ""
+    extra_create      = var.extra_oidc_create
+    extra_destroy     = var.extra_oidc_destroy
+    pkce_flag         = var.require_pkce ? " --require-pkce" : ""
   }
 
   provisioner "local-exec" {

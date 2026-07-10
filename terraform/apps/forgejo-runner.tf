@@ -55,7 +55,7 @@ resource "kubernetes_stateful_set_v1" "forgejo_runner" {
 
   spec {
     service_name = "forgejo-runner"
-    replicas = 3
+    replicas     = 3
 
     selector {
       match_labels = {
@@ -78,9 +78,9 @@ resource "kubernetes_stateful_set_v1" "forgejo_runner" {
 
               label_selector {
                 match_expressions {
-                  key = "app"
+                  key      = "app"
                   operator = "In"
-                  values = ["forgejo-runner"]
+                  values   = ["forgejo-runner"]
                 }
               }
             }
@@ -149,7 +149,7 @@ resource "kubernetes_stateful_set_v1" "forgejo_runner" {
           args    = ["sleep 2; forgejo-runner daemon --config /forgejo/config/config.yaml"]
 
           security_context {
-            run_as_user = 1000
+            run_as_user  = 1000
             run_as_group = 1000
           }
 

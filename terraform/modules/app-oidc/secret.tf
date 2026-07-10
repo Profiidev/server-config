@@ -3,7 +3,7 @@ resource "terraform_data" "vault_login" {
 
   input = {
     vault_token = local.vault_token
-    secret_ns  = var.secrets_ns
+    secret_ns   = var.secrets_ns
   }
 
   provisioner "local-exec" {
@@ -21,7 +21,7 @@ resource "terraform_data" "app_secret" {
   input = {
     secret_path = var.secret_path
     vault_token = local.vault_token
-    secret_ns  = var.secrets_ns
+    secret_ns   = var.secrets_ns
   }
 
   provisioner "local-exec" {
@@ -49,7 +49,7 @@ resource "terraform_data" "app_secret_custom" {
   count = var.enabled ? 1 : 0
 
   input = {
-    exec = local.vault_exec
+    exec           = local.vault_exec
     custom_secrets = var.additional_secrets
   }
 
@@ -57,9 +57,9 @@ resource "terraform_data" "app_secret_custom" {
     command = <<-EOT
       set -euo pipefail
 
-      %{ for key, value in self.input.custom_secrets }
+      %{for key, value in self.input.custom_secrets}
       ${self.input.exec} ${key}="${value}"
-      %{ endfor }
+      %{endfor}
     EOT
   }
 
@@ -71,7 +71,7 @@ resource "terraform_data" "app_remove_dummy" {
 
   input = {
     secret_path = var.secret_path
-    secret_ns  = var.secrets_ns
+    secret_ns   = var.secrets_ns
   }
 
   provisioner "local-exec" {

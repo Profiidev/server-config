@@ -1,8 +1,8 @@
 locals {
-  db_exec = "kubectl exec -n ${var.db_ns} postgres-postgresql-0 -c postgresql -- env PGPASSWORD='${var.db_password}' psql -U postgres"
-  vault_exec = "kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv patch -mount=kv ${var.secret_path}"
-  s3_exec = "kubectl exec -n ${var.s3_ns} garage-0 -c garage -- /garage"
-  s3_host = "http://garage.${var.s3_ns}.svc.cluster.local:3900"
+  db_exec     = "kubectl exec -n ${var.db_ns} postgres-postgresql-0 -c postgresql -- env PGPASSWORD='${var.db_password}' psql -U postgres"
+  vault_exec  = "kubectl exec vault-0 -n ${var.secrets_ns} -- vault kv patch -mount=kv ${var.secret_path}"
+  s3_exec     = "kubectl exec -n ${var.s3_ns} garage-0 -c garage -- /garage"
+  s3_host     = "http://garage.${var.s3_ns}.svc.cluster.local:3900"
   vault_token = jsondecode(file("${path.module}/../../storage/certs/global_token.json")).token
   db_url_base = "postgres://postgres:${var.db_password}@postgres-postgresql.${var.db_ns}.svc:5432"
 }
@@ -57,7 +57,7 @@ variable "s3_ns" {
 variable "s3_bucket" {
   description = "The name of the S3 bucket to create for the app (if using the bucket module)"
   type        = string
-  default = null
+  default     = null
 }
 
 variable "s3_access_key_var" {

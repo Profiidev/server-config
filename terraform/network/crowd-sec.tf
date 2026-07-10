@@ -8,7 +8,7 @@ resource "random_password" "bouncer_key" {
   min_lower   = 1
   min_upper   = 1
   min_numeric = 1
-  special = false
+  special     = false
   length      = 32
 }
 
@@ -67,8 +67,8 @@ resource "helm_release" "crowdsec_web_ui" {
 
   values = [
     templatefile("${path.module}/templates/crowdsec-web-ui.values.tftpl", {
-      ingress_class = var.ingress_class
-      namespace = var.crowdsec_ns
+      ingress_class   = var.ingress_class
+      namespace       = var.crowdsec_ns
       cloudflare_cert = var.cloudflare_cert_var
     })
   ]

@@ -101,7 +101,7 @@ spec:
 }
 
 resource "null_resource" "wait_for_positron" {
-   provisioner "local-exec" {
+  provisioner "local-exec" {
     command = <<-EOT
       set -euo pipefail
 

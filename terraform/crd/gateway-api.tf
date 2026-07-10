@@ -7,10 +7,10 @@ data "kubectl_file_documents" "gateway_api" {
 }
 
 resource "kubectl_manifest" "gateway_api" {
-  for_each = data.kubectl_file_documents.gateway_api.manifests
+  for_each  = data.kubectl_file_documents.gateway_api.manifests
   yaml_body = each.value
 
   server_side_apply = true
-  wait = true
-  force_conflicts = true
+  wait              = true
+  force_conflicts   = true
 }

@@ -17,7 +17,7 @@ resource "terraform_data" "vault_oidc_policy" {
   }
 
   provisioner "local-exec" {
-    when   = destroy
+    when    = destroy
     command = <<-EOT
       set -euo pipefail
 
@@ -40,7 +40,7 @@ resource "terraform_data" "vault_oidc_group" {
   }
 
   provisioner "local-exec" {
-    when   = destroy
+    when    = destroy
     command = <<-EOT
       set -euo pipefail
 
@@ -70,7 +70,7 @@ resource "terraform_data" "vault_oidc_client" {
   }
 
   provisioner "local-exec" {
-    when   = destroy
+    when    = destroy
     command = <<-EOT
       set -euo pipefail
 
@@ -89,8 +89,8 @@ data "local_sensitive_file" "vault_status" {
 }
 
 locals {
-  vault_oidc_client = jsondecode(data.local_sensitive_file.vault_status.content)
-  vault_client_id = local.vault_oidc_client.client_id
+  vault_oidc_client   = jsondecode(data.local_sensitive_file.vault_status.content)
+  vault_client_id     = local.vault_oidc_client.client_id
   vault_client_secret = local.vault_oidc_client.client_secret
 }
 
@@ -123,7 +123,7 @@ resource "terraform_data" "vault_oidc_config" {
   }
 
   provisioner "local-exec" {
-    when   = destroy
+    when    = destroy
     command = <<-EOT
       set -euo pipefail
 
@@ -136,8 +136,8 @@ resource "terraform_data" "vault_oidc_config" {
 
 resource "terraform_data" "vault_oidc_group_alias" {
   input = {
-    exec = local.vault_exec
-    secrets_ns = var.secrets_ns
+    exec        = local.vault_exec
+    secrets_ns  = var.secrets_ns
     vault_token = local.vault_token
   }
 
@@ -153,7 +153,7 @@ resource "terraform_data" "vault_oidc_group_alias" {
   }
 
   provisioner "local-exec" {
-    when   = destroy
+    when    = destroy
     command = <<-EOT
       set -euo pipefail
 

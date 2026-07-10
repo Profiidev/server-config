@@ -12,9 +12,9 @@ resource "helm_release" "radar" {
   namespace  = var.radar_ns
 
   values = [templatefile("${path.module}/templates/radar.values.tftpl", {
-    ingress_class = var.ingress_class
+    ingress_class       = var.ingress_class
     cloudflare_cert_var = var.cloudflare_cert_var
-    namespace     = var.radar_ns
+    namespace           = var.radar_ns
   })]
 
   depends_on = [kubernetes_namespace.radar]

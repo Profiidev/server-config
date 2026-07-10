@@ -58,12 +58,12 @@ resource "kubernetes_ingress_v1" "alloy_ingress" {
     namespace = var.metrics_ns
 
     annotations = {
-      "traefik.ingress.kubernetes.io/router.middlewares" = "${var.metrics_ns}-alloy@kubernetescrd"
-      "traefik.ingress.kubernetes.io/router.tls.options" = "${var.metrics_ns}-alloy-tls-options@kubernetescrd"
+      "traefik.ingress.kubernetes.io/router.middlewares"         = "${var.metrics_ns}-alloy@kubernetescrd"
+      "traefik.ingress.kubernetes.io/router.tls.options"         = "${var.metrics_ns}-alloy-tls-options@kubernetescrd"
       "external-dns.alpha.kubernetes.io/ingress-hostname-source" = "annotation-only"
-      "external-dns.alpha.kubernetes.io/cloudflare-proxied" = "true"
-      "external-dns.alpha.kubernetes.io/hostname" = "alloy.profidev.io"
-      "external-dns.alpha.kubernetes.io/target" = "cluster.profidev.io"
+      "external-dns.alpha.kubernetes.io/cloudflare-proxied"      = "true"
+      "external-dns.alpha.kubernetes.io/hostname"                = "alloy.profidev.io"
+      "external-dns.alpha.kubernetes.io/target"                  = "cluster.profidev.io"
     }
   }
 

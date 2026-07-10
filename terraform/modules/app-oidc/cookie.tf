@@ -1,5 +1,5 @@
 resource "random_password" "cookie_secret" {
-  count   = var.cookie_secret && var.enabled ? 1 : 0
+  count = var.cookie_secret && var.enabled ? 1 : 0
 
   length  = 32
   special = true
@@ -10,11 +10,11 @@ locals {
 }
 
 resource "terraform_data" "app_cookie_secret" {
-  count   = var.cookie_secret && var.enabled ? 1 : 0
+  count = var.cookie_secret && var.enabled ? 1 : 0
 
   input = {
-    vault_exec = local.vault_exec
-    cookie_secret_var = var.cookie_secret_var
+    vault_exec          = local.vault_exec
+    cookie_secret_var   = var.cookie_secret_var
     cookie_secret_value = local.cookie_secret_value
   }
 

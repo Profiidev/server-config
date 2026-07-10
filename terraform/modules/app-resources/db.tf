@@ -3,9 +3,9 @@ resource "terraform_data" "app_db" {
 
   input = {
     vault_exec = local.vault_exec
-    exec = local.db_exec
-    db_name = var.db_name
-    db_url = "${local.db_url_base}/${var.db_name}?sslmode=disable"
+    exec       = local.db_exec
+    db_name    = var.db_name
+    db_url     = "${local.db_url_base}/${var.db_name}?sslmode=disable"
     db_url_var = var.db_url_var
   }
 

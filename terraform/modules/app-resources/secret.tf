@@ -2,11 +2,11 @@ resource "terraform_data" "app_secret" {
   count = var.enabled ? 1 : 0
 
   input = {
-    secret_path = var.secret_path
-    vault_token = local.vault_token
-    secret_ns  = var.secrets_ns
+    secret_path    = var.secret_path
+    vault_token    = local.vault_token
+    secret_ns      = var.secrets_ns
     custom_secrets = var.additional_secrets
-    exec = local.vault_exec
+    exec           = local.vault_exec
   }
 
   provisioner "local-exec" {
@@ -16,9 +16,9 @@ resource "terraform_data" "app_secret" {
       kubectl exec vault-0 -n ${self.input.secret_ns} -- vault login ${self.input.vault_token}
       kubectl exec vault-0 -n ${self.input.secret_ns} -- vault kv put -mount=kv ${self.input.secret_path} dummy="placeholder"
       
-      %{ for key, value in self.input.custom_secrets }
+      %{for key, value in self.input.custom_secrets}
       ${self.input.exec} ${key}="${value}"
-      %{ endfor }
+      %{endfor}
     EOT
   }
 
@@ -38,7 +38,7 @@ resource "terraform_data" "app_remove_dummy" {
 
   input = {
     secret_path = var.secret_path
-    secret_ns  = var.secrets_ns
+    secret_ns   = var.secrets_ns
   }
 
   provisioner "local-exec" {

@@ -20,6 +20,41 @@ destroy CONFIG:
 plan CONFIG:
   terraform -chdir={{config_path}}/{{CONFIG}} plan -var-file={{vars_path}} -var-file={{secret_path}}
 
+fmt CONFIG:
+  terraform -chdir={{config_path}}/{{CONFIG}} fmt
+
+validate CONFIG:
+  terraform -chdir={{config_path}}/{{CONFIG}} validate -var-file={{vars_path}} -var-file={{secret_path}}
+
+fmt-all:
+  #!/usr/bin/env bash
+  set -euo pipefail
+
+  # all dirs in config_path except for modules
+  CONFIG_DIRS=$(find {{config_path}} -type d -maxdepth 1 -mindepth 1 ! -name "modules" -exec basename {} \;)
+  for dir in $CONFIG_DIRS; do
+    echo "Formatting $dir..."
+    just fmt $dir
+  done
+
+  # all dirs in config_path/modules
+  MODULE_DIRS=$(find {{config_path}}/modules -type d -maxdepth 1 -mindepth 1 -exec basename {} \;)
+  for dir in $MODULE_DIRS; do
+    echo "Formatting module $dir..."
+    just fmt modules/$dir
+  done
+
+validate-all:
+  #!/usr/bin/env bash
+  set -euo pipefail
+
+  # all dirs in config_path except for modules
+  CONFIG_DIRS=$(find {{config_path}} -type d -maxdepth 1 -mindepth 1 ! -name "modules" -exec basename {} \;)
+  for dir in $CONFIG_DIRS; do
+    echo "Validating $dir..."
+    just validate $dir
+  done
+
 install CONFIG IP USER="root":
   #!/usr/bin/env bash
   set -euo pipefail

@@ -20,8 +20,8 @@ resource "kubernetes_service" "kubelet_metrics" {
     namespace = "kube-system"
 
     labels = {
-      "app.kubernetes.io/name"    = "kubelet"
-      "k8s-app"                   = "kubelet"
+      "app.kubernetes.io/name" = "kubelet"
+      "k8s-app"                = "kubelet"
     }
   }
 

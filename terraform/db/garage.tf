@@ -41,9 +41,9 @@ locals {
 
 resource "terraform_data" "garage_metrics_buckets" {
   input = {
-    secrets_ns = var.secrets_ns
+    secrets_ns  = var.secrets_ns
     vault_token = local.vault_token
-    s3_ns = var.garage_ns
+    s3_ns       = var.garage_ns
   }
 
   provisioner "local-exec" {
@@ -96,7 +96,7 @@ resource "terraform_data" "garage_metrics_buckets" {
   }
 
   provisioner "local-exec" {
-    when = destroy
+    when    = destroy
     command = <<-EOT
       set -euo pipefail
 
@@ -151,9 +151,9 @@ resource "terraform_data" "garage_metrics_buckets" {
 
 resource "terraform_data" "garage_longhorn_buckets" {
   input = {
-    secrets_ns = var.secrets_ns
+    secrets_ns  = var.secrets_ns
     vault_token = local.vault_token
-    s3_ns = var.garage_ns
+    s3_ns       = var.garage_ns
   }
 
   provisioner "local-exec" {
@@ -178,7 +178,7 @@ resource "terraform_data" "garage_longhorn_buckets" {
   }
 
   provisioner "local-exec" {
-    when = destroy
+    when    = destroy
     command = <<-EOT
       set -euo pipefail
 
