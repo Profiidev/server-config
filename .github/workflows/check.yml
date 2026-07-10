@@ -14,7 +14,7 @@ jobs:
           CONFIG_DIRS=$(find ./terraform -type d -maxdepth 1 -mindepth 1 ! -name "modules" -exec basename {} \;)
           for dir in $CONFIG_DIRS; do
             echo "Checking Terraform formatting in $dir"
-            terraform fmt -chdir=./terraform/$dir fmt -check
+            terraform -chdir=./terraform/$dir fmt -check
           done
 
           MODULE_DIRS=$(find {{config_path}}/modules -type d -maxdepth 1 -mindepth 1 -exec basename {} \;)
@@ -34,6 +34,7 @@ jobs:
           CONFIG_DIRS=$(find ./terraform -type d -maxdepth 1 -mindepth 1 ! -name "modules" -exec basename {} \;)
           for dir in $CONFIG_DIRS; do
             echo "Validating Terraform configuration in $dir"
+            terraform -chdir=./terraform/$dir init -backend=false
             terraform -chdir=./terraform/$dir validate
           done
 
