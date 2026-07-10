@@ -3,5 +3,8 @@
   "extends": ["github>profiidev/renovate-config"],
   "terraform": {
     "pinDigests": true
+  },
+  "nix": {
+    "enabled": true
   }
 }
