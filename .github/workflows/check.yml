@@ -8,18 +8,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: hashicorp/setup-terraform@v4
       - name: Run Terraform fmt
         run: |
           CONFIG_DIRS=$(find ./terraform -type d -maxdepth 1 -mindepth 1 ! -name "modules" -exec basename {} \;)
           for dir in $CONFIG_DIRS; do
             echo "Checking Terraform formatting in $dir"
-            terraform fmt -chdir=./terraform/$dir fmt -check
+            terraform -chdir=./terraform/$dir fmt -check
           done
 
-          MODULE_DIRS=$(find {{config_path}}/modules -type d -maxdepth 1 -mindepth 1 -exec basename {} \;)
+          MODULE_DIRS=$(find ./terraform/modules -type d -maxdepth 1 -mindepth 1 -exec basename {} \;)
           for dir in $MODULE_DIRS; do
             echo "Checking Terraform formatting in module $dir"
-            terraform -chdir={{config_path}}/modules/$dir fmt -check
+            terraform -chdir=./terraform/modules/$dir fmt -check
           done
 
   terraform-validate:
@@ -27,11 +28,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: hashicorp/setup-terraform@v4
       - name: Run Terraform validate
         run: |
+          echo "{ \"token\": \"dummy\" }" > ./terraform/storage/certs/global_token.json
           CONFIG_DIRS=$(find ./terraform -type d -maxdepth 1 -mindepth 1 ! -name "modules" -exec basename {} \;)
           for dir in $CONFIG_DIRS; do
             echo "Validating Terraform configuration in $dir"
+            terraform -chdir=./terraform/$dir init -backend=false
             terraform -chdir=./terraform/$dir validate
           done
 
