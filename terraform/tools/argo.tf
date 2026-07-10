@@ -8,7 +8,7 @@ resource "helm_release" "argocd" {
   name       = "argocd"
   repository = "https://argoproj.github.io/argo-helm"
   chart      = "argo-cd"
-  version    = "9.5.13"
+  version    = "10.1.3"
   namespace  = var.argo_ns
 
   values = [templatefile("${path.module}/templates/argocd.values.tftpl", {
