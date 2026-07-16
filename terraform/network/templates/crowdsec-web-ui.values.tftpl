@@ -23,6 +23,10 @@ ingress:
           - "*.profidev.io"
           - "profidev.io"
 
+env:
+  - name: AUTH_ENABLED
+    value: "false"
+
 command: ["/bin/sh", "-c"]
 args:
     - |
