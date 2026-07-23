@@ -1,0 +1,51 @@
+rails:
+  extraEnvFrom:
+    - secretRef:
+        name: sure
+  extraEnvVars:
+    - name: DATABASE_URL
+      valueFrom:
+        secretKeyRef:
+          name: sure
+          key: DATABASE_URL
+    #- name: DATABASE_PASSWORD
+    #  value: "none" # will not actually be used
+  existingSecret: "sure"
+  settings:
+    ONBOARDING_STATE: "closed"
+
+cnpg:
+  enabled: false
+  cluster:
+    enabled: false
+
+redisOperator:
+  enabled: false
+  managed:
+    enabled: false
+
+redisSimple:
+  enabled: true
+
+migrations:
+  strategy: "initContainer"
+
+ingress:
+  enabled: true
+  className: ${ingress_class}
+  hosts:
+    - host: sure.profidev.io
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: ${cloudflare_cert_var}
+      hosts:
+        - "*.profidev.io"
+        - profidev.io
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls.options: ${namespace}-sure-tls-options@kubernetescrd
+    external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.alpha.kubernetes.io/hostname: sure.profidev.io
+    external-dns.alpha.kubernetes.io/target: cluster.profidev.io

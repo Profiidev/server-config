@@ -129,3 +129,25 @@ module "forgejo-runner" {
 
   depends_on = [null_resource.garage_init, helm_release.postgres]
 }
+
+module "sure" {
+  source = "../modules/app-resources"
+
+  secret_path = "apps/sure"
+
+  db_name     = "sure"
+  db_password = random_password.postgres_password.result
+
+  additional_secrets = {
+    SMTP_ADDRESS              = local.smtp_config_map.SMTP_SERVER
+    SMTP_PORT                 = local.smtp_config_map.SMTP_PORT
+    EMAIL_SENDER               = local.smtp_config_map.SMTP_FROM_ADDRESS
+    SMTP_USERNAME             = local.smtp_config_map.SMTP_USERNAME
+    SMTP_PASSWORD             = local.smtp_config_map.SMTP_PASSWORD
+    SMTP_AUTHENTICATION       = "plain"
+    SMTP_ENABLE_STARTTLS_AUTO = "true"
+    DATABASE_URL              = "postgresql://postgres:${urlencode(random_password.postgres_password.result)}@postgres-postgresql.${var.pg_ns}.svc:5432/sure?sslmode=disable"
+  }
+
+  depends_on = [null_resource.garage_init, helm_release.postgres]
+}

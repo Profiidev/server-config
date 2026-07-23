@@ -68,6 +68,12 @@ variable "kubevirt_ns" {
   default     = "kubevirt"
 }
 
+variable "sure_ns" {
+  description = "The namespace where Sure is deployed"
+  type        = string
+  default     = "sure"
+}
+
 data "local_file" "ca_hash" {
   filename = "${path.module}/../storage/certs/ca.hash"
 }

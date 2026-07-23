@@ -204,3 +204,56 @@ module "grafana" {
 
   depends_on = [null_resource.wait_for_positron]
 }
+
+resource "random_id" "sure_key_base" {
+  byte_length = 32
+}
+
+resource "random_id" "sure_encryption_primary_key" {
+  byte_length = 32
+}
+
+resource "random_id" "sure_encryption_deterministic_key" {
+  byte_length = 32
+}
+
+resource "random_id" "sure_encryption_key_derivation_salt" {
+  byte_length = 64
+}
+
+resource "random_id" "sure_redis_password" {
+  byte_length = 32
+}
+
+module "sure" {
+  source = "../modules/app-oidc"
+
+  secret_path = "apps/sure"
+  create      = false
+
+  oidc = {
+    client_name  = "Sure"
+    redirect_uri = "https://sure.profidev.io/auth/callback"
+    scope        = "openid,profile,email"
+    admin_group  = "Sure Admin"
+  }
+
+  client_id_var     = "OIDC_CLIENT_ID"
+  client_secret_var = "OIDC_CLIENT_SECRET"
+
+  additional_secrets = {
+    AUTH_LOCAL_LOGIN_ENABLED                     = "false"
+    AUTH_LOCAL_ADMIN_OVERRIDE_ENABLED            = "false"
+    AUTH_JIT_MODE                                = "create_and_link"
+    OIDC_ISSUER                                  = "https://profidev.io/api/oauth"
+    OIDC_REDIRECT_URI                            = "https://sure.profidev.io/auth/openid_connect/callback"
+    APP_DOMAIN                                   = "sure.profidev.io"
+    SECRET_KEY_BASE                              = random_id.sure_key_base.hex
+    ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY         = random_id.sure_encryption_primary_key.hex
+    ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY   = random_id.sure_encryption_deterministic_key.hex
+    ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT = random_id.sure_encryption_key_derivation_salt.hex
+    redis-password                               = random_id.sure_redis_password.hex
+  }
+
+  depends_on = [null_resource.wait_for_positron]
+}
