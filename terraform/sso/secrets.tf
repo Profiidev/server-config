@@ -233,7 +233,7 @@ module "sure" {
 
   oidc = {
     client_name  = "Sure"
-    redirect_uri = "https://sure.profidev.io/auth/callback"
+    redirect_uri = "https://sure.profidev.io/auth/openid_connect/callback"
     scope        = "openid,profile,email"
     admin_group  = "Sure Admin"
   }
