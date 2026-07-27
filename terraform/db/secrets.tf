@@ -141,7 +141,7 @@ module "sure" {
   additional_secrets = {
     SMTP_ADDRESS              = local.smtp_config_map.SMTP_SERVER
     SMTP_PORT                 = local.smtp_config_map.SMTP_PORT
-    EMAIL_SENDER               = local.smtp_config_map.SMTP_FROM_ADDRESS
+    EMAIL_SENDER              = local.smtp_config_map.SMTP_FROM_ADDRESS
     SMTP_USERNAME             = local.smtp_config_map.SMTP_USERNAME
     SMTP_PASSWORD             = local.smtp_config_map.SMTP_PASSWORD
     SMTP_AUTHENTICATION       = "plain"
