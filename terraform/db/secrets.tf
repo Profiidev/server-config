@@ -21,9 +21,10 @@ module "positron" {
   db_password = random_password.postgres_password.result
 
   additional_secrets = merge(local.smtp_config_map, {
-    SITE_URL       = "https://profidev.io"
-    APOD_API_KEY   = var.apod_api_key
-    SMTP_FROM_NAME = "Positron"
+    SITE_URL        = "https://profidev.io"
+    APOD_API_KEY    = var.apod_api_key
+    SMTP_FROM_NAME  = "Positron"
+    ALLOWED_ORIGINS = "http://tauri.localhost,http://localhost:1420"
   })
 
   depends_on = [null_resource.garage_init, helm_release.postgres]
