@@ -8,7 +8,7 @@ resource "helm_release" "sure" {
   name       = "sure"
   repository = "https://we-promise.github.io/sure"
   chart      = "sure"
-  version    = "0.7.2"
+  version    = "0.7.3"
   namespace  = var.sure_ns
 
   values = [templatefile("${path.module}/templates/sure.values.tftpl", {
