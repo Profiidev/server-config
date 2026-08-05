@@ -8,7 +8,7 @@ resource "helm_release" "forgejo" {
   name       = "forgejo"
   repository = "oci://code.forgejo.org/forgejo-helm"
   chart      = "forgejo"
-  version    = "17.1.2"
+  version    = "17.1.4" # TODO use official latest tag option when https://code.forgejo.org/forgejo-helm/forgejo-helm/pulls/1638 is done
   namespace  = var.forgejo_ns
 
   values = [templatefile("${path.module}/templates/forgejo.values.tftpl", {
