@@ -2,7 +2,7 @@ resource "helm_release" "mimir" {
   name       = "mimir"
   repository = "https://grafana.github.io/helm-charts"
   chart      = "mimir-distributed"
-  version    = "6.1.0"
+  version    = "6.2.0"
   namespace  = var.metrics_ns
 
   values = [templatefile("${path.module}/templates/mimir.values.tftpl", {
