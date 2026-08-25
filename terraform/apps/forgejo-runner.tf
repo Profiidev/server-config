@@ -172,7 +172,7 @@ resource "kubernetes_stateful_set_v1" "forgejo_runner" {
 
         container {
           name              = "dind"
-          image             = "docker:dind@sha256:084e385b0c9b7ab35d5a46dfedd033721448c000dbec71adcf13da8a9e71baa8"
+          image             = "docker:dind@sha256:12e683a161823b2a839aeea999b9d960e6e1f9a97b1679ad6b441982e2d9cf07"
           image_pull_policy = "IfNotPresent"
 
           security_context {
