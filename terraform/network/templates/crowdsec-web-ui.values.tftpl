@@ -25,8 +25,24 @@ env:
     value: "false"
   - name: CONFIG_UI_TIME_ZONE
     value: "Europe/Berlin"
+  - name: CONFIG_INSTANCES_0_METRICS_0_ID
+    value: "lapi"
+  - name: CONFIG_INSTANCES_0_METRICS_0_NAME
+    value: "LAPI"
   - name: CONFIG_INSTANCES_0_METRICS_0_URL
     value: "http://crowdsec-service.crowdsec:6060/metrics"
+  - name: CONFIG_INSTANCES_0_METRICS_1_ID
+    value: "appsec"
+  - name: CONFIG_INSTANCES_0_METRICS_1_NAME
+    value: "AppSec"
+  - name: CONFIG_INSTANCES_0_METRICS_1_URL
+    value: "http://crowdsec-appsec-service.crowdsec:6060/metrics"
+  - name: CONFIG_INSTANCES_0_METRICS_2_ID
+    value: "agent"
+  - name: CONFIG_INSTANCES_0_METRICS_2_NAME
+    value: "Agent"
+  - name: CONFIG_INSTANCES_0_METRICS_2_URL
+    value: "http://crowdsec-agent-service.crowdsec:6060/metrics"
 
 command: ["/bin/sh", "-c"]
 args:

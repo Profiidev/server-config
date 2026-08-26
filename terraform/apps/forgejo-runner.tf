@@ -21,7 +21,7 @@ spec:
           server:
             connections:
               forgejo:
-                url: https://git.profidev.io/
+                url: http://forgejo-http:3000/
                 token: {{ index . "${each.key}-token" }}
                 uuid: {{ index . "${each.key}-uuid" }}
           runner:

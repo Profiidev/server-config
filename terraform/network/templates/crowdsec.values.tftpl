@@ -16,6 +16,20 @@ agent:
     podMonitor:
       enabled: true
 
+appsec:
+  enabled: true
+  acquisitions:
+    - appsec_configs:
+        - crowdsecurity/appsec-default
+      labels:
+        type: appsec
+      listen_addr: 0.0.0.0:7422
+      path: /
+      source: appsec
+  env:
+    - name: COLLECTIONS
+      value: "crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-crs crowdsecurity/appsec-generic-rules"
+
 lapi:
   env:
     - name: ENROLL_KEY

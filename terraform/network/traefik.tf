@@ -97,6 +97,10 @@ spec:
       CrowdsecMode: stream
       CrowdsecLapiHost: "crowdsec-service.crowdsec.svc.cluster.local:8080"
       CrowdsecLapiKey: ${random_password.bouncer_key.result}
+      CrowdsecAppsecEnabled: true
+      CrowdsecAppsecHost: "crowdsec-appsec-service.crowdsec.svc.cluster.local:7422"
+      CrowdsecAppsecFailureBlock: true
+      CrowdsecAppsecUnreachableBlock: true
       ForwardedHeadersTrustedIPs:
         - "10.0.0.0/8"
   YAML
