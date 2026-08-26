@@ -1,8 +1,8 @@
 resource "helm_release" "grafana" {
   name       = "grafana"
-  repository = "https://grafana.github.io/helm-charts"
+  repository = "oci://ghcr.io/grafana-community/helm-charts"
   chart      = "grafana"
-  version    = "10.5.15"
+  version    = "12.11.2"
   namespace  = var.metrics_ns
 
   values = [templatefile("${path.module}/templates/grafana.values.tftpl", {

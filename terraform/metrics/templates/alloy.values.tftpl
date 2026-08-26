@@ -10,6 +10,12 @@ alloy:
     content: |
       prometheus.operator.servicemonitors "servicemonitors" {
         forward_to = [prometheus.remote_write.mimir.receiver]
+
+        // kube-prometheus-stack's apiserver/kubelet/controller-manager/
+        // scheduler/proxy ServiceMonitors use bearerTokenFile (their SA token path),
+        // which Alloy rejects by default as an arbitrary local file read. The path
+        // is just alloy's own mounted SA token, so trust it.
+        allow_arbitrary_file_access = true
       }
 
       prometheus.operator.podmonitors "podmonitors" {
