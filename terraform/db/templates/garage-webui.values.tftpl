@@ -1,0 +1,32 @@
+config:
+  server:
+    domain: "garage.profidev.io"
+    protocol: "https"
+    root_url: "https://garage.profidev.io"
+
+  garage:
+    endpoint: "http://garage.garage.svc.cluster.local:3900"
+    region: "garage"
+    admin_endpoint: "http://garage-0.garage.pod.cluster.local:3903"
+    admin_token: "${token}"
+
+ingress:
+  enabled: true
+  className: ${ingress_class}
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: "${namespace}-crowdsec@kubernetescrd"
+    traefik.ingress.kubernetes.io/router.tls.options: "${namespace}-crowdsec-tls-options@kubernetescrd"
+    external-dns.alpha.kubernetes.io/ingress-hostname-source: "annotation-only"
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.alpha.kubernetes.io/hostname: "garage.profidev.io"
+    external-dns.alpha.kubernetes.io/target: "cluster.profidev.io"
+  hosts:
+    - host: garage.profidev.io
+      paths:
+        - pathType: "Prefix"
+          path: /
+  tls:
+    - secretName: ${cloudflare_cert}
+      hosts:
+        - "*.profidev.io"
+        - "profidev.io"

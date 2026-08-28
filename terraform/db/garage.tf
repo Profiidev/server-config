@@ -35,6 +35,23 @@ resource "null_resource" "garage_init" {
   depends_on = [helm_release.garage]
 }
 
+resource "helm_release" "garage_webui" {
+  name       = "garage-webui"
+  repository = "https://helm.noste.dev"
+  chart      = "garage-ui"
+  version    = "0.12.1"
+  namespace  = kubernetes_namespace.garage.metadata[0].name
+
+  values = [templatefile("${path.module}/templates/garage-webui.values.tftpl", {
+    token           = random_password.garage_token.result
+    namespace       = kubernetes_namespace.garage.metadata[0].name
+    ingress_class   = var.ingress_class
+    cloudflare_cert = var.cloudflare_cert_var
+  })]
+
+  depends_on = [null_resource.garage_init]
+}
+
 locals {
   vault_token = jsondecode(file("${path.module}/../storage/certs/global_token.json")).token
 }
