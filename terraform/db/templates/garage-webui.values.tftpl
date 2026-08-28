@@ -7,15 +7,14 @@ config:
   garage:
     endpoint: "http://garage.garage.svc.cluster.local:3900"
     region: "garage"
-    admin_endpoint: "http://garage-0.garage.pod.cluster.local:3903"
-    admin_token: "${token}"
+    admin_endpoint: "http://garage-0.garage-headless.${namespace}.svc.cluster.local:3903"
 
 ingress:
   enabled: true
   className: ${ingress_class}
   annotations:
-    traefik.ingress.kubernetes.io/router.middlewares: "${namespace}-crowdsec@kubernetescrd"
-    traefik.ingress.kubernetes.io/router.tls.options: "${namespace}-crowdsec-tls-options@kubernetescrd"
+    traefik.ingress.kubernetes.io/router.middlewares: "${namespace}-garage@kubernetescrd"
+    traefik.ingress.kubernetes.io/router.tls.options: "${namespace}-garage-tls-options@kubernetescrd"
     external-dns.alpha.kubernetes.io/ingress-hostname-source: "annotation-only"
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     external-dns.alpha.kubernetes.io/hostname: "garage.profidev.io"

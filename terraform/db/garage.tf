@@ -5,8 +5,8 @@ resource "kubernetes_namespace" "garage" {
 }
 
 resource "random_password" "garage_token" {
-  length  = 16
-  special = true
+  length  = 32
+  special = false
 }
 
 resource "helm_release" "garage" {
@@ -43,14 +43,82 @@ resource "helm_release" "garage_webui" {
   namespace  = kubernetes_namespace.garage.metadata[0].name
 
   values = [templatefile("${path.module}/templates/garage-webui.values.tftpl", {
-    token           = random_password.garage_token.result
     namespace       = kubernetes_namespace.garage.metadata[0].name
     ingress_class   = var.ingress_class
     cloudflare_cert = var.cloudflare_cert_var
   })]
 
+  set_sensitive = [{
+    name  = "config.garage.admin_token"
+    value = random_password.garage_token.result
+  }]
+
   depends_on = [null_resource.garage_init]
 }
+
+resource "kubectl_manifest" "garage_proxy_secrets" {
+  yaml_body = <<YAML
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: garage-proxy
+  namespace: ${var.garage_ns}
+spec:
+  refreshInterval: 5m
+  secretStoreRef:
+    name: ${var.cluster_secret_store}
+    kind: ClusterSecretStore
+  target:
+    name: garage-proxy
+  dataFrom:
+  - extract:
+      key: tools/garage-proxy
+  YAML
+
+  depends_on = [kubernetes_namespace.garage]
+}
+
+resource "kubectl_manifest" "garage_oidc_middleware" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: garage
+  namespace: ${var.garage_ns}
+spec:
+  plugin:
+    traefik-oidc-auth:
+      Secret: "urn:k8s:secret:garage-proxy:secret"
+      Provider:
+        ClientId: "urn:k8s:secret:garage-proxy:client-id"
+        ClientSecret: "urn:k8s:secret:garage-proxy:client-secret"
+        Url: "https://profidev.io/api/oauth"
+      Scopes:
+        - "openid"
+        - "profile"
+        - "email"
+  YAML
+
+  depends_on = [kubernetes_namespace.garage]
+}
+
+resource "kubectl_manifest" "garage_tls_options" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: garage-tls-options
+  namespace: ${var.garage_ns}
+spec:
+  clientAuth:
+    clientAuthType: RequireAndVerifyClientCert
+    secretNames:
+      - ${var.cloudflare_ca_cert_var}
+  YAML
+
+  depends_on = [kubernetes_namespace.garage]
+}
+
 
 locals {
   vault_token = jsondecode(file("${path.module}/../storage/certs/global_token.json")).token

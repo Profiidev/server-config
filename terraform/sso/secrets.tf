@@ -44,6 +44,21 @@ module "crowdsec" {
   depends_on = [null_resource.wait_for_positron]
 }
 
+module "garage" {
+  source = "../modules/app-oidc"
+
+  secret_path   = "tools/garage-proxy"
+  cookie_secret = true
+
+  oidc = {
+    client_name  = "Garage"
+    redirect_uri = "https://garage.profidev.io/oidc/callback"
+    scope        = "openid,profile,email"
+  }
+
+  depends_on = [null_resource.wait_for_positron]
+}
+
 module "alloy" {
   source = "../modules/app-oidc"
 

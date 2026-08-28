@@ -179,6 +179,8 @@ spec:
   - extract:
       key: tools/crowdsec-proxy
   YAML
+
+  depends_on = [kubernetes_namespace.crowdsec]
 }
 
 resource "kubectl_manifest" "crowdsec_oidc_middleware" {
@@ -201,6 +203,8 @@ spec:
         - "profile"
         - "email"
   YAML
+
+  depends_on = [kubernetes_namespace.crowdsec]
 }
 
 resource "kubectl_manifest" "crowdsec_tls_options" {
@@ -216,4 +220,6 @@ spec:
     secretNames:
       - ${var.cloudflare_ca_cert_var}
   YAML
+
+  depends_on = [kubernetes_namespace.crowdsec]
 }
