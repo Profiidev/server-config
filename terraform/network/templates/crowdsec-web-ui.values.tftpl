@@ -37,12 +37,14 @@ env:
     value: "AppSec"
   - name: CONFIG_INSTANCES_0_METRICS_1_URL
     value: "http://crowdsec-appsec-service.crowdsec:6060/metrics"
-  - name: CONFIG_INSTANCES_0_METRICS_2_ID
-    value: "agent"
-  - name: CONFIG_INSTANCES_0_METRICS_2_NAME
-    value: "Agent"
-  - name: CONFIG_INSTANCES_0_METRICS_2_URL
-    value: "http://crowdsec-agent-service.crowdsec:6060/metrics"
+%{ for idx, node in agent_nodes ~}
+  - name: CONFIG_INSTANCES_0_METRICS_${idx + 2}_ID
+    value: "agent-${node}"
+  - name: CONFIG_INSTANCES_0_METRICS_${idx + 2}_NAME
+    value: "Agent ${node}"
+  - name: CONFIG_INSTANCES_0_METRICS_${idx + 2}_URL
+    value: "http://crowdsec-agent-${node}.${namespace}:6060/metrics"
+%{ endfor ~}
 
 command: ["/bin/sh", "-c"]
 args:

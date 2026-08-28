@@ -12,6 +12,57 @@ resource "random_password" "bouncer_key" {
   length      = 32
 }
 
+# The agent is a DaemonSet with identical pod labels, so a Service can't target
+# one node's agent. An init container stamps each agent pod with its node name
+# (crowdsec-node=<node>) so the per-node Services below can select it.
+resource "kubectl_manifest" "crowdsec_agent_sa" {
+  yaml_body = <<YAML
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: crowdsec-agent
+  namespace: ${var.crowdsec_ns}
+YAML
+
+  depends_on = [kubernetes_namespace.crowdsec]
+}
+
+resource "kubectl_manifest" "crowdsec_agent_self_label" {
+  yaml_body = <<YAML
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: crowdsec-agent-self-label
+  namespace: ${var.crowdsec_ns}
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "patch"]
+YAML
+
+  depends_on = [kubernetes_namespace.crowdsec]
+}
+
+resource "kubectl_manifest" "crowdsec_agent_self_label_binding" {
+  yaml_body = <<YAML
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: crowdsec-agent-self-label
+  namespace: ${var.crowdsec_ns}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: crowdsec-agent-self-label
+subjects:
+  - kind: ServiceAccount
+    name: crowdsec-agent
+    namespace: ${var.crowdsec_ns}
+YAML
+
+  depends_on = [kubernetes_namespace.crowdsec]
+}
+
 resource "helm_release" "crowdsec" {
   name       = "crowdsec"
   repository = "https://crowdsecurity.github.io/helm-charts"
@@ -25,7 +76,40 @@ resource "helm_release" "crowdsec" {
     })
   ]
 
-  depends_on = [kubernetes_namespace.crowdsec]
+  depends_on = [
+    kubernetes_namespace.crowdsec,
+    kubectl_manifest.crowdsec_agent_sa,
+    kubectl_manifest.crowdsec_agent_self_label_binding,
+  ]
+}
+
+# One Service per node, each selecting only that node's agent pod (via the
+# crowdsec-node label). Stable ClusterIP DNS, endpoints self-heal on pod restart.
+# ponytail: assumes an agent runs on every node data.kubernetes_nodes returns; a
+# tainted control-plane node with no agent would show as a down endpoint in the UI.
+data "kubernetes_nodes" "all" {}
+
+resource "kubectl_manifest" "crowdsec_agent_node_service" {
+  for_each = toset([for n in data.kubernetes_nodes.all.nodes : n.metadata[0].name])
+
+  yaml_body = <<YAML
+apiVersion: v1
+kind: Service
+metadata:
+  name: crowdsec-agent-${each.key}
+  namespace: ${var.crowdsec_ns}
+spec:
+  selector:
+    k8s-app: crowdsec
+    type: agent
+    crowdsec-node: ${each.key}
+  ports:
+    - name: metrics
+      port: 6060
+      targetPort: 6060
+YAML
+
+  depends_on = [helm_release.crowdsec]
 }
 
 resource "kubectl_manifest" "crowdsec_secrets" {
@@ -70,6 +154,7 @@ resource "helm_release" "crowdsec_web_ui" {
       ingress_class   = var.ingress_class
       namespace       = var.crowdsec_ns
       cloudflare_cert = var.cloudflare_cert_var
+      agent_nodes     = sort([for n in data.kubernetes_nodes.all.nodes : n.metadata[0].name])
     })
   ]
 
