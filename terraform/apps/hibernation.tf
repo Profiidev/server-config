@@ -36,11 +36,15 @@ spec:
             external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
             external-dns.alpha.kubernetes.io/hostname: cache.profidev.io,*.cache.profidev.io
             external-dns.alpha.kubernetes.io/target: cluster.profidev.io
+          # exact and wildcard hosts need separate single-host tls entries, else
+          # Traefik mis-binds the apex cert and serves the *.profidev.io fallback
           tls:
             - hosts:
                 - "cache.profidev.io"
-                - "*.cache.profidev.io"
               secretName: cache-tls
+            - hosts:
+                - "*.cache.profidev.io"
+              secretName: cache-wildcard-tls
   destination:
     server: https://kubernetes.default.svc
     namespace: ${var.hibernation_ns}
