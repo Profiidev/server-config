@@ -147,7 +147,7 @@ resource "helm_release" "crowdsec_web_ui" {
   repository = "https://zekker6.github.io/helm-charts"
   chart      = "crowdsec-web-ui"
   namespace  = var.crowdsec_ns
-  version    = "0.50.0"
+  version    = "0.51.0"
 
   values = [
     templatefile("${path.module}/templates/crowdsec-web-ui.values.tftpl", {

@@ -8,7 +8,7 @@ resource "helm_release" "k8s_dashboards" {
   name       = "prometheus"
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "kube-prometheus-stack"
-  version    = "88.5.4"
+  version    = "88.6.2"
   namespace  = kubernetes_namespace.metrics.metadata[0].name
 
   values = [templatefile("${path.module}/templates/kube-prom.values.tftpl", {})]
