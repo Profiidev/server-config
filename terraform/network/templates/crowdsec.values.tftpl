@@ -72,6 +72,14 @@ appsec:
   env:
     - name: COLLECTIONS
       value: "crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-crs crowdsecurity/appsec-generic-rules"
+  extraVolumes:
+    - name: hibernation-whitelists
+      configMap:
+        name: crowdsec-parsers-s02-enrich
+  extraVolumeMounts:
+    - name: hibernation-whitelists
+      mountPath: /etc/crowdsec/parsers/s02-enrich/hibernation-appsec-whitelist.yaml
+      subPath: hibernation-appsec-whitelist.yaml
 
 lapi:
   env:
@@ -115,6 +123,24 @@ config:
             - "evt.Meta.http_path matches '^/[^/]+.narinfo$' and (evt.Meta.http_verb == 'GET' or evt.Meta.http_verb == 'HEAD')"
             # Nar Download
             - "evt.Meta.http_path matches '^/nar/[^/]+.nar.[^/]+$' and evt.Meta.http_verb == 'GET'"
+            # CI push (path style, bearer-token authenticated)
+            - "evt.Meta.http_path matches '^/api/cache/push(/.*)?$' and (evt.Meta.http_verb == 'POST' or evt.Meta.http_verb == 'PUT')"
+            # CLI connectivity + token validation calls
+            - "evt.Meta.http_path == '/api/cache/test' and evt.Meta.http_verb == 'GET'"
+            - "evt.Meta.http_path == '/api/auth/test_token' and evt.Meta.http_verb == 'GET'"
+      hibernation-appsec-whitelist.yaml: |
+        name: hibernation/appsec_whitelist
+        description: "AppSec events for expected nix binary cache + CI push traffic"
+        whitelist:
+          reason: "Nix binary cache / CI push traffic"
+          expression:
+            - "evt.Meta.target_uri startsWith '/api/nix/'"
+            - "evt.Meta.target_uri startsWith '/api/cache/push'"
+            - "evt.Meta.target_uri == '/api/cache/test'"
+            - "evt.Meta.target_uri == '/api/auth/test_token'"
+            - "evt.Meta.target_uri matches '^/[^/]+[.]narinfo$'"
+            - "evt.Meta.target_uri matches '^/nar/.+[.]nar[.].+$'"
+            - "evt.Meta.target_uri == '/nix-cache-info'"
   config.yaml.local: |
     api:
       server:

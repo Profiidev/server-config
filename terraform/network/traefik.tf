@@ -99,8 +99,11 @@ spec:
       CrowdsecLapiKey: ${random_password.bouncer_key.result}
       CrowdsecAppsecEnabled: true
       CrowdsecAppsecHost: "crowdsec-appsec-service.crowdsec.svc.cluster.local:7422"
-      CrowdsecAppsecFailureBlock: true
-      CrowdsecAppsecUnreachableBlock: true
+      # Fail open: a slow/large request that breaks AppSec inspection, or an AppSec
+      # pod restart, must not 403 legitimate traffic on the websecure entrypoint.
+      # LAPI decisions (real bans) still block regardless of these.
+      CrowdsecAppsecFailureBlock: false
+      CrowdsecAppsecUnreachableBlock: false
       ForwardedHeadersTrustedIPs:
         - "10.0.0.0/8"
   YAML
