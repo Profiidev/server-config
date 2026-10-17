@@ -36,10 +36,6 @@ spec:
 
     ports:
       websecure:
-        transport:
-          respondingTimeouts:
-            readTimeout: 600s
-            writeTimeout: 600s
         forwardedHeaders:
           trustedIPs:
             - "10.0.0.0/8"
