@@ -4,7 +4,6 @@
   boot.loader.grub.enable = true;
   boot.loader.grub.configurationLimit = lib.mkDefault 5;
 
-  boot.initrd.systemd.enable = true;
   environment.ldso32 = null;
   boot.tmp.cleanOnBoot = lib.mkDefault true;
 
