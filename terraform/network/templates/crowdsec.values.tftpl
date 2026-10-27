@@ -86,6 +86,8 @@ appsec:
       name: profidev/appsec-bot-challenge-app-apis
       challenge:
         master_secret: "${appsec_challenge_secret}"
+        # 7d; Go duration, no "d" unit
+        cookie_ttl: 168h
       inband:
         pre_eval:
           # Positron: API, OIDC provider, app clients, assetlinks/webfinger
