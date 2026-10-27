@@ -1,3 +1,31 @@
+# Cloudflare edge ranges: trusting them keeps Cloudflare's X-Forwarded-For, so logs,
+# the bouncer and AppSec see (and ban) the real client instead of the edge IP.
+data "http" "cloudflare_ips_v4" {
+  url = "https://www.cloudflare.com/ips-v4"
+
+  lifecycle {
+    postcondition {
+      condition     = self.status_code == 200
+      error_message = "Fetching Cloudflare IPv4 ranges failed."
+    }
+  }
+}
+
+data "http" "cloudflare_ips_v6" {
+  url = "https://www.cloudflare.com/ips-v6"
+
+  lifecycle {
+    postcondition {
+      condition     = self.status_code == 200
+      error_message = "Fetching Cloudflare IPv6 ranges failed."
+    }
+  }
+}
+
+locals {
+  cloudflare_ips = compact(split("\n", "${data.http.cloudflare_ips_v4.response_body}\n${data.http.cloudflare_ips_v6.response_body}"))
+}
+
 resource "kubectl_manifest" "traefik_config" {
   yaml_body = <<YAML
 apiVersion: helm.cattle.io/v1
@@ -37,8 +65,7 @@ spec:
     ports:
       websecure:
         forwardedHeaders:
-          trustedIPs:
-            - "10.0.0.0/8"
+          trustedIPs: ${jsonencode(concat(["10.0.0.0/8"], local.cloudflare_ips))}
         proxyProtocol:
           trustedIPs:
             - "10.0.0.0/8"
