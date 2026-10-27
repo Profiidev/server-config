@@ -81,3 +81,9 @@ data "local_file" "ca_hash" {
 locals {
   ca_hash = data.local_file.ca_hash.content
 }
+
+variable "gitlab_webhook_th_ns" {
+  description = "The namespace where the Claude GitLab webhook for TH is deployed"
+  type        = string
+  default     = "gitlab-webhook-th"
+}

@@ -134,6 +134,10 @@ appsec:
               )
             apply:
               - ExemptFromChallenge("sure")
+          # Claude GitLab webhook and Anthropic API relay: machine clients only
+          - filter: req.Host in ['gitlab-webhook-th.profidev.io', 'anthropic-th.profidev.io']
+            apply:
+              - ExemptFromChallenge("gitlab-webhook-th")
           # Grafana API and OIDC-protected UIs: XHR keeps working after the cookie expires
           - filter: >-
               req.Host in ['grafana.profidev.io', 'alloy.profidev.io', 'crowdsec.profidev.io',

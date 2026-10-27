@@ -50,6 +50,8 @@ spec:
       kubernetesCRD:
         allowCrossNamespace: true
         allowExternalNameServices: true
+      kubernetesIngress:
+        allowExternalNameServices: true
       kubernetesGateway:
         enabled: true
         experimentalChannel: true

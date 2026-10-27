@@ -74,6 +74,14 @@ tools/forgejo-runner:
 - node3-token: <Forgejo runner token for node3>
 - node3-uuid: <Forgejo runner UUID for node3>
 
+apps/gitlab-webhook-th:
+
+- GITLAB_URL: <GitLab instance URL>
+- GITLAB_TOKEN: <GitLab personal access token with api scope>
+- WEBHOOK_SECRET: <Secret token set in the GitLab webhook>
+- ADMIN_TOKEN: <random string, required or the app crashes on start>
+- DISCORD_WEBHOOK_URL: <optional, Discord webhook for notifications>
+
 ## Additional setup steps
 
 ### SSO Client
