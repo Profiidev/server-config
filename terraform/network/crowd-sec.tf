@@ -63,16 +63,23 @@ YAML
   depends_on = [kubernetes_namespace.crowdsec]
 }
 
+# Bot detection signs its challenge cookies with this; a fixed value keeps cookies
+# valid across AppSec pod restarts.
+resource "random_id" "appsec_challenge_secret" {
+  byte_length = 32
+}
+
 resource "helm_release" "crowdsec" {
   name       = "crowdsec"
   repository = "https://crowdsecurity.github.io/helm-charts"
   chart      = "crowdsec"
   namespace  = var.crowdsec_ns
-  version    = "0.24.0"
+  version    = "0.24.2"
 
   values = [
     templatefile("${path.module}/templates/crowdsec.values.tftpl", {
-      traefik_bouncer_key = random_password.bouncer_key.result
+      traefik_bouncer_key     = random_password.bouncer_key.result
+      appsec_challenge_secret = random_id.appsec_challenge_secret.hex
     })
   ]
 

@@ -61,17 +61,90 @@ agent:
 
 appsec:
   enabled: true
+  # Bot challenge WASM runtime + CRS sit at ~320Mi idle; chart default limit is 250Mi.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 384Mi
+    limits:
+      memory: 768Mi
   acquisitions:
     - appsec_configs:
         - crowdsecurity/appsec-default
+        # Bot detection. Listed explicitly (no appsec-bot-* wildcard) so the generic
+        # hub exclusions stay off; the app-apis config exempts real API paths instead.
+        - profidev/appsec-bot-challenge-app-apis
+        - crowdsecurity/appsec-bot-challenge-scoring
+        - crowdsecurity/appsec-bot-challenge-scoring-balanced
       labels:
         type: appsec
       listen_addr: 0.0.0.0:7422
       path: /
       source: appsec
+  configs:
+    profidev-bot-challenge-app-apis.yaml: |
+      name: profidev/appsec-bot-challenge-app-apis
+      challenge:
+        master_secret: "${appsec_challenge_secret}"
+      inband:
+        pre_eval:
+          # Positron: API, OIDC provider, app clients, assetlinks/webfinger
+          - filter: >-
+              req.Host == 'profidev.io' &&
+              (req.URL.Path startsWith '/api/' || req.URL.Path startsWith '/.well-known/')
+            apply:
+              - ExemptFromChallenge("positron")
+          # Hibernation: vhost-style nix cache subdomains are machine-only
+          - filter: req.Host endsWith '.cache.profidev.io'
+            apply:
+              - ExemptFromChallenge("hibernation-nix")
+          # Hibernation: path-style nix cache, CI push, CLI, auth
+          - filter: req.Host == 'cache.profidev.io' && req.URL.Path startsWith '/api/'
+            apply:
+              - ExemptFromChallenge("hibernation")
+          # Forgejo: API + actions runners, container registry, git smart HTTP + LFS,
+          # archive/raw/release downloads (nix fetchers, curl)
+          - filter: >-
+              req.Host == 'git.profidev.io' && (
+                req.URL.Path startsWith '/api/' || req.URL.Path startsWith '/v2/' ||
+                req.URL.Path startsWith '/.well-known/' || req.URL.Path startsWith '/attachments/' ||
+                req.URL.Path matches '^/[^/]+/[^/]+/(info/refs|git-upload-pack|git-receive-pack|HEAD|info/lfs/.+|objects/.+)$' ||
+                req.URL.Path matches '^/[^/]+/[^/]+/(archive|raw|media|releases/download)/.+$'
+              )
+            apply:
+              - ExemptFromChallenge("forgejo")
+          # Vault: HTTP API / CLI
+          - filter: req.Host == 'vault.profidev.io' && req.URL.Path startsWith '/v1/'
+            apply:
+              - ExemptFromChallenge("vault")
+          # Argo CD: REST, webhooks, badges, CLI gRPC(-web) services
+          - filter: >-
+              req.Host == 'argocd.profidev.io' &&
+              (req.URL.Path startsWith '/api/' || req.URL.Path matches '^/[a-z]+[.][A-Za-z]+Service/')
+            apply:
+              - ExemptFromChallenge("argocd")
+          # Sure: API + mobile app, Doorkeeper token endpoints, MCP, webhooks, health, ICS feed
+          - filter: >-
+              req.Host == 'sure.profidev.io' && (
+                req.URL.Path startsWith '/api/' || req.URL.Path startsWith '/.well-known/' ||
+                req.URL.Path startsWith '/webhooks/' || req.URL.Path startsWith '/bills_feed/' ||
+                req.URL.Path in ['/oauth/token', '/oauth/revoke', '/oauth/introspect', '/register', '/mcp', '/up']
+              )
+            apply:
+              - ExemptFromChallenge("sure")
+          # Grafana API and OIDC-protected UIs: XHR keeps working after the cookie expires
+          - filter: >-
+              req.Host in ['grafana.profidev.io', 'alloy.profidev.io', 'crowdsec.profidev.io',
+                'garage.profidev.io', 'radar.profidev.io', 'traefik.profidev.io'] &&
+              req.URL.Path startsWith '/api/'
+            apply:
+              - ExemptFromChallenge("ui-api")
+          - filter: req.Host == 'longhorn.profidev.io' && req.URL.Path startsWith '/v1/'
+            apply:
+              - ExemptFromChallenge("longhorn-api")
   env:
     - name: COLLECTIONS
-      value: "crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-crs crowdsecurity/appsec-generic-rules"
+      value: "crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-crs crowdsecurity/appsec-generic-rules crowdsecurity/appsec-bot-challenge"
   extraVolumes:
     - name: hibernation-whitelists
       configMap:
