@@ -30,6 +30,26 @@ module "positron" {
   depends_on = [null_resource.garage_init, helm_release.postgres]
 }
 
+module "crowdsec" {
+  source = "../modules/app-resources"
+
+  # Not certs/crowdsec: the module overwrites its path, which holds the console enroll key
+  secret_path = "db/crowdsec"
+
+  db_name     = "crowdsec"
+  db_password = random_password.postgres_password.result
+
+  # CrowdSec takes split connection fields, not a URL
+  additional_secrets = {
+    DB_HOST     = "postgres-postgresql.${var.pg_ns}.svc"
+    DB_NAME     = "crowdsec"
+    DB_USER     = "postgres"
+    DB_PASSWORD = random_password.postgres_password.result
+  }
+
+  depends_on = [helm_release.postgres]
+}
+
 module "hibernation" {
   source = "../modules/app-resources"
 

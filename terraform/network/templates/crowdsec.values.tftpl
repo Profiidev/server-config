@@ -156,6 +156,26 @@ appsec:
 
 lapi:
   env:
+    - name: DB_HOST
+      valueFrom:
+        secretKeyRef:
+          name: crowdsec-db
+          key: DB_HOST
+    - name: DB_NAME
+      valueFrom:
+        secretKeyRef:
+          name: crowdsec-db
+          key: DB_NAME
+    - name: DB_USER
+      valueFrom:
+        secretKeyRef:
+          name: crowdsec-db
+          key: DB_USER
+    - name: DB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: crowdsec-db
+          key: DB_PASSWORD
     - name: ENROLL_KEY
       valueFrom:
         secretKeyRef:
@@ -214,7 +234,40 @@ config:
             - "evt.Meta.target_uri matches '^/[^/]+[.]narinfo$'"
             - "evt.Meta.target_uri matches '^/nar/.+[.]nar[.].+$'"
             - "evt.Meta.target_uri == '/nix-cache-info'"
+  # Incremental bans: 4h, doubling per past decision on the same IP/range, capped at 7d (168h).
+  # History is bounded by the LAPI DB flush (default max_age 7d).
+  profiles.yaml: |
+    name: default_ip_remediation
+    filters:
+      - Alert.Remediation == true && Alert.GetScope() == "Ip"
+    decisions:
+      - type: ban
+        duration: 4h
+    duration_expr: "Sprintf('%dh', int(min(4 * 2 ** GetDecisionsCount(Alert.GetValue()), 168)))"
+    on_success: break
+    ---
+    name: default_range_remediation
+    filters:
+      - Alert.Remediation == true && Alert.GetScope() == "Range"
+    decisions:
+      - type: ban
+        duration: 4h
+    duration_expr: "Sprintf('%dh', int(min(4 * 2 ** GetDecisionsCount(Alert.GetValue()), 168)))"
+    on_success: break
   config.yaml.local: |
+    db_config:
+      type: postgresql
+      host: "$${DB_HOST}"
+      port: 5432
+      db_name: "$${DB_NAME}"
+      user: "$${DB_USER}"
+      # single quotes: generated password may contain YAML-special chars
+      password: '$${DB_PASSWORD}'
+      sslmode: disable
+      flush:
+        max_age: 30d
+        # Spike guard: oldest alerts go early rather than growing without bound
+        max_items: 100000
     api:
       server:
         auto_registration: # Activate if not using TLS for authentication

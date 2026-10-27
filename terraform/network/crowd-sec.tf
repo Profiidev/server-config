@@ -87,6 +87,7 @@ resource "helm_release" "crowdsec" {
     kubernetes_namespace.crowdsec,
     kubectl_manifest.crowdsec_agent_sa,
     kubectl_manifest.crowdsec_agent_self_label_binding,
+    kubectl_manifest.crowdsec_db_secrets,
   ]
 }
 
@@ -136,6 +137,29 @@ spec:
   dataFrom:
   - extract:
       key: certs/crowdsec
+  YAML
+
+  depends_on = [kubernetes_namespace.crowdsec]
+}
+
+# LAPI database, created by the db stage (module "crowdsec" in db/secrets.tf)
+resource "kubectl_manifest" "crowdsec_db_secrets" {
+  yaml_body = <<YAML
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: crowdsec-db
+  namespace: ${var.crowdsec_ns}
+spec:
+  refreshInterval: 5m
+  secretStoreRef:
+    name: ${var.cluster_secret_store}
+    kind: ClusterSecretStore
+  target:
+    name: crowdsec-db
+  dataFrom:
+  - extract:
+      key: db/crowdsec
   YAML
 
   depends_on = [kubernetes_namespace.crowdsec]

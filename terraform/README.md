@@ -19,8 +19,8 @@ node3 = "<node3 IP or hostname>"
 
 1. crd: Install Custom Resource Definitions (CRDs) and monitoring tools.
 2. storage: Set up storage solutions required for the cluster. (add cloudflare cert to vault)
-3. network: Configure networking components and services.
-4. db: Deploy database services. (create buckets, dbs and access keys after this)
+3. db: Deploy database services. (create buckets, dbs and access keys after this)
+4. network: Configure networking components and services. (CrowdSec LAPI uses the db stage's Postgres)
 5. tools: Install auxiliary tools and services.
 6. metrics: Set up monitoring and metrics collection services.
 7. sso: Configure Single Sign-On (SSO) services and authentication mechanisms.
