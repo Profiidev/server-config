@@ -103,6 +103,11 @@ spec:
         fields:
           headers:
             defaultmode: keep
+            # Credentials must not land in logs (crowdsec agent, Loki)
+            names:
+              Cookie: drop
+              Authorization: drop
+              Proxy-Authorization: drop
   YAML
 }
 
