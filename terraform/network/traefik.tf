@@ -13,10 +13,10 @@ spec:
       plugins:
         traefik-oidc-auth:
           moduleName: "github.com/sevensolutions/traefik-oidc-auth"
-          version: "v0.17.0"
+          version: "v0.22.0"
         bouncer:
           moduleName: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
-          version: "v1.6.0"
+          version: "v1.8.1"
 
     providers:
       kubernetesCRD:
