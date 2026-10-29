@@ -78,6 +78,11 @@ alertmanager:
         - receiver: "null"
           matchers:
             - 'alertname =~ "Watchdog|InfoInhibitor|MimirStrongConsistencyOffsetMissing"'
+        # pelican-k8s game StatefulSets use OnDelete; the operator rolls a running server only on its next restart
+        - receiver: "null"
+          matchers:
+            - 'alertname = "KubeStatefulSetUpdateNotRolledOut"'
+            - 'namespace = "pelican-servers"'
     receivers:
       - name: "null"
       - name: "discord"
