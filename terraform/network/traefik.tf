@@ -81,6 +81,13 @@ spec:
         hostPort: 2222
         expose:
           default: true
+      sftp:
+        port: 2022
+        protocol: TCP
+        exposedPort: 2022
+        hostPort: 2022
+        expose:
+          default: true
 
     metrics:
       prometheus:
@@ -247,6 +254,7 @@ spec:
         selector: app.kubernetes.io/name == 'rke2-traefik'
         ports:
           - 2222
+          - 2022
           - 10000
   YAML
 }

@@ -272,3 +272,23 @@ module "sure" {
 
   depends_on = [null_resource.wait_for_positron]
 }
+
+module "pelican" {
+  source = "../modules/app-oidc"
+
+  secret_path = "apps/pelican"
+  create      = false
+
+  oidc = {
+    client_name  = "Pelican"
+    redirect_uri = "https://panel.profidev.io/auth/oauth/callback/positron"
+    scope        = "openid,profile,email"
+    admin_group  = "Pelican Admin"
+  }
+
+  require_pkce      = true
+  client_id_var     = "OIDC_CLIENT_ID"
+  client_secret_var = "OIDC_CLIENT_SECRET"
+
+  depends_on = [null_resource.wait_for_positron]
+}

@@ -172,3 +172,33 @@ module "sure" {
 
   depends_on = [null_resource.garage_init, helm_release.postgres]
 }
+
+resource "random_id" "pelican_app_key" {
+  byte_length = 32
+}
+
+resource "random_password" "pelican_admin_password" {
+  length  = 32
+  special = false
+}
+
+module "pelican" {
+  source = "../modules/app-resources"
+
+  secret_path = "apps/pelican"
+
+  db_name     = "pelican"
+  db_password = random_password.postgres_password.result
+
+  additional_secrets = {
+    APP_KEY        = "base64:${random_id.pelican_app_key.b64_std}"
+    DB_HOST        = "postgres-postgresql.${var.pg_ns}.svc"
+    DB_PORT        = "5432"
+    DB_DATABASE    = "pelican"
+    DB_USERNAME    = "postgres"
+    DB_PASSWORD    = random_password.postgres_password.result
+    ADMIN_PASSWORD = random_password.pelican_admin_password.result
+  }
+
+  depends_on = [helm_release.postgres]
+}

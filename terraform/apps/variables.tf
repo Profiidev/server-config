@@ -87,3 +87,15 @@ variable "gitlab_webhook_th_ns" {
   type        = string
   default     = "gitlab-webhook-th"
 }
+
+variable "pelican_ns" {
+  description = "The namespace where the Pelican Panel is deployed"
+  type        = string
+  default     = "pelican"
+}
+
+variable "pelican_system_ns" {
+  description = "The namespace where the pelican-k8s gateway and operator are deployed"
+  type        = string
+  default     = "pelican-system"
+}

@@ -1,0 +1,31 @@
+serversNamespace:
+  # HostPort exposure needs privileged
+  podSecurityLevel: privileged
+
+gateway:
+  panelURL: https://panel.profidev.io
+  existingSecret: pelican-node
+  sftp:
+    service:
+      type: ClusterIP
+  ingress:
+    enabled: true
+    className: ${ingress_class}
+    host: wings.profidev.io
+    annotations:
+      cert-manager.io/cluster-issuer: ${cluster_issuer}
+      external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
+      external-dns.alpha.kubernetes.io/hostname: wings.profidev.io
+      external-dns.alpha.kubernetes.io/target: cluster.profidev.io
+    tls:
+      - secretName: wings-tls
+        hosts:
+          - wings.profidev.io
+
+defaultClass:
+  spec:
+    storage:
+      storageClassName: ${storage_class}
+      defaultSizeGiB: 10
+    exposure:
+      mode: HostPort

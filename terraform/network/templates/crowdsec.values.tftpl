@@ -138,6 +138,16 @@ appsec:
           - filter: req.Host in ['gitlab-webhook-th.profidev.io', 'anthropic-th.profidev.io']
             apply:
               - ExemptFromChallenge("gitlab-webhook-th")
+          # Pelican Panel: application/client API, remote API for the gateway, health
+          - filter: >-
+              req.Host == 'panel.profidev.io' &&
+              (req.URL.Path startsWith '/api/' || req.URL.Path == '/up')
+            apply:
+              - ExemptFromChallenge("pelican-panel")
+          # Pelican wings gateway: Panel calls, console websockets, signed up/downloads
+          - filter: req.Host == 'wings.profidev.io'
+            apply:
+              - ExemptFromChallenge("pelican-wings")
           # Grafana API and OIDC-protected UIs: XHR keeps working after the cookie expires
           - filter: >-
               req.Host in ['grafana.profidev.io', 'alloy.profidev.io', 'crowdsec.profidev.io',

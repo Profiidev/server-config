@@ -1,0 +1,42 @@
+panel:
+  url: https://panel.profidev.io
+  existingSecret: pelican
+  existingSecretAppKeyKey: APP_KEY
+
+database:
+  connection: pgsql
+  existingSecret: pelican
+  existingSecretPasswordKey: DB_PASSWORD
+  existingSecretUsernameKey: DB_USERNAME
+  existingSecretDatabaseKey: DB_DATABASE
+  existingSecretHostKey: DB_HOST
+  existingSecretPortKey: DB_PORT
+
+persistence:
+  storageClass: ${storage_class}
+
+# Plugins live in /var/www/html/plugins, which the image does not persist
+extraVolumeMounts:
+  - name: pelican-data
+    mountPath: /var/www/html/plugins
+    subPath: plugins
+
+ingress:
+  enabled: true
+  className: ${ingress_class}
+  hosts:
+    - host: panel.profidev.io
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: ${cloudflare_cert_var}
+      hosts:
+        - "*.profidev.io"
+        - profidev.io
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls.options: ${namespace}-pelican-tls-options@kubernetescrd
+    external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.alpha.kubernetes.io/hostname: panel.profidev.io
+    external-dns.alpha.kubernetes.io/target: cluster.profidev.io

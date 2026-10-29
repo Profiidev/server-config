@@ -89,6 +89,8 @@ in
     2379 # etcd server client API
     2380 # etcd server peer API
     2222 # SSH
+    2022 # Pelican SFTP
+    25565 # Minecraft (Pelican HostPort)
     # metrics
     2381
     9100
