@@ -90,7 +90,7 @@ resource "kubernetes_stateful_set_v1" "forgejo_runner" {
         # Init Container matches the local node name to the specific generated secret
         init_container {
           name              = "config-setup"
-          image             = "busybox:latest@sha256:dc2d74b28e4cf8984fa52af1f39bc7c3d9c73760b41a74d629f5d11b1ab28616"
+          image             = "busybox:latest@sha256:a46257e06c82ad85242d0d38077d0a52d9896389ca60a1a59d3463db586e5fa4"
           image_pull_policy = "IfNotPresent"
 
           command = [
@@ -172,7 +172,7 @@ resource "kubernetes_stateful_set_v1" "forgejo_runner" {
 
         container {
           name              = "dind"
-          image             = "docker:dind@sha256:3ef33f2e220b79ed3ef3b99d81746f06f306cd6340e2cb7331d17ae996e74cb6"
+          image             = "docker:dind@sha256:9e79b879b177fbd72c34376a3dd3d91747da5db49e1f560f76aea59561471977"
           image_pull_policy = "IfNotPresent"
 
           security_context {
