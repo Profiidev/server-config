@@ -39,7 +39,7 @@ resource "helm_release" "garage_webui" {
   name       = "garage-webui"
   repository = "https://helm.noste.dev"
   chart      = "garage-ui"
-  version    = "0.12.1"
+  version    = "0.14.0"
   namespace  = kubernetes_namespace.garage.metadata[0].name
 
   values = [templatefile("${path.module}/templates/garage-webui.values.tftpl", {

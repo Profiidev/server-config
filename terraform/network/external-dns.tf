@@ -9,7 +9,7 @@ resource "helm_release" "external-dns" {
   repository = "https://kubernetes-sigs.github.io/external-dns"
   chart      = "external-dns"
   namespace  = kubernetes_namespace.external-dns.metadata[0].name
-  version    = "1.21.1"
+  version    = "1.23.0"
 
   values = [
     templatefile("${path.module}/templates/external-dns.values.tftpl", {

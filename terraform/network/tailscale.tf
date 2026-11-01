@@ -8,7 +8,7 @@ resource "helm_release" "tailscale" {
   name       = "tailscale"
   repository = "https://pkgs.tailscale.com/helmcharts"
   chart      = "tailscale-operator"
-  version    = "1.102.3"
+  version    = "1.104.2"
   namespace  = var.tailscale_ns
 
   values = [templatefile("${path.module}/templates/tailscale.values.tftpl", {

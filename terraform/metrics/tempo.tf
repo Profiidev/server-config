@@ -4,7 +4,7 @@ resource "helm_release" "tempo" {
   name       = "tempo"
   repository = "oci://ghcr.io/grafana-community/helm-charts"
   chart      = "tempo"
-  version    = "2.3.0"
+  version    = "2.4.0"
   namespace  = var.metrics_ns
 
   values = [templatefile("${path.module}/templates/tempo.values.tftpl", {
