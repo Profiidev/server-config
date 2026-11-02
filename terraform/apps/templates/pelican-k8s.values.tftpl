@@ -14,9 +14,9 @@ gateway:
     host: wings.profidev.io
     annotations:
       cert-manager.io/cluster-issuer: ${cluster_issuer}
-      external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
-      external-dns.alpha.kubernetes.io/hostname: wings.profidev.io
-      external-dns.alpha.kubernetes.io/target: cluster.profidev.io
+      external-dns.kubernetes.io/ingress-hostname-source: annotation-only
+      external-dns.kubernetes.io/hostname: wings.profidev.io
+      external-dns.kubernetes.io/target: cluster.profidev.io
     tls:
       - secretName: wings-tls
         hosts:

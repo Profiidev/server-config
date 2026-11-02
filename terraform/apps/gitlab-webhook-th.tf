@@ -115,9 +115,9 @@ resource "kubernetes_ingress_v1" "gitlab_webhook_th" {
     namespace = var.gitlab_webhook_th_ns
     annotations = {
       "cert-manager.io/cluster-issuer"                           = var.cert_issuer_prod
-      "external-dns.alpha.kubernetes.io/ingress-hostname-source" = "annotation-only"
-      "external-dns.alpha.kubernetes.io/hostname"                = "gitlab-webhook-th.profidev.io"
-      "external-dns.alpha.kubernetes.io/target"                  = "cluster.profidev.io"
+      "external-dns.kubernetes.io/ingress-hostname-source" = "annotation-only"
+      "external-dns.kubernetes.io/hostname"                = "gitlab-webhook-th.profidev.io"
+      "external-dns.kubernetes.io/target"                  = "cluster.profidev.io"
     }
   }
 

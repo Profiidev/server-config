@@ -33,9 +33,9 @@ spec:
           host: cache.profidev.io
           annotations:
             cert-manager.io/cluster-issuer: ${var.cert_issuer_prod}
-            external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
-            external-dns.alpha.kubernetes.io/hostname: cache.profidev.io,*.cache.profidev.io
-            external-dns.alpha.kubernetes.io/target: cluster.profidev.io
+            external-dns.kubernetes.io/ingress-hostname-source: annotation-only
+            external-dns.kubernetes.io/hostname: cache.profidev.io,*.cache.profidev.io
+            external-dns.kubernetes.io/target: cluster.profidev.io
           # exact and wildcard hosts need separate single-host tls entries, else
           # Traefik mis-binds the apex cert and serves the *.profidev.io fallback
           tls:

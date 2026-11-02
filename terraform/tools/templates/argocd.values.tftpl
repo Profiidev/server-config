@@ -64,9 +64,9 @@ server:
     annotations:
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
       cert-manager.io/cluster-issuer: ${cert_issuer}
-      external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
-      external-dns.alpha.kubernetes.io/hostname: argocd.profidev.io
-      external-dns.alpha.kubernetes.io/target: cluster.profidev.io
+      external-dns.kubernetes.io/ingress-hostname-source: annotation-only
+      external-dns.kubernetes.io/hostname: argocd.profidev.io
+      external-dns.kubernetes.io/target: cluster.profidev.io
 
   service:
     annotations:
