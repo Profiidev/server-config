@@ -17,6 +17,9 @@ defaultSettings:
   guaranteedInstanceManagerCPU: "3"
   nodeDownPodDeletionPolicy: "delete-both-statefulset-and-deployment-pod"
   storageMinimalAvailablePercentage: 5
+  # only used when a default disk is created, existing disks need spec.disks.*.storageReserved patched
+  storageReservedPercentageForDefaultDisk: 10
+  concurrentAutomaticEngineUpgradePerNodeLimit: "1"
 
 networkPolicies:
   enabled: true
