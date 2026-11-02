@@ -24,6 +24,13 @@ let
             namespaces: []
   '';
 
+  # kubelet merges drop-ins after rke2's 00-rke2-defaults.conf, no CLI flag exists for imageMaximumGCAge
+  kubeletImageGc = pkgs.writeText "99-image-gc.conf" ''
+    apiVersion: kubelet.config.k8s.io/v1beta1
+    kind: KubeletConfiguration
+    imageMaximumGCAge: 168h
+  '';
+
   configFile = pkgs.writeText "config.yaml" ''
     cni: calico
     profile: cis
@@ -116,5 +123,6 @@ in
     "d      /var/lib/longhorn                     0700   root  root  -     -"
     "h      /var/lib/rancher/rke2/server/db/etcd  -      -     -     -     +C"
     "h      /var/lib/longhorn                     0700   root  root  -     +C"
+    "L+     /var/lib/rancher/rke2/agent/etc/kubelet.conf.d/99-image-gc.conf - - - - ${kubeletImageGc}"
   ];
 }
