@@ -65,6 +65,12 @@ resource "kubernetes_deployment_v1" "gitlab_webhook_th" {
             value = "redis://localhost:6379"
           }
 
+          # app has no off switch for its rate limiter
+          env {
+            name  = "RATE_LIMIT_MAX"
+            value = "1000000"
+          }
+
           port {
             container_port = 3000
           }
@@ -77,7 +83,7 @@ resource "kubernetes_deployment_v1" "gitlab_webhook_th" {
           }
         }
 
-        # ponytail: ephemeral redis, rate limits reset on pod restart
+        # limiter needs redis reachable, connect() retries forever otherwise
         container {
           name              = "redis"
           image             = "redis:7-alpine"
@@ -114,7 +120,7 @@ resource "kubernetes_ingress_v1" "gitlab_webhook_th" {
     name      = "gitlab-webhook-th"
     namespace = var.gitlab_webhook_th_ns
     annotations = {
-      "cert-manager.io/cluster-issuer"                           = var.cert_issuer_prod
+      "cert-manager.io/cluster-issuer"                     = var.cert_issuer_prod
       "external-dns.kubernetes.io/ingress-hostname-source" = "annotation-only"
       "external-dns.kubernetes.io/hostname"                = "gitlab-webhook-th.profidev.io"
       "external-dns.kubernetes.io/target"                  = "cluster.profidev.io"
