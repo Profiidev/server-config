@@ -20,6 +20,38 @@ extraVolumeMounts:
   - name: pelican-data
     mountPath: /var/www/html/plugins
     subPath: plugins
+  - name: vendor
+    mountPath: /var/www/html/vendor
+
+# Plugin composer packages land in vendor/, which the image resets on every restart.
+# Rebuild vendor/ from the image plus every plugin's composer_packages before the Panel starts.
+extraVolumes:
+  - name: vendor
+    emptyDir: {}
+
+initContainers:
+  - name: plugin-vendor
+    # chart runs tpl over initContainers, so this follows the Panel image on chart updates
+    image: '{{ include "pelican-panel.image" . }}'
+    workingDir: /var/www/html
+    env:
+      # composer writes autoload paths relative to the project root, so build next to the real vendor/
+      - name: COMPOSER_VENDOR_DIR
+        value: vendor-plugins
+    command:
+      - sh
+      - -ec
+      - |
+        cp -R vendor/. vendor-plugins/
+        PKGS=$(php -r 'foreach (glob("plugins/*/plugin.json") as $f) foreach (json_decode(file_get_contents($f), true)["composer_packages"] ?? [] as $n => $v) echo "$n:$v\n";')
+        [ -z "$PKGS" ] || composer require --update-no-dev --no-interaction --no-scripts $PKGS
+        # ponytail: --no-scripts skips package:discover, add it if a plugin package ships a Laravel service provider
+    volumeMounts:
+      - name: vendor
+        mountPath: /var/www/html/vendor-plugins
+      - name: pelican-data
+        mountPath: /var/www/html/plugins
+        subPath: plugins
 
 ingress:
   enabled: true
