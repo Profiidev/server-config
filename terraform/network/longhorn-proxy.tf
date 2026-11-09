@@ -47,8 +47,8 @@ resource "kubernetes_ingress_v1" "longhorn_ingress" {
     namespace = var.storage_ns
 
     annotations = {
-      "traefik.ingress.kubernetes.io/router.middlewares"         = "${var.storage_ns}-longhorn@kubernetescrd"
-      "traefik.ingress.kubernetes.io/router.tls.options"         = "${var.storage_ns}-longhorn-tls-options@kubernetescrd"
+      "traefik.ingress.kubernetes.io/router.middlewares"   = "${var.storage_ns}-longhorn@kubernetescrd"
+      "traefik.ingress.kubernetes.io/router.tls.options"   = "${var.storage_ns}-longhorn-tls-options@kubernetescrd"
       "external-dns.kubernetes.io/ingress-hostname-source" = "annotation-only"
       "external-dns.kubernetes.io/cloudflare-proxied"      = "true"
       "external-dns.kubernetes.io/hostname"                = "longhorn.profidev.io"
