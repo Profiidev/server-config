@@ -2,6 +2,11 @@ garage:
   dbEngine: "sqlite"
   replicationFactor: "1"
   adminToken: "${token}"
+  # keep restorable copies of the metadata DB in the meta volume
+  metadataAutoSnapshotInterval: "6h"
+  # without fsync a crash can corrupt the sqlite metadata DB
+  additionalTopLevelConfig: |-
+    metadata_fsync = true
 
 persistence:
   data:

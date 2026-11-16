@@ -64,7 +64,8 @@ metadata:
   name: longhorn-fs-trim
   namespace: ${kubernetes_namespace.storage.metadata[0].name}
 spec:
-  cron: "0 0/4 * * ?"
+  # every 4h but off 00:00 and clear of node scrub (03:00) / nix gc (04:00-04:40), which together starved etcd
+  cron: "30 2/4 * * ?"
   task: filesystem-trim
   retain: 0
   concurrency: 1

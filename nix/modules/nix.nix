@@ -1,4 +1,9 @@
-{ lib, inputs, ... }:
+{
+  lib,
+  inputs,
+  host,
+  ...
+}:
 
 let
   collectFlakeInputs =
@@ -14,7 +19,8 @@ in
       enable = true;
       clean.enable = true;
       clean.extraArgs = "--keep-since 1d --keep 3 --optimise";
-      clean.dates = "daily";
+      # staggered per node and away from midnight so gc + store optimise never hit all etcd members at once
+      clean.dates = "*-*-* 04:${lib.fixedWidthNumber 2 ((lib.mod (lib.toInt (lib.last (lib.splitString "." host.ip))) 3) * 20)}:00";
       flake = "/etc/nixos/nix-config";
     };
   };

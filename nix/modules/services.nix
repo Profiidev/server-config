@@ -1,5 +1,9 @@
-{ host, lib, ... }:
+{ host, lib, pkgs, ... }:
 
+let
+  # 1-based node index from the private IP, used to stagger heavy maintenance across nodes
+  idx = lib.toInt (lib.last (lib.splitString "." host.ip));
+in
 {
   boot.loader.grub.enable = true;
   boot.loader.grub.configurationLimit = lib.mkDefault 5;
@@ -34,9 +38,20 @@
 
   services.fail2ban.enable = true;
 
+  # a full-disk scrub starves etcd fsyncs (etcd hang 2026-11-16): never scrub two nodes at once, keep it off midnight
   services.btrfs.autoScrub = {
     enable = true;
-    interval = "weekly";
+    interval = "${builtins.elemAt [ "Mon" "Wed" "Fri" ] (lib.mod (idx - 1) 3)} 03:00";
+  };
+
+  # IOSchedulingClass=idle has no effect on virtio disks, so cap scrub bandwidth instead (runtime sysfs value, set every boot)
+  systemd.services.btrfs-scrub-limit = {
+    description = "Limit btrfs scrub bandwidth";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.btrfs-progs}/bin/btrfs scrub limit --all --limit 50m /";
+    };
   };
 
   systemd = {

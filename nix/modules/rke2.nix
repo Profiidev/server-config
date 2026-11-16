@@ -81,6 +81,15 @@ in
     serverAddr = lib.mkIf (!host.master) "https://10.0.0.1:9345";
   };
 
+  # Fencing: if rke2 keeps crashing, its containers (etcd, apiserver, typha, longhorn engines, workloads) run on
+  # unsupervised and block failover (incident 2026-11-16). Reboot after ~20 min of continuous failures (~30s per
+  # attempt); the window is wide so a cold start waiting for etcd quorum doesn't trigger it.
+  systemd.services.rke2-server.unitConfig = {
+    StartLimitIntervalSec = "30min";
+    StartLimitBurst = 40;
+    StartLimitAction = "reboot";
+  };
+
   users.groups.etcd = { };
   users.users.etcd = {
     isSystemUser = true;

@@ -1,6 +1,8 @@
 persistence:
   defaultClassReplicaCount: ${count}
   migratable: true
+  # track writes per replica so salvage after a crash picks the newest replica instead of guessing by file mtime/size
+  disableRevisionCounter: "false"
 
 csi:
   attacherReplicaCount: "${count}"
@@ -20,6 +22,9 @@ defaultSettings:
   # only used when a default disk is created, existing disks need spec.disks.*.storageReserved patched
   storageReservedPercentageForDefaultDisk: 10
   concurrentAutomaticEngineUpgradePerNodeLimit: "1"
+  disableRevisionCounter: '{"v1":"false"}'
+  # remove orphaned engine/replica processes (longhorn/longhorn#14436); replica data is kept, clean it up manually
+  orphanResourceAutoDeletion: "instance"
 
 networkPolicies:
   enabled: true
