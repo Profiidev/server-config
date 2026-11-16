@@ -46,6 +46,10 @@ let
       - max-pods=200
     kube-apiserver-arg:
       - "watch-cache-sizes=externalsecrets#20,configmaps#30,services#40,validatingadmissionpolicies#10,nodes#20,apiservices#20"
+      # mixed version proxy (beta, default on since 1.36): during upgrades, proxy requests for APIs this server
+      # doesn't serve to a peer that does; server-ca signs every apiserver's serving cert (SANs cover 10.0.0.1-3)
+      - "peer-ca-file=/var/lib/rancher/rke2/server/tls/server-ca.crt"
+      - "peer-advertise-ip=${host.ip}"
     ingress-controller: traefik
     bind-address: ${host.ip}
     tls-san:
