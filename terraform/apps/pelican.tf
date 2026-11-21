@@ -71,7 +71,7 @@ resource "helm_release" "pelican_panel" {
   name       = "pelican-panel"
   repository = "oci://ghcr.io/claiyc/pelican-k8s/charts"
   chart      = "pelican-panel"
-  version    = "0.1.4"
+  version    = "0.1.6"
   namespace  = var.pelican_ns
 
   values = [templatefile("${path.module}/templates/pelican-panel.values.tftpl", {
