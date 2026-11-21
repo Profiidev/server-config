@@ -46,13 +46,19 @@ docker/ghcr:
 
 certs/cert-manager:
 
-- cloudflare: <Cloudflare API Token with DNS edit permissions> (token requires ip whitelist)
+- cloudflare: <Cloudflare API Token with DNS edit permissions for profidev.io and buerger.sh> (token requires ip whitelist)
 
 certs/cloudflare:
 
 - ca.crt: <Cloudflare Origin CA Certificate>
 - tls.crt: <Cloudflare Origin CA TLS Certificate>
 - tls.key: <Cloudflare Origin CA TLS Key>
+
+certs/cloudflare-buerger:
+
+- ca.crt: <Cloudflare Origin CA Certificate for buerger.sh>
+- tls.crt: <Cloudflare Origin CA TLS Certificate for buerger.sh>
+- tls.key: <Cloudflare Origin CA TLS Key for buerger.sh>
 
 certs/crowdsec:
 

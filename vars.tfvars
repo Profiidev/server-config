@@ -4,6 +4,8 @@ cert_issuer_prod = "letsencrypt-prod"
 ingress_class = "traefik"
 cloudflare_ca_cert_var = "cloudflare-ca-cert"
 cloudflare_cert_var = "cloudflare-cert"
+cloudflare_buerger_ca_cert_var = "cloudflare-buerger-ca-cert"
+cloudflare_buerger_cert_var = "cloudflare-buerger-cert"
 
 # storage
 storage_ns = "longhorn"

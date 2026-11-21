@@ -1,7 +1,9 @@
 resource "kubectl_manifest" "cloudflare_cert" {
   for_each = tomap({
-    "${var.cloudflare_cert_var}"    = ["tls.crt", "tls.key"]
-    "${var.cloudflare_ca_cert_var}" = ["ca.crt"]
+    "${var.cloudflare_cert_var}"            = { key = "certs/cloudflare", tls = true, props = ["tls.crt", "tls.key"] }
+    "${var.cloudflare_ca_cert_var}"         = { key = "certs/cloudflare", tls = false, props = ["ca.crt"] }
+    "${var.cloudflare_buerger_cert_var}"    = { key = "certs/cloudflare-buerger", tls = true, props = ["tls.crt", "tls.key"] }
+    "${var.cloudflare_buerger_ca_cert_var}" = { key = "certs/cloudflare-buerger", tls = false, props = ["ca.crt"] }
   })
 
   yaml_body = <<YAML
@@ -18,16 +20,16 @@ spec:
     target:
       name: ${each.key}
       template:
-        type: ${var.cloudflare_cert_var == each.key ? "kubernetes.io/tls" : "Opaque"}
+        type: ${each.value.tls ? "kubernetes.io/tls" : "Opaque"}
     refreshInterval: 60m
     secretStoreRef:
       name: ${var.cluster_secret_store}
       kind: ClusterSecretStore
     data:
-      %{for value in each.value}
+      %{for value in each.value.props}
       - secretKey: ${value}
         remoteRef:
-          key: certs/cloudflare
+          key: ${each.value.key}
           property: ${value}
       %{endfor}
   YAML

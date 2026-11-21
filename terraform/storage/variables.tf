@@ -23,6 +23,16 @@ variable "cloudflare_cert_var" {
   type        = string
 }
 
+variable "cloudflare_buerger_ca_cert_var" {
+  description = "The name of the Cloudflare CA certificate secret for buerger.sh"
+  type        = string
+}
+
+variable "cloudflare_buerger_cert_var" {
+  description = "The name of the Cloudflare certificate secret for buerger.sh"
+  type        = string
+}
+
 variable "ghcr_profidev" {
   description = "The name of the GHCR Profidev secret"
   type        = string

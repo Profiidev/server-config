@@ -47,20 +47,36 @@ module "external_np_external_dns" {
   depends_on = [kubernetes_namespace.external-dns]
 }
 
+locals {
+  nodes = {
+    node1 = var.node1
+    node2 = var.node2
+    node3 = var.node3
+  }
+
+  # domain => DNSEndpoint name prefix (empty for profidev.io keeps existing names)
+  cluster_domains = {
+    "profidev.io" = ""
+    "buerger.sh"  = "buerger-"
+  }
+}
+
 resource "kubectl_manifest" "cluster_a_records" {
+  for_each = local.cluster_domains
+
   yaml_body = <<YAML
 apiVersion: externaldns.k8s.io/v1alpha1
 kind: DNSEndpoint
 metadata:
-  name: cluster-a-records
+  name: ${each.value}cluster-a-records
 spec:
   endpoints:
-    - dnsName: cluster.profidev.io
+    - dnsName: cluster.${each.key}
       recordType: A
       targets:
-        - ${var.node1}
-        - ${var.node2}
-        - ${var.node3}
+        %{for ip in values(local.nodes)}
+        - ${ip}
+        %{endfor}
   YAML
 
   depends_on = [helm_release.external-dns]
@@ -68,22 +84,21 @@ spec:
 
 resource "kubectl_manifest" "node_a_records" {
   for_each = {
-    node1 = var.node1
-    node2 = var.node2
-    node3 = var.node3
+    for pair in setproduct(keys(local.nodes), keys(local.cluster_domains)) :
+    "${pair[0]}.${pair[1]}" => { node = pair[0], domain = pair[1] }
   }
 
   yaml_body = <<YAML
 apiVersion: externaldns.k8s.io/v1alpha1
 kind: DNSEndpoint
 metadata:
-  name: ${each.key}-a-records
+  name: ${local.cluster_domains[each.value.domain]}${each.value.node}-a-records
 spec:
   endpoints:
-    - dnsName: ${each.key}.cluster.profidev.io
+    - dnsName: ${each.value.node}.cluster.${each.value.domain}
       recordType: A
       targets:
-        - ${each.value}
+        - ${local.nodes[each.value.node]}
   YAML
 
   depends_on = [helm_release.external-dns]
