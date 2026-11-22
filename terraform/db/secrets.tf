@@ -33,7 +33,6 @@ module "positron" {
 module "crowdsec" {
   source = "../modules/app-resources"
 
-  # Not certs/crowdsec: the module overwrites its path, which holds the console enroll key
   secret_path = "db/crowdsec"
 
   db_name     = "crowdsec"

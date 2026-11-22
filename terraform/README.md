@@ -60,10 +60,6 @@ certs/cloudflare-buerger:
 - tls.crt: <Cloudflare Origin CA TLS Certificate for buerger.sh>
 - tls.key: <Cloudflare Origin CA TLS Key for buerger.sh>
 
-certs/crowdsec:
-
-- API_KEY: <CrowdSec API Key>
-
 tools/tailscale:
 
 - client_id: <Tailscale OAuth client ID>

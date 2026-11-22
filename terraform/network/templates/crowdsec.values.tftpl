@@ -192,15 +192,6 @@ lapi:
         secretKeyRef:
           name: crowdsec-db
           key: DB_PASSWORD
-    - name: ENROLL_KEY
-      valueFrom:
-        secretKeyRef:
-          name: crowdsec
-          key: API_KEY
-    - name: ENROLL_INSTANCE_NAME
-      value: "own-cluster"
-    - name: ENROLL_TAGS
-      value: "k8s linux rke2"
     - name: BOUNCER_KEY_traefik
       value: ${traefik_bouncer_key}
   metrics:

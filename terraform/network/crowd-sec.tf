@@ -120,28 +120,6 @@ YAML
   depends_on = [helm_release.crowdsec]
 }
 
-resource "kubectl_manifest" "crowdsec_secrets" {
-  yaml_body = <<YAML
-apiVersion: external-secrets.io/v1
-kind: ExternalSecret
-metadata:
-  name: crowdsec
-  namespace: ${var.crowdsec_ns}
-spec:
-  refreshInterval: 5m
-  secretStoreRef:
-    name: ${var.cluster_secret_store}
-    kind: ClusterSecretStore
-  target:
-    name: crowdsec
-  dataFrom:
-  - extract:
-      key: certs/crowdsec
-  YAML
-
-  depends_on = [kubernetes_namespace.crowdsec]
-}
-
 # LAPI database, created by the db stage (module "crowdsec" in db/secrets.tf)
 resource "kubectl_manifest" "crowdsec_db_secrets" {
   yaml_body = <<YAML
