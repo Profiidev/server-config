@@ -65,28 +65,28 @@ spec:
           permissions = { contents = "write", metadata = "read", pull_requests = "write" }
 
           # --- CI profiles replacing the commit-bot secrets in workflows ---
-          # Owner is bound through defaults.owner_ids, so job_workflow_ref only pins the file and ref.
+          # Pinned to workflow files in Profiidev repos, so third-party reusable workflows never match.
 
           # Lint auto-fix on same-repo PRs (fork PRs get no OIDC token): push fix commits, create check runs.
           [[profiles]]
           name = "lint"
           permissions = { contents = "write", checks = "write", pull_requests = "write" }
           allow_non_branch_write = true
-          match = { job_workflow_ref = { regex = '[^/]+/[^/]+/\.github/workflows/checks\.yml@refs/(pull/\d+/merge|heads/.+)' } }
+          match = { job_workflow_ref = { regex = 'Profiidev/[^/]+/\.github/workflows/checks\.yml@refs/(pull/\d+/merge|heads/.+)' } }
 
           # checks-publish / tests-publish run on workflow_run from the default branch only.
           [[profiles]]
           name = "publish"
           permissions = { checks = "write", pull_requests = "write", contents = "read" }
           allow_events = ["workflow_run"]
-          match = { event_name = "workflow_run", job_workflow_ref = { regex = '[^/]+/[^/]+/\.github/workflows/(checks|tests)-publish\.yml@refs/heads/main' } }
+          match = { event_name = "workflow_run", job_workflow_ref = { regex = 'Profiidev/[^/]+/\.github/workflows/(checks|tests)-publish\.yml@refs/heads/main' } }
 
           # Release workflow on a version tag dispatches the chart bump to helm-charts.
           [[profiles]]
           name = "chart-bump"
           repositories = ["Profiidev/helm-charts"]
           permissions = { contents = "write" }
-          match = { ref_type = "tag", job_workflow_ref = { regex = '[^/]+/[^/]+/\.github/workflows/release\.yml@refs/tags/v.+' } }
+          match = { ref_type = "tag", job_workflow_ref = { regex = 'Profiidev/[^/]+/\.github/workflows/release\.yml@refs/tags/v.+' } }
 
           # Renovate: main branch runs plus its own bot-PR "edited" runs.
           [[profiles]]
@@ -94,7 +94,7 @@ spec:
           permissions = { contents = "write", pull_requests = "write", issues = "write", checks = "write", statuses = "write", workflows = "write", vulnerability_alerts = "read" }
           allow_dangerous = true
           allow_non_branch_write = true
-          match = { job_workflow_ref = { regex = '[^/]+/[^/]+/\.github/workflows/renovate\.yml@refs/(heads/main|pull/\d+/merge)' } }
+          match = { job_workflow_ref = { regex = 'Profiidev/[^/]+/\.github/workflows/renovate\.yml@refs/(heads/main|pull/\d+/merge)' } }
 
           [limits]
           per_repository = "30/min"
