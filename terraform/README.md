@@ -76,6 +76,10 @@ tools/forgejo-runner:
 - node3-token: <Forgejo runner token for node3>
 - node3-uuid: <Forgejo runner UUID for node3>
 
+tools/gluon:
+
+- main-key.pem: <PEM private key of the profidev-commit-bot GitHub App>
+
 apps/gitlab-webhook-th:
 
 - GITLAB_URL: <GitLab instance URL>

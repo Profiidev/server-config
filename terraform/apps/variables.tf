@@ -62,6 +62,12 @@ variable "forgejo_ns" {
   default     = "forgejo"
 }
 
+variable "gluon_ns" {
+  description = "The namespace where the gluon token broker will be deployed"
+  type        = string
+  default     = "gluon"
+}
+
 variable "kubevirt_ns" {
   description = "The namespace where KubeVirt is deployed"
   type        = string
