@@ -158,6 +158,11 @@ appsec:
           - filter: req.Host == 'longhorn.profidev.io' && req.URL.Path startsWith '/v1/'
             apply:
               - ExemptFromChallenge("longhorn-api")
+          # Gluon token broker: CI runners only; the ingress exposes nothing but
+          # /api/v1/token and /api/v1/exchange
+          - filter: req.Host == 'gluon.profidev.io' && req.URL.Path startsWith '/api/v1/'
+            apply:
+              - ExemptFromChallenge("gluon")
   env:
     - name: COLLECTIONS
       value: "crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-crs crowdsecurity/appsec-generic-rules crowdsecurity/appsec-bot-challenge"

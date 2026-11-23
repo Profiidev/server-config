@@ -72,7 +72,7 @@ spec:
           name = "lint"
           permissions = { contents = "write", checks = "write", pull_requests = "write" }
           allow_non_branch_write = true
-          match = { job_workflow_ref = { regex = 'Profiidev/[^/]+/\.github/workflows/checks\.yml@refs/(pull/\d+/merge|heads/.+)' } }
+          match = { job_workflow_ref = { regex = 'Profiidev/[^/]+/\.github/workflows/(checks|linting)\.yml@refs/(pull/\d+/merge|heads/.+)' } }
 
           # checks-publish / tests-publish run on workflow_run from the default branch only.
           [[profiles]]
@@ -87,6 +87,14 @@ spec:
           repositories = ["Profiidev/helm-charts"]
           permissions = { contents = "write" }
           match = { ref_type = "tag", job_workflow_ref = { regex = 'Profiidev/[^/]+/\.github/workflows/release\.yml@refs/tags/v.+' } }
+
+          # Bot automation on pull_request events (auto-merge, tag on merged release PR,
+          # commit fixes to a PR branch): write access on the PR merge ref.
+          [[profiles]]
+          name = "pr-automation"
+          permissions = { contents = "write", pull_requests = "write" }
+          allow_non_branch_write = true
+          match = { event_name = "pull_request", job_workflow_ref = { regex = 'Profiidev/[^/]+/\.github/workflows/(auto-merge-[a-z0-9-]+|create-release|fix-package-json)\.yml@refs/pull/\d+/merge' } }
 
           # Renovate: main branch runs plus its own bot-PR "edited" runs.
           [[profiles]]
