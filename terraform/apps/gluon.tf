@@ -88,13 +88,13 @@ spec:
           permissions = { contents = "write" }
           match = { ref_type = "tag", job_workflow_ref = { regex = 'Profiidev/[^/]+/\.github/workflows/release\.yml@refs/tags/v.+' } }
 
-          # Bot automation on pull_request events (auto-merge, tag on merged release PR,
+          # Bot automation on pull_request events (auto-merge, tag on merged release PR (ref is main once merged),
           # commit fixes to a PR branch): write access on the PR merge ref.
           [[profiles]]
           name = "pr-automation"
           permissions = { contents = "write", pull_requests = "write" }
           allow_non_branch_write = true
-          match = { event_name = "pull_request", job_workflow_ref = { regex = 'Profiidev/[^/]+/\.github/workflows/(auto-merge-[a-z0-9-]+|create-release|fix-package-json)\.yml@refs/pull/\d+/merge' } }
+          match = { event_name = "pull_request", job_workflow_ref = { regex = 'Profiidev/[^/]+/\.github/workflows/((auto-merge-[a-z0-9-]+|create-release|fix-package-json)\.yml@refs/pull/\d+/merge|create-release\.yml@refs/heads/main)' } }
 
           # Renovate: main branch runs plus its own bot-PR "edited" runs.
           [[profiles]]
