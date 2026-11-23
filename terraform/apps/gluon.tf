@@ -72,7 +72,7 @@ spec:
           name = "lint"
           permissions = { contents = "write", checks = "write", pull_requests = "write" }
           allow_non_branch_write = true
-          match = { job_workflow_ref = { regex = 'Profiidev/[^/]+/\.github/workflows/(checks|linting)\.yml@refs/(pull/\d+/merge|heads/.+)' } }
+          match = { job_workflow_ref = { regex = 'Profiidev/[^/]+/\.github/workflows/checks\.yml@refs/(pull/\d+/merge|heads/.+)' } }
 
           # checks-publish / tests-publish run on workflow_run from the default branch only.
           [[profiles]]
