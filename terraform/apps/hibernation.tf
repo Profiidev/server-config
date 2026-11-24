@@ -28,6 +28,33 @@ spec:
           enabled: true
           serviceMonitor:
             enabled: true
+            # url_path holds raw paths (store hashes, upload ids, scanner junk), collapse to route shapes
+            metricRelabelings:
+              - sourceLabels: [url_path]
+                regex: '/api/nix/([^/]+)/[^/]+\.narinfo'
+                targetLabel: url_path
+                replacement: '/api/nix/$1/:hash.narinfo'
+              - sourceLabels: [url_path]
+                regex: '/api/nix/([^/]+)/nar/[^/]+'
+                targetLabel: url_path
+                replacement: '/api/nix/$1/nar/:file'
+              - sourceLabels: [url_path]
+                regex: '/api/cache/push/[^/]+/[0-9]+'
+                targetLabel: url_path
+                replacement: '/api/cache/push/:id/:part'
+              - sourceLabels: [url_path]
+                regex: '/api/cache/push/[^/:]+'
+                targetLabel: url_path
+                replacement: '/api/cache/push/:id'
+              - sourceLabels: [url_path]
+                regex: '(/api/.*/)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
+                targetLabel: url_path
+                replacement: '$${1}:id'
+              # everything outside /api (frontend, static assets, scanner probes); RE2 has no lookahead
+              - sourceLabels: [url_path]
+                regex: '/([^a].*|a([^p].*)?|ap([^i].*)?|api([^/].*)?)'
+                targetLabel: url_path
+                replacement: '/:other'
         ingress:
           className: ${var.ingress_class}
           host: cache.profidev.io
