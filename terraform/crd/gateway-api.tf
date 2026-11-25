@@ -17,8 +17,11 @@ locals {
     "gateways.gateway.networking.k8s.io",
     "grpcroutes.gateway.networking.k8s.io",
     "httproutes.gateway.networking.k8s.io",
+    "listenersets.gateway.networking.k8s.io",
     "referencegrants.gateway.networking.k8s.io",
+    "tcproutes.gateway.networking.k8s.io",
     "tlsroutes.gateway.networking.k8s.io",
+    "udproutes.gateway.networking.k8s.io",
   ])
 
   gateway_api_manifests = {

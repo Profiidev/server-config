@@ -262,7 +262,7 @@ resource "terraform_data" "garage_linstor_buckets" {
       $EXEC bucket allow linstor --key "$KEY_ID" --read --write
 
       # LINSTOR stores the credentials encrypted with the master passphrase (storage stage)
-      $LINSTOR remote create s3 --use-path-style garage garage.${self.input.s3_ns}.svc.cluster.local:3900 linstor garage "$KEY_ID" "$SECRET"
+      $LINSTOR remote create s3 --use-path-style garage http://garage.${self.input.s3_ns}.svc.cluster.local:3900 linstor garage "$KEY_ID" "$SECRET"
       # full daily, incremental every 4h, keep 4 full chains (~4 days)
       $LINSTOR schedule create --incremental-cron "0 4-20/4 * * *" --keep-local 1 --keep-remote 4 \
         --on-failure RETRY --max-retries 3 db-backup "0 0 * * *"

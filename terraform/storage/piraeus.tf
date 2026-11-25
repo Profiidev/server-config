@@ -132,6 +132,8 @@ spec:
     spec:
       # DRBD keeps the node IP across satellite restarts; ports opened in nix/modules/piraeus.nix
       hostNetwork: true
+      # S3 shipping runs in the satellite: resolve garage.<ns>.svc via cluster DNS, not the node's resolver
+      dnsPolicy: ClusterFirstWithHostNet
       initContainers:
         # DRBD module comes from the host (nix/modules/piraeus.nix)
         - name: drbd-module-loader
