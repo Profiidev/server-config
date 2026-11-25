@@ -108,6 +108,18 @@ spec:
   linstorPassphraseSecret: ${kubernetes_secret_v1.linstor_passphrase.metadata[0].name}
   internalTLS:
     secretName: ${kubernetes_secret_v1.linstor_tls["controller"].metadata[0].name}
+  # NFS export for RWX filesystem volumes, not used
+  nfsServer:
+    enabled: false
+  controller:
+    podTemplate:
+      spec:
+        containers:
+          - name: linstor-controller
+            env:
+              # image default -Xms256M -Xmx8G with G1; JAVA_OPTS comes after it and wins
+              - name: JAVA_OPTS
+                value: "-Xmx512M -XX:+UseSerialGC"
 YAML
 
   depends_on = [helm_release.piraeus_operator]
@@ -134,6 +146,12 @@ spec:
       hostNetwork: true
       # S3 shipping runs in the satellite: resolve garage.<ns>.svc via cluster DNS, not the node's resolver
       dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: linstor-satellite
+          env:
+            # image default -Xms32M -Xmx2G with G1; JAVA_OPTS comes after it and wins
+            - name: JAVA_OPTS
+              value: "-Xmx256M -XX:+UseSerialGC"
       initContainers:
         # DRBD module comes from the host (nix/modules/piraeus.nix)
         - name: drbd-module-loader
