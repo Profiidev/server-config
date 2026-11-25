@@ -307,3 +307,52 @@ resource "terraform_data" "garage_linstor_buckets" {
 
   depends_on = [null_resource.garage_init]
 }
+
+# LINSTOR bases the next incremental on the last started/queued snapshot, not the last uploaded one. After a
+# failed or aborted shipment every later scheduled backup queues on a snapshot that never reached S3 and never
+# runs. Drop such snapshots (older than MIN_AGE_HOURS, so running uploads are left alone) before each schedule run;
+# the next run then ships a fresh full backup.
+resource "kubernetes_cron_job_v1" "linstor_backup_cleanup" {
+  metadata {
+    name      = "linstor-backup-cleanup"
+    namespace = var.storage_ns
+  }
+
+  spec {
+    # 10 min before every db-backup run (full 00:00, incremental 04:00-20:00 every 4h)
+    schedule           = "50 3-23/4 * * *"
+    concurrency_policy = "Forbid"
+
+    job_template {
+      metadata {}
+      spec {
+        backoff_limit = 0
+        template {
+          metadata {}
+          spec {
+            restart_policy = "Never"
+            container {
+              name    = "cleanup"
+              image   = "quay.io/piraeusdatastore/piraeus-server:v1.35.3"
+              command = ["python3", "-c", file("${path.module}/scripts/linstor-backup-cleanup.py")]
+              env {
+                name  = "LS_CONTROLLERS"
+                value = "http://linstor-controller.${var.storage_ns}.svc:3370"
+              }
+              env {
+                name  = "REMOTE"
+                value = "garage"
+              }
+              env {
+                name  = "MIN_AGE_HOURS"
+                value = "3"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  depends_on = [terraform_data.garage_linstor_buckets]
+}
