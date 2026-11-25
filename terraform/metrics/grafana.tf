@@ -53,7 +53,7 @@ module "dashboards" {
   for_each = toset([
     "cert-manager",
     "external-secrets",
-    "vault", "longhorn",
+    "vault", "piraeus",
     "postgres",
     "crowdsec-details",
     "crowdsec-insight",
@@ -95,7 +95,7 @@ module "dashboards" {
 resource "kubectl_manifest" "alert_configs" {
   for_each = toset([
     "cert-manager",
-    "longhorn",
+    "piraeus",
     "postgres",
     "tempo",
     "alloy",

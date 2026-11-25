@@ -59,18 +59,8 @@ let
   '';
 in
 {
-  services.openiscsi = {
-    enable = true;
-    name = "iqn.2020-08.org.linux-iscsi.initiatorhost:example";
-  };
-
   boot.supportedFilesystems = [
-    "nfs"
     "btrfs"
-  ];
-
-  environment.systemPackages = with pkgs; [
-    nfs-utils
   ];
 
   services.rke2 = {
@@ -85,7 +75,7 @@ in
     serverAddr = lib.mkIf (!host.master) "https://10.0.0.1:9345";
   };
 
-  # Fencing: if rke2 keeps crashing, its containers (etcd, apiserver, typha, longhorn engines, workloads) run on
+  # Fencing: if rke2 keeps crashing, its containers (etcd, apiserver, typha, linstor satellites, workloads) run on
   # unsupervised and block failover (incident 2026-11-16). Reboot after ~20 min of continuous failures (~30s per
   # attempt); the window is wide so a cold start waiting for etcd quorum doesn't trigger it.
   systemd.services.rke2-server.unitConfig = {
@@ -103,22 +93,42 @@ in
   };
 
   networking.firewall.allowedTCPPorts = [
-    6443 # Kubernetes API server
-    9345 # RKE2 server
-    5473 # calico
-    2379 # etcd server client API
-    2380 # etcd server peer API
     2222 # SSH
     2022 # Pelican SFTP
     25565 # Minecraft (Pelican HostPort)
-    # metrics
-    2381
-    9100
-    10249
-    10250
-    10257
-    10259
   ];
+
+  # cluster-internal ports: node network (ens7) and pod traffic (same node: cali* veths, other nodes: vxlan.calico)
+  networking.firewall.interfaces =
+    lib.genAttrs
+      [
+        "ens7"
+        "cali+"
+        "vxlan.calico"
+      ]
+      (_: {
+        allowedTCPPorts = [
+          6443 # Kubernetes API server
+          9345 # RKE2 server
+          5473 # calico
+          2379 # etcd server client API
+          2380 # etcd server peer API
+          # metrics
+          2381
+          9100
+          10249
+          10250
+          10257
+          10259
+          3367 # LINSTOR satellite (TLS)
+        ];
+        allowedTCPPortRanges = [
+          {
+            from = 7000;
+            to = 7999;
+          } # DRBD replication
+        ];
+      });
 
   networking.interfaces.ens7 = {
     useDHCP = false;
@@ -133,9 +143,7 @@ in
   systemd.tmpfiles.rules = [
     # Type | Path                                  | Mode | UID | GID | Age | Argument
     "d      /var/lib/rancher/rke2/server/db/etcd  0700   root  root  -     -"
-    "d      /var/lib/longhorn                     0700   root  root  -     -"
     "h      /var/lib/rancher/rke2/server/db/etcd  -      -     -     -     +C"
-    "h      /var/lib/longhorn                     0700   root  root  -     +C"
     "L+     /var/lib/rancher/rke2/agent/etc/kubelet.conf.d/99-image-gc.conf - - - - ${kubeletImageGc}"
   ];
 }

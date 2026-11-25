@@ -13,6 +13,8 @@
         withSwap = true;
         swapSize = "2";
         imageSize = "2G";
+        withLinstor = true;
+        rootSize = "50G";
       };
     }
     inputs.disko.nixosModules.disko
@@ -22,6 +24,7 @@
     ../modules/host-name-change.nix
     ../modules/locale.nix
     ../modules/nix.nix
+    ../modules/piraeus.nix
     ../modules/rke2.nix
     ../modules/services.nix
     ../modules/sops.nix

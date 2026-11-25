@@ -234,11 +234,12 @@ resource "terraform_data" "garage_metrics_buckets" {
   depends_on = [null_resource.garage_init]
 }
 
-resource "terraform_data" "garage_longhorn_buckets" {
+resource "terraform_data" "garage_linstor_buckets" {
   input = {
     secrets_ns  = var.secrets_ns
     vault_token = local.vault_token
     s3_ns       = var.garage_ns
+    storage_ns  = var.storage_ns
   }
 
   provisioner "local-exec" {
@@ -246,19 +247,28 @@ resource "terraform_data" "garage_longhorn_buckets" {
       set -euo pipefail
 
       EXEC="kubectl exec -n ${self.input.s3_ns} garage-0 -c garage -- /garage"
-      SET_SECRET="kubectl exec vault-0 -n ${self.input.secrets_ns} -- vault kv patch -mount=kv tools/longhorn"
+      LINSTOR="kubectl exec -n ${self.input.storage_ns} deploy/linstor-controller -- linstor"
+      SET_SECRET="kubectl exec vault-0 -n ${self.input.secrets_ns} -- vault kv patch -mount=kv tools/linstor"
 
       kubectl exec vault-0 -n ${self.input.secrets_ns} -- vault login ${self.input.vault_token}
-      kubectl exec vault-0 -n ${self.input.secrets_ns} -- vault kv put -mount=kv tools/longhorn AWS_ENDPOINTS="http://garage.${self.input.s3_ns}.svc.cluster.local:3900"
+      kubectl exec vault-0 -n ${self.input.secrets_ns} -- vault kv put -mount=kv tools/linstor AWS_ENDPOINTS="http://garage.${self.input.s3_ns}.svc.cluster.local:3900"
 
-      # tempo
-      OUTPUT=$($EXEC key create longhorn)
+      OUTPUT=$($EXEC key create linstor)
       KEY_ID=$(echo "$OUTPUT" | grep -oP 'Key ID:\s+\K\S+')
       SECRET=$(echo "$OUTPUT" | grep -oP 'Secret key:\s+\K\S+')
       $SET_SECRET AWS_ACCESS_KEY_ID="$KEY_ID" AWS_SECRET_ACCESS_KEY="$SECRET"
 
-      $EXEC bucket create longhorn
-      $EXEC bucket allow longhorn --key "$KEY_ID" --read --write
+      $EXEC bucket create linstor
+      $EXEC bucket allow linstor --key "$KEY_ID" --read --write
+
+      # LINSTOR stores the credentials encrypted with the master passphrase (storage stage)
+      $LINSTOR remote create s3 --use-path-style garage garage.${self.input.s3_ns}.svc.cluster.local:3900 linstor garage "$KEY_ID" "$SECRET"
+      # full daily, incremental every 4h, keep 4 full chains (~4 days)
+      $LINSTOR schedule create --incremental-cron "0 4-20/4 * * *" --keep-local 1 --keep-remote 4 \
+        --on-failure RETRY --max-retries 3 db-backup "0 0 * * *"
+      # storage class linstor-backup uses this resource group; create it so the schedule can be enabled before any PVC
+      $LINSTOR resource-group create backup --place-count 3 --storage-pool thin || true
+      $LINSTOR backup schedule enable --rg backup garage db-backup
     EOT
   }
 
@@ -268,9 +278,14 @@ resource "terraform_data" "garage_longhorn_buckets" {
       set -euo pipefail
 
       EXEC="kubectl exec -n ${self.input.s3_ns} garage-0 -c garage -- /garage"
+      LINSTOR="kubectl exec -n ${self.input.storage_ns} deploy/linstor-controller -- linstor"
+
+      $LINSTOR backup schedule disable --rg backup garage db-backup || true
+      $LINSTOR schedule delete db-backup || true
+      $LINSTOR remote delete garage || true
 
       kubectl exec vault-0 -n ${self.input.secrets_ns} -- vault login ${self.input.vault_token}
-      SECRET=$(kubectl exec vault-0 -n ${self.input.secrets_ns} -- vault kv get -mount=kv -format=json tools/longhorn)
+      SECRET=$(kubectl exec vault-0 -n ${self.input.secrets_ns} -- vault kv get -mount=kv -format=json tools/linstor)
 
       kubectl port-forward -n ${self.input.s3_ns} svc/garage 3902:3900 &
       PORT_FORWARD_PID=$!
@@ -279,14 +294,14 @@ resource "terraform_data" "garage_longhorn_buckets" {
       export AWS_ACCESS_KEY_ID=$(echo "$SECRET" | jq -r '.data.data["AWS_ACCESS_KEY_ID"]')
       export AWS_SECRET_ACCESS_KEY=$(echo "$SECRET" | jq -r '.data.data["AWS_SECRET_ACCESS_KEY"]')
 
-      aws s3 rm s3://longhorn --recursive --endpoint-url http://localhost:3902 --region garage
+      aws s3 rm s3://linstor --recursive --endpoint-url http://localhost:3902 --region garage
 
       kill $PORT_FORWARD_PID
 
-      $EXEC bucket delete longhorn --yes
-      $EXEC key delete longhorn --yes
+      $EXEC bucket delete linstor --yes
+      $EXEC key delete linstor --yes
 
-      kubectl exec vault-0 -n ${self.input.secrets_ns} -- vault kv metadata delete -mount=kv tools/longhorn
+      kubectl exec vault-0 -n ${self.input.secrets_ns} -- vault kv metadata delete -mount=kv tools/linstor
     EOT
   }
 

@@ -3,6 +3,11 @@ variable "storage_ns" {
   type        = string
 }
 
+variable "storage_class" {
+  description = "The name of the default storage class"
+  type        = string
+}
+
 variable "secrets_ns" {
   description = "The namespace for secrets management resources"
   type        = string

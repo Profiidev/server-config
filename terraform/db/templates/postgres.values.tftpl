@@ -20,7 +20,5 @@ primary:
       cpu: "250m"
       memory: "256Mi"
   persistence:
-    labels:
-      recurring-job.longhorn.io/source: "enabled"
-      recurring-job.longhorn.io/longhorn-db-backup: "enabled"
-      recurring-job.longhorn.io/longhorn-fs-trim: "enabled"
+    # resource group "backup": shipped to Garage S3 (db/garage.tf)
+    storageClass: "${storage_class}-backup"

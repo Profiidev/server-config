@@ -14,15 +14,15 @@ locals {
   }
 }
 
-module "longhorn" {
+module "linstor" {
   source = "../modules/app-oidc"
 
-  secret_path   = "tools/longhorn-proxy"
+  secret_path   = "tools/linstor-proxy"
   cookie_secret = true
 
   oidc = {
-    client_name  = "Longhorn"
-    redirect_uri = "https://longhorn.profidev.io/oidc/callback"
+    client_name  = "Linstor"
+    redirect_uri = "https://linstor.profidev.io/oidc/callback"
     scope        = "openid,profile,email"
   }
 

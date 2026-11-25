@@ -17,7 +17,8 @@ resource "helm_release" "postgres" {
   namespace  = var.pg_ns
 
   values = [templatefile("${path.module}/templates/postgres.values.tftpl", {
-    password = random_password.postgres_password.result
+    password      = random_password.postgres_password.result
+    storage_class = var.storage_class
   })]
 
   depends_on = [kubernetes_namespace.pg]

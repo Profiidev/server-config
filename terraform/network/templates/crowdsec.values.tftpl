@@ -155,9 +155,10 @@ appsec:
               req.URL.Path startsWith '/api/'
             apply:
               - ExemptFromChallenge("ui-api")
-          - filter: req.Host == 'longhorn.profidev.io' && req.URL.Path startsWith '/v1/'
+          # LINSTOR GUI (OIDC-protected): XHR to the controller REST API under /v1/
+          - filter: req.Host == 'linstor.profidev.io' && req.URL.Path startsWith '/v1/'
             apply:
-              - ExemptFromChallenge("longhorn-api")
+              - ExemptFromChallenge("linstor-api")
           # Gluon token broker: CI runners only; the ingress exposes nothing but
           # /api/v1/token and /api/v1/exchange
           - filter: req.Host == 'gluon.profidev.io' && req.URL.Path startsWith '/api/v1/'

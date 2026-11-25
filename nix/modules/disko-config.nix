@@ -5,6 +5,9 @@
   imageSize ? "10G",
   withSwap ? false,
   swapSize,
+  # node disks: fixed root, rest is an LVM thin pool for LINSTOR (Piraeus)
+  withLinstor,
+  rootSize,
   ...
 }:
 {
@@ -33,7 +36,7 @@
               };
             };
             root = {
-              size = "100%";
+              size = if withLinstor then rootSize else "100%";
               content = {
                 type = "btrfs";
                 extraArgs = [ "-f" ];
@@ -67,7 +70,23 @@
                 };
               };
             };
+            linstor = lib.mkIf withLinstor {
+              size = "100%";
+              content = {
+                type = "lvm_pv";
+                vg = "linstor_vg";
+              };
+            };
           };
+        };
+      };
+    };
+    lvm_vg = lib.mkIf withLinstor {
+      linstor_vg = {
+        type = "lvm_vg";
+        lvs.thin = {
+          size = "100%FREE";
+          lvm_type = "thin-pool";
         };
       };
     };

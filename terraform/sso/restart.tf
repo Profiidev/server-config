@@ -10,7 +10,7 @@ resource "null_resource" "restart_for_sso" {
   }
 
   depends_on = [
-    module.longhorn,
+    module.linstor,
     module.alloy,
     module.treafik,
     module.radar,

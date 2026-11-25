@@ -11,6 +11,7 @@
       _module.args = {
         disk = "/dev/vda";
         withSwap = false;
+        withLinstor = false;
         imageSize = "3G";
       };
     }

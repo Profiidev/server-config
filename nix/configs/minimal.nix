@@ -13,6 +13,8 @@
         withSwap = true;
         swapSize = "2";
         imageSize = "2G";
+        withLinstor = true;
+        rootSize = "50G";
       };
     }
     inputs.disko.nixosModules.disko

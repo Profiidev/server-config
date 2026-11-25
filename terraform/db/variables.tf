@@ -73,3 +73,8 @@ variable "discord_alert_webhook" {
   type        = string
   sensitive   = true
 }
+
+variable "storage_ns" {
+  description = "The namespace for storage resources"
+  type        = string
+}

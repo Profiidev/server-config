@@ -28,7 +28,9 @@ node3 = "<node3 IP or hostname>"
 
 ## Destory
 
-Confirm flags: 2. storage: Confirm longhorn deletion 5. tools: Remove finalizer from cdi resource
+Confirm flags: 5. tools: Remove finalizer from cdi resource
+
+LINSTOR master passphrase (`random_password.linstor_passphrase` in the storage state, Secret `linstor-passphrase`) encrypts the S3 remote credentials. Back it up before destroying storage, S3 backups in the `linstor` bucket can't be restored without it.
 
 Remove resource modules (app-oidc, app-resources):
 
