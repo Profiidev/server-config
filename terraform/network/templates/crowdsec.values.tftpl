@@ -105,9 +105,12 @@ appsec:
             apply:
               - ExemptFromChallenge("hibernation")
           # Forgejo: API + actions runners, container registry, git smart HTTP + LFS,
-          # archive/raw/release downloads (nix fetchers, curl)
+          # archive/raw/release downloads (nix fetchers, curl), static assets
+          # (browsers fetch the manifest without cookies, so it can never pass a challenge)
           - filter: >-
               req.Host == 'git.profidev.io' && (
+                req.URL.Path in ['/manifest.json', '/favicon.ico', '/robots.txt'] ||
+                req.URL.Path startsWith '/assets/' ||
                 req.URL.Path startsWith '/api/' || req.URL.Path startsWith '/v2/' ||
                 req.URL.Path startsWith '/.well-known/' || req.URL.Path startsWith '/attachments/' ||
                 req.URL.Path matches '^/[^/]+/[^/]+/(info/refs|git-upload-pack|git-receive-pack|HEAD|info/lfs/.+|objects/.+)$' ||
