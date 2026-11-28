@@ -94,7 +94,7 @@ spec:
           name = "pr-automation"
           permissions = { contents = "write", pull_requests = "write" }
           allow_non_branch_write = true
-          match = { event_name = "pull_request", job_workflow_ref = { regex = 'Profiidev/[^/]+/\.github/workflows/((auto-merge-[a-z0-9-]+|create-release|fix-package-json)\.yml@refs/pull/\d+/merge|create-release\.yml@refs/heads/main)' } }
+          match = { event_name = "pull_request", job_workflow_ref = { regex = 'Profiidev/[^/]+/\.github/workflows/((auto-merge-[a-z0-9-]+|create-release|fix-package-json|update-cargo-hash)\.yml@refs/pull/\d+/merge|create-release\.yml@refs/heads/main)' } }
 
           # Renovate: main branch runs plus its own bot-PR "edited" runs.
           [[profiles]]
